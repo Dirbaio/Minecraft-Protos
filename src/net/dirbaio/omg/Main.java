@@ -20,8 +20,12 @@ public class Main extends JFrame
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
 		WorldGenerator wg = new WorldGenerator(worldPath);
-		wg.mainFunc = new HeightmapTerrain(
-				new PerlinNoise2D(50, 50, 40, 80), (short)1);
+		FunctionTerrain tf = new HeightmapTerrain(
+				new PerlinNoise2D(50, 50, 50, 75), (short)1);
+		
+		tf = new TerrainOverlay(tf, (short)3, (short)1, 4);
+		tf = new TerrainOverlay(tf, (short)2, (short)3, 1);
+		wg.mainFunc = tf;
 		wg.generate();
     }
 }
