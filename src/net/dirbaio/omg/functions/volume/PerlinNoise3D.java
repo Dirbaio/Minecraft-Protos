@@ -1,6 +1,7 @@
-package net.dirbaio.omg.functions;
+package net.dirbaio.omg.functions.volume;
 
 import java.util.*;
+import net.dirbaio.omg.functions.Function3D;
 
 public class PerlinNoise3D extends Function3D
 {

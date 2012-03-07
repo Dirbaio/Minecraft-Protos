@@ -1,6 +1,7 @@
-package net.dirbaio.omg.functions;
+package net.dirbaio.omg.functions.plane;
 
 import java.util.*;
+import net.dirbaio.omg.functions.Function2D;
 
 public class PerlinNoise2D extends Function2D
 {

@@ -5,6 +5,11 @@
 
 package net.dirbaio.omg;
 
+import net.dirbaio.omg.functions.volume.PerlinNoise3D;
+import net.dirbaio.omg.functions.plane.PerlinNoise2D;
+import net.dirbaio.omg.functions.terrain.TerrainOverlay;
+import net.dirbaio.omg.functions.terrain.Terrain3D;
+import net.dirbaio.omg.functions.terrain.HeightmapTerrain;
 import java.io.*;
 import javax.swing.JFrame;
 import net.dirbaio.omg.functions.*;

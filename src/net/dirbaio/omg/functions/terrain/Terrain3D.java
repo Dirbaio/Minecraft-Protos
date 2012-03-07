@@ -1,6 +1,8 @@
-package net.dirbaio.omg.functions;
+package net.dirbaio.omg.functions.terrain;
 
 import net.dirbaio.omg.*;
+import net.dirbaio.omg.functions.Function3D;
+import net.dirbaio.omg.functions.FunctionTerrain;
 
 public class Terrain3D extends FunctionTerrain
 {
@@ -38,5 +40,4 @@ public class Terrain3D extends FunctionTerrain
 
 		return res;
 	}
-	
 }
