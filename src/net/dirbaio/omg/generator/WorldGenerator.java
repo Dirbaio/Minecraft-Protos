@@ -84,9 +84,9 @@ public class WorldGenerator implements Runnable
 		dataTag.putInt("generatorVersion", 1);
 		dataTag.putInt("rainTime", 0);
 		dataTag.putInt("thunderTime", 0);
-		dataTag.putInt("SpawnX", 0);
-		dataTag.putInt("SpawnY", 90);
-		dataTag.putInt("SpawnZ", 0);
+		dataTag.putInt("SpawnX", 128);
+		dataTag.putInt("SpawnY", 256);
+		dataTag.putInt("SpawnZ", 128);
 		dataTag.putInt("version", 19133);
 		dataTag.putLong("LastPlayed", 0);
 		dataTag.putLong("RandomSeed", 0);

@@ -73,7 +73,8 @@ public class ChunkLighter
             for(int z = 16; z < 32; z++)
             {
                 int bottom = getHeight(x, z);
-                for(int i = bottom; i < Chunk.MAP_HEIGHT; i++)
+
+				for(int i = bottom; i < Chunk.MAP_HEIGHT; i++)
                 {
                     setSkyLight(x, i, z, (byte)15);
                     ls[15].add(new Pos(x, i, z, (byte)15));
@@ -169,12 +170,12 @@ public class ChunkLighter
         if(z < 0 || z >= ySize*16) return;
 
         byte oldlight = getSkyLight(x, y, z);
-		int op = Blocks.blockOpacity[getBlock(x, y, z)];
+		int op = Blocks.getBlockOpacity(getBlock(x, y, z));
 		if(op == 0) op = 1;
         light-=op;
         if(oldlight>= light) return;
-
-//        System.out.println(oldlight+" -> "+light+", "+x+", "+y+", "+z);
+		
+//        System.out.println(oldlight+" -> "+light+"   "+x+", "+y+", "+z);
         setSkyLight(x, y, z, light);
         if(light > 0)
             ls[light].add(new Pos(x, y, z, light));
@@ -187,7 +188,7 @@ public class ChunkLighter
         if(z < 0 || z >= ySize*16) return;
 
         byte oldlight = getBlockLight(x, y, z);
-		int op = Blocks.blockOpacity[getBlock(x, y, z)];
+		int op = Blocks.getBlockOpacity(getBlock(x, y, z));
 		if(op == 0) op = 1;
         light-=op;
         if(oldlight>= light) return;

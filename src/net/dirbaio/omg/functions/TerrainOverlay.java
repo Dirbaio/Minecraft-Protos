@@ -27,26 +27,22 @@ public class TerrainOverlay extends FunctionTerrain
 			for(int z = 0; z < sz; z++)
 			{
 				int y;
-				//Find top-most non-air block.
+				int d = depth;
+
 				for(y = Chunk.MAP_HEIGHT-1; y >= 0; y--)
 				{
 					int i = z + sz*(x + sx*y);
-					if(res[i] != 0) break;
-				}
-				
-				//No blocks?
-				if(y < 0) continue;
-				
-				//Correct surface block?
-				if(surfaceblock != 0 && res[z + sz*(x + sx*y)] != surfaceblock) continue;
-				
-				//Put overlay
-				for(int d = 0; d < depth; d++)
-				{
-					if(y-d < 0) break;
-					res[z + sz*(x + sx*(y-d))] = overlayblock;
+					if(res[i] == 0)
+						d = depth;
+					else
+					{
+						if(d > 0 && (surfaceblock == 0 || res[i] == surfaceblock))
+							res[i] = overlayblock;
+						d--;
+					}
 				}
 			}
+
 		return res;
 	}
 	

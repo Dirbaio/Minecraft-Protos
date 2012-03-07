@@ -101,7 +101,7 @@ public class Chunk
 
 	public byte getSkyLight(int x, int y, int z)
 	{
-		int i = z + x * 16 + y * 256;
+		int i = x + z * 16 + y * 256;
 		byte b = skyLight[i / 2];
 		if (i % 2 == 1)
 			b = (byte) (b >> 4);
@@ -110,7 +110,7 @@ public class Chunk
 
 	public void setSkyLight(int x, int y, int z, byte d)
 	{
-		int i = z + x * 16 + y * 256;
+		int i = x + z * 16 + y * 256;
 		byte b = skyLight[i / 2];
 		if (i % 2 == 1)
 			skyLight[i / 2] = (byte) (b & 0x0F | d << 4);
@@ -164,7 +164,7 @@ public class Chunk
 			for (int z = 0; z < 16; z++)
 			{
 				int y = MAP_HEIGHT - 1;
-				while (Blocks.blockOpacity[getBlock(x, y, z)] == 1 && getBlock(x, y, z) != 18 && y > 0)
+				while (Blocks.getBlockOpacity(getBlock(x, y, z)) == 0 && y > 0)
 					y--;
 				y++;
 				setHeight(x, z, y);
@@ -185,7 +185,6 @@ public class Chunk
 		ListTag<CompoundTag> sectionTags = new ListTag<CompoundTag>("Sections");
 		for (int yBase = 0; yBase < (MAP_HEIGHT / 16); yBase++)
 		{
-
 			// find non-air
 			boolean allAir = true;
 			for (int x = 0; x < 16 && allAir; x++)
@@ -231,9 +230,9 @@ public class Chunk
 				}
 			}
 
-			System.arraycopy(this.skyLight, yBase*128, skyLightData, 0, 128);
-			System.arraycopy(this.blockLight, yBase*128, blockLightData, 0, 128);
-
+			System.arraycopy(this.skyLight, yBase*2048, skyLightData, 0, 2048);
+			System.arraycopy(this.blockLight, yBase*2048, blockLightData, 0, 2048);
+			
 			CompoundTag sectionTag = new CompoundTag();
 
 			sectionTag.putByte("Y", (byte) (yBase & 0xff));

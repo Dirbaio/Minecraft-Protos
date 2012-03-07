@@ -22,6 +22,8 @@ public class Main extends JFrame
 		WorldGenerator wg = new WorldGenerator(worldPath);
 		FunctionTerrain tf = new HeightmapTerrain(
 				new PerlinNoise2D(50, 50, 50, 75), (short)1);
+		tf = new Terrain3D(
+				new PerlinNoise3D(30, 30, 30, -1, 1), (short)1);
 		
 		tf = new TerrainOverlay(tf, (short)3, (short)1, 4);
 		tf = new TerrainOverlay(tf, (short)2, (short)3, 1);
