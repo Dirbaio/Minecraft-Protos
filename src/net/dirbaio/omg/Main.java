@@ -5,11 +5,10 @@
 
 package net.dirbaio.omg;
 
-import net.dirbaio.omg.functions.volume.PerlinNoise3D;
-import net.dirbaio.omg.functions.plane.PerlinNoise2D;
-import net.dirbaio.omg.functions.terrain.TerrainOverlay;
-import net.dirbaio.omg.functions.terrain.Terrain3D;
-import net.dirbaio.omg.functions.terrain.HeightmapTerrain;
+import net.dirbaio.omg.functions.volume.*;
+import net.dirbaio.omg.functions.plane.*;
+import net.dirbaio.omg.functions.terrain.*;
+
 import java.io.*;
 import javax.swing.JFrame;
 import net.dirbaio.omg.functions.*;
@@ -25,10 +24,12 @@ public class Main extends JFrame
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
 		WorldGenerator wg = new WorldGenerator(worldPath);
-		FunctionTerrain tf = new HeightmapTerrain(
-				new PerlinNoise2D(50, 50, 50, 75), (short)1);
-		tf = new Terrain3D(
-				new PerlinNoise3D(30, 30, 30, -1, 1), (short)1);
+		
+		Function2D heightmap = new PerlinNoise2D(20, 20, 50, 70);
+		Function3D f = new HeightFunction(heightmap);
+		f = new MathFunction3D(f, new PerlinNoise3D(10, 5, 10, -15, 20), MathFunction3D.FUNC_ADD);
+
+		FunctionTerrain tf = new Terrain3D(f, (short)1);
 		
 		tf = new TerrainOverlay(tf, (short)3, (short)1, 4);
 		tf = new TerrainOverlay(tf, (short)2, (short)3, 1);

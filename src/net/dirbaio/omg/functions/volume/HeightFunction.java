@@ -4,7 +4,6 @@ import net.dirbaio.omg.functions.*;
 
 public class HeightFunction extends Function3D
 {
-
 	Function2D f;
 
 	public HeightFunction()
@@ -19,7 +18,7 @@ public class HeightFunction extends Function3D
 	@Override
 	public double[][][] get3DData(int px, int py, int pz, int sx, int sy, int sz)
 	{
-		double[][][] res = new double[px][py][pz];
+		double[][][] res = new double[sx][sy][sz];
 		double[][] hf = f.get2DData(px, pz, sx, sz);
 		
 		for(int x = 0; x < sx; x++)

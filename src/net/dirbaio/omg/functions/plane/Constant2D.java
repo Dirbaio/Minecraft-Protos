@@ -19,7 +19,7 @@ public class Constant2D extends Function2D
 	@Override
 	public double[][] get2DData(int px, int pz, int sx, int sz)
 	{
-		double[][] res = new double[sz][sz];
+		double[][] res = new double[sx][sz];
 		for(int i = 0; i < sx; i++)
 			for(int j = 0; j < sz; j++)
 				res[i][j] = k;

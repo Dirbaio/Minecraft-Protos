@@ -18,7 +18,7 @@ public class Constant3D extends Function3D
 	@Override
 	public double[][][] get3DData(int px, int py, int pz, int sx, int sy, int sz)
 	{
-		double[][][] res = new double[px][py][pz];
+		double[][][] res = new double[sx][sy][sz];
 		
 		for(int i = 0; i < sx; i++)
 			for(int j = 0; j < sy; j++)
