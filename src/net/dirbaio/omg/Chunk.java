@@ -180,6 +180,10 @@ public class Chunk
 		tag.putInt("zPos", zPos);
 		tag.putLong("LastUpdate", 0);
 		tag.putIntArray("HeightMap", heightMap);
+		byte[] biomes = new byte[16*16];
+		for(int i = 0; i < 256; i++)
+			biomes[i] = 4;
+		tag.putByteArray("Biomes", biomes);
 		tag.putBoolean("TerrainPopulated", false);
 
 		ListTag<CompoundTag> sectionTags = new ListTag<CompoundTag>("Sections");

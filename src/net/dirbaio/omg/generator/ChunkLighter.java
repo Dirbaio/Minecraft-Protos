@@ -57,7 +57,7 @@ public class ChunkLighter
 
     public int getHeight(int x, int z)
     {
-//        if(chunks[x/16][z/16] == null) return 128;
+        if(chunks[x/16][z/16] == null) return 128;
         int res = chunks[x/16][z/16].getHeight(x%16, z%16);
         return res;
     }
