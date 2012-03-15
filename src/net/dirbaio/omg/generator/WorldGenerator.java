@@ -24,6 +24,8 @@ public class WorldGenerator implements Runnable
     public int chunksToSave;
 
     public Chunk[][] chunks;
+	boolean[][] savedChunks;
+	
     public LinkedBlockingQueue[] opQueues;
 
     int numGenThreads = 4;
@@ -48,6 +50,7 @@ public class WorldGenerator implements Runnable
         xSize = 8;
         zSize = 8;
         chunks = new Chunk[xSize][zSize];
+        savedChunks = new boolean[xSize][zSize];
         this.path = new File(path);
     }
 
@@ -229,7 +232,19 @@ public class WorldGenerator implements Runnable
                 if(genThreads[i].isAlive()) done = false;
             if(done) break;
         }
+		
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+            }
 
+		int ct = 0;
+		for(int x = 0; x < xSize; x++)
+			for(int z = 0; z < zSize; z++)
+				if(chunks[x][z] != null)
+					ct++;
+		
+		System.out.println("Loaded chunks? "+ct);
     }
 
     //OP MANAGEMENT
@@ -238,6 +253,7 @@ public class WorldGenerator implements Runnable
     {
         if(x < 0 || x >= xSize) return true;
         if(z < 0 || z >= zSize) return true;
+        if(savedChunks[x][z]) return true;
         if(chunks[x][z] == null) return false;
 
         return chunks[x][z].opsDone[op];
@@ -270,8 +286,9 @@ public class WorldGenerator implements Runnable
 
     public void scheduleChunkForOp(int x, int z, int op)
     {
-        if(op > opCount) return;
-        if(op == opCount)
+        if(op > opCount)
+			chunks[x][z] = null; //Unload chunk
+		else if(op == opCount)
             saveChunk(x, z);
         else
             opQueues[op].add(new Point(x, z));
@@ -285,10 +302,11 @@ public class WorldGenerator implements Runnable
         if(chunksToSave == 0)
             stop = true;
         
+//		System.out.println("CTS "+chunksToSave);
         Chunk c = getChunk(xc, zc);
         if(out != null)
             out.chunkDone(c);
-//        else
+        else
         {
             try {
                 c.writeTo(path);
@@ -297,7 +315,9 @@ public class WorldGenerator implements Runnable
             }
 
             chunks[xc][zc] = null;
+			savedChunks[xc][zc] = true;
         }
+//		setChunkOpDone(xc, zc, 3);
     }
     
     public Chunk[][] createAndLockContext(int x, int z)

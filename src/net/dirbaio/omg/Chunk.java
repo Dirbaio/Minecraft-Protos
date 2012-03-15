@@ -16,7 +16,7 @@ public class Chunk
 	public byte[] blockLight, skyLight;
 	public short[] blocks;
 	public int xPos, zPos;
-	public boolean[] opsDone = new boolean[4];
+	public boolean[] opsDone = new boolean[7];
 	public ReentrantLock opLock = new ReentrantLock();
 	public BufferedImage cachedImg;
 
