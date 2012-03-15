@@ -32,4 +32,10 @@ public class HeightFunction extends Function3D
 		return res;
 	}
 
+	@Override
+	public void prepare(int x, int z, int sx, int sz)
+	{
+		f.prepare(x, z, sx, sz);
+	}
+
 }

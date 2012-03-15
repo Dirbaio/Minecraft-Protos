@@ -39,4 +39,11 @@ public class TerrainJoin extends FunctionTerrain
 		return da;
 	}
 
+
+	@Override
+	public void prepare(int x, int z, int sx, int sz)
+	{
+		a.prepare(x, z, sx, sz);
+		b.prepare(x, z, sx, sz);
+	}
 }

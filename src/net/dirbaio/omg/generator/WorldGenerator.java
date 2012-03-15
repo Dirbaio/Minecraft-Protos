@@ -45,8 +45,8 @@ public class WorldGenerator implements Runnable
     {
         xMin = 0;
         zMin = 0;
-        xSize = 32;
-        zSize = 32;
+        xSize = 8;
+        zSize = 8;
         chunks = new Chunk[xSize][zSize];
         this.path = new File(path);
     }
@@ -189,6 +189,8 @@ public class WorldGenerator implements Runnable
         chunkCt = xSize*zSize;
         chunksToSave = xSize*zSize;
         
+		mainFunc.prepare(xMin*16, zMin*16, xSize*16, zSize*16);
+		
         //Now, create all the threads.
         //Each thread grabs a copy of all the modules in Configuration.curr
         genThreads = new ChunkGeneratorThread[numGenThreads];
@@ -294,7 +296,7 @@ public class WorldGenerator implements Runnable
                 Logger.getLogger(WorldGenerator.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-//            chunks[xc][zc] = null;
+            chunks[xc][zc] = null;
         }
     }
     

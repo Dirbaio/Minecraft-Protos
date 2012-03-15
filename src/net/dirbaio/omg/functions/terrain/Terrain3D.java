@@ -40,4 +40,10 @@ public class Terrain3D extends FunctionTerrain
 
 		return res;
 	}
+
+	@Override
+	public void prepare(int x, int z, int sx, int sz)
+	{
+		field.prepare(x, z, sx, sz);
+	}
 }

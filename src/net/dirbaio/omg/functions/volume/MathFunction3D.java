@@ -67,4 +67,11 @@ public class MathFunction3D extends Function3D
 				}
 		return da;
 	}
+	
+	@Override
+	public void prepare(int x, int z, int sx, int sz)
+	{
+		a.prepare(x, z, sx, sz);
+		b.prepare(x, z, sx, sz);
+	}
 }

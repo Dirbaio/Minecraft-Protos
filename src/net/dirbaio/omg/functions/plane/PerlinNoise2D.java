@@ -69,6 +69,7 @@ public class PerlinNoise2D extends Function2D
 			{
 				double xin = (x + px) / xscale;
 				double yin = (z + pz) / zscale;
+				
 				double n0, n1, n2; // Noise contributions from the three corners
 				// Skew the input space to determine which simplex cell we're in
 				final double F2 = 0.5 * (Math.sqrt(3.0) - 1.0);

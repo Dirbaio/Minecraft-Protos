@@ -20,8 +20,8 @@ public class Main extends JFrame
     {
 	
 		Function3D terrainMap = new MathFunction3D(
-				new PerlinNoise3D(200, 2600, 130, -100, 300),
-				new PerlinNoise3D(100, 250, 60, -50, 50),
+				new PerlinNoise3D(400, 2600, 330, -100, 600),
+				new PerlinNoise3D(170, 250, 120, -50, 50),
 				MathFunction3D.FUNC_ADD
 				);
 		
@@ -36,15 +36,16 @@ public class Main extends JFrame
 		
 		Function2D seaheight = new PerlinNoise2D(30, 40, 50, 40);
 		Function3D seavolume = new HeightFunction(seaheight);
-		Function2D landheight = new PerlinNoise2D(70, 70, 70, 90);
+		Function2D landheight = new PerlinNoise2D(70, 70, 80, 160);
+		landheight = new HeightmapErosion(landheight);
 		Function3D landvolume = new HeightFunction(landheight);
 		Function2D beachheight = new Constant2D(62);
 		Function3D beachvolume = new HeightFunction(beachheight);
 		
 		Function3D terrainMap2 = new MathFunction3D(
 				new MathFunction3D(
-					new PerlinNoise3D(170, 10000, 220, -140, 130),
-					new PerlinNoise3D(70, 10000, 80, -50, 70),
+					new PerlinNoise3D(170, 10000, 220, -170, 110),
+					new PerlinNoise3D(70, 10000, 80, -50, 50),
 					MathFunction3D.FUNC_ADD),
 				terrainMap,
 				MathFunction3D.FUNC_ADD);
@@ -52,7 +53,7 @@ public class Main extends JFrame
 		Function3D f = new Interpolate3D(seavolume, beachvolume, terrainMap2);
 //		Function3D f = seavolume;
 		f = new Interpolate3D(f, landvolume,  terrainMap);
-		
+//		f = landvolume;
 		f = new MathFunction3D(
 				new PerlinNoise3D(20, 10, 20, -1, 3), 
 				f, 

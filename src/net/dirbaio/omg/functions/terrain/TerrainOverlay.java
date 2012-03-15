@@ -47,4 +47,9 @@ public class TerrainOverlay extends FunctionTerrain
 		return res;
 	}
 	
+	@Override
+	public void prepare(int x, int z, int sx, int sz)
+	{
+		base.prepare(x, z, sx, sz);
+	}
 }

@@ -38,4 +38,11 @@ public class Interpolate3D extends Function3D
 		return sa;
 	}
 	
+	@Override
+	public void prepare(int x, int z, int sx, int sz)
+	{
+		a.prepare(x, z, sx, sz);
+		b.prepare(x, z, sx, sz);
+		weight.prepare(x, z, sx, sz);
+	}
 }
