@@ -2,6 +2,7 @@ package net.dirbaio.omg.functions.plane;
 
 import java.util.*;
 import net.dirbaio.omg.functions.Function2D;
+import net.dirbaio.omg.functions.RandomSeed;
 
 public class PerlinNoise2D extends Function2D
 {
@@ -16,6 +17,8 @@ public class PerlinNoise2D extends Function2D
         {1, 0, 1}, {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1},
         {0, 1, 1}, {0, -1, 1}, {0, 1, -1}, {0, -1, -1}};
 
+	public int layers;
+	
 	public PerlinNoise2D(double xscale, double zscale, double min, double max)
 	{
 		this();
@@ -27,7 +30,7 @@ public class PerlinNoise2D extends Function2D
 	
 	public PerlinNoise2D()
 	{
-		Random r = new Random(13261);
+		Random r = new Random(RandomSeed.get());
 		for (int i = 0; i < 256; i++)
 			perm[i] = i;
 

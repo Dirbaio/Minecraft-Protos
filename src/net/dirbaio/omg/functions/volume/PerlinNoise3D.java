@@ -1,7 +1,7 @@
 package net.dirbaio.omg.functions.volume;
 
 import java.util.*;
-import net.dirbaio.omg.functions.Function3D;
+import net.dirbaio.omg.functions.*;
 
 public class PerlinNoise3D extends Function3D
 {
@@ -29,8 +29,7 @@ public class PerlinNoise3D extends Function3D
 	
 	public PerlinNoise3D()
 	{
-
-		Random r = new Random(13261);
+		Random r = new Random(RandomSeed.get());
 		for (int i = 0; i < 256; i++)
 			perm[i] = i;
 

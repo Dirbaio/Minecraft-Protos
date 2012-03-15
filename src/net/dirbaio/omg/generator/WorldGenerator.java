@@ -45,8 +45,8 @@ public class WorldGenerator implements Runnable
     {
         xMin = 0;
         zMin = 0;
-        xSize = 16;
-        zSize = 16;
+        xSize = 32;
+        zSize = 32;
         chunks = new Chunk[xSize][zSize];
         this.path = new File(path);
     }

@@ -180,7 +180,7 @@ public class Chunk
 		tag.putInt("zPos", zPos);
 		tag.putLong("LastUpdate", 0);
 		tag.putIntArray("HeightMap", heightMap);
-		tag.putBoolean("TerrainPopulated", true);
+		tag.putBoolean("TerrainPopulated", false);
 
 		ListTag<CompoundTag> sectionTags = new ListTag<CompoundTag>("Sections");
 		for (int yBase = 0; yBase < (MAP_HEIGHT / 16); yBase++)
