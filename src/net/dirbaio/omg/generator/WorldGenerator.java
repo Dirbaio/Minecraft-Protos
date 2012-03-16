@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,9 +27,33 @@ public class WorldGenerator implements Runnable
     public Chunk[][] chunks;
 	boolean[][] savedChunks;
 	
-    public LinkedBlockingQueue[] opQueues;
+    public PriorityBlockingQueue<GeneratorTask> taskQueue;
+	
+	public static class GeneratorTask implements Comparable<GeneratorTask>
+	{
+		int x, z;
+		int op;
 
-    int numWorkerThreads = 8;
+		public GeneratorTask(int x, int z, int op)
+		{
+			this.x = x;
+			this.z = z;
+			this.op = op;
+		}
+		
+		public int compareTo(GeneratorTask o)
+		{
+			if(op < o.op) return 1;
+			if(op > o.op) return -1;
+			if(x < o.z) return 1;
+			if(x > o.z) return -1;
+			if(z < o.z) return 1;
+			if(z > o.z) return -1;
+			return 0;
+		}
+	}
+	
+	int numWorkerThreads = 3;
     WorkerThread[] workerThreads;
 
 	ChunkOutput out;
@@ -38,23 +63,32 @@ public class WorldGenerator implements Runnable
     boolean stop = false;
 	
 	public FunctionTerrain mainFunc;
-    
+	int ddone[] = new int[5];
+	
     public WorldGenerator(String path)
     {
         xMin = -64;
         zMin = -64;
-        xSize = 128;
-        zSize = 128;
+        xSize = 32;
+        zSize = 32;
         chunks = new Chunk[xSize][zSize];
         savedChunks = new boolean[xSize][zSize];
         this.path = new File(path);
     }
 
+	public void addTaskToQueue(int x, int y, int op)
+	{
+		taskQueue.add(new GeneratorTask(x, y, op));
+		if(op >= 0)
+			ddone[op]++;
+	}
+	
     private void fillGenQueue(int x, int y, int s)
     {
         if(s == 1)
         {
-            if(x < xSize && y < zSize) opQueues[0].add(new Point(x, y));
+            if(x < xSize && y < zSize) 
+				addTaskToQueue(x, y, 0);
             return;
         }
 
@@ -105,7 +139,7 @@ public class WorldGenerator implements Runnable
 		}
     }
 
-    public synchronized Chunk getChunk(int x, int z)
+    public Chunk getChunk(int x, int z)
     {
         if(x < 0 || x >= xSize) return null;
         if(z < 0 || z >= zSize) return null;
@@ -117,31 +151,10 @@ public class WorldGenerator implements Runnable
         return chunks[x][z];
     }
 
-    public synchronized void setChunk(int x, int z, Chunk c)
+    public void setChunk(int x, int z, Chunk c)
     {
         chunks[x][z] = c;
     }
-
-    public static String base36 = "0123456789abcdefghijklmnopqrstuvwxyz";
-    public static String toBase36(int i)
-    {
-        if(i == 0) return "0";
-
-        int n = i;
-        if(n < 0) n = -n;
-
-        String res = "";
-        while(n != 0)
-        {
-            res = base36.charAt(n%36) + res;
-            n /= 36;
-        }
-        if(i < 0)
-            return "-"+res;
-        else
-            return res;
-    }
-
 
     static public boolean deleteDirectory(File path) {
         if (path.exists()) {
@@ -169,12 +182,10 @@ public class WorldGenerator implements Runnable
         path.mkdirs();
         generateLevelDat();
 
-        //Create queues.
-        opQueues = new LinkedBlockingQueue[opCount];
-        for(int i = 0; i < opCount; i++)
-            opQueues[i] = new LinkedBlockingQueue();
-
-        //Fill them.
+        //Create queue.
+		taskQueue = new PriorityBlockingQueue<GeneratorTask>();
+        
+		//Fill it.
         int max = xSize>zSize?xSize:zSize;
         int p = 1;
         while(p < max) p *= 2;
@@ -205,18 +216,26 @@ public class WorldGenerator implements Runnable
             } catch (InterruptedException ex) {
             }
 
-            System.out.println((chunkDone*100/chunkCt)+"%");
-
+            System.out.print((ddone[0]*100/chunkCt)+"% ");
+            System.out.print((ddone[1]*100/chunkCt)+"% ");
+            System.out.print((ddone[2]*100/chunkCt)+"% ");
+            System.out.print((ddone[3]*100/chunkCt)+"% ");
+			System.out.println();
+			
             boolean done = true;
             for(int i = 0; i < numWorkerThreads; i++)
                 if(workerThreads[i].isAlive()) done = false;
             if(done) break;
         }
 		
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-            }
+		//Stop all threads.
+		for(int i = 0; i < numWorkerThreads; i++)
+			addTaskToQueue(-1, -1, -1);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException ex) {
+		}
 
 		int ct = 0;
 		for(int x = 0; x < xSize; x++)
@@ -266,12 +285,10 @@ public class WorldGenerator implements Runnable
 
     public void scheduleChunkForOp(int x, int z, int op)
     {
-        if(op > opCount)
-			chunks[x][z] = null; //Unload chunk
-		else if(op == opCount)
+        if(op == opCount)
             saveChunk(x, z);
         else
-            opQueues[op].add(new Point(x, z));
+			addTaskToQueue(x, z, op);
     }
 
     public void saveChunk(int xc, int zc)
