@@ -28,14 +28,10 @@ public class WorldGenerator implements Runnable
 	
     public LinkedBlockingQueue[] opQueues;
 
-    int numGenThreads = 4;
-    int numPopThreads = 5;
-    int numLightThreads = 7;
+    int numWorkerThreads = 8;
+    WorkerThread[] workerThreads;
 
-    ChunkGeneratorThread[] genThreads;
-    ChunkPopulatorThread[] popThreads;
-    ChunkLighterThread[] lightThreads;
-    ChunkOutput out;
+	ChunkOutput out;
 
     public static final int opCount = 3;
 
@@ -194,25 +190,11 @@ public class WorldGenerator implements Runnable
 		
         //Now, create all the threads.
         //Each thread grabs a copy of all the modules in Configuration.curr
-        genThreads = new ChunkGeneratorThread[numGenThreads];
-        for(int i = 0; i < numGenThreads; i++)
+        workerThreads = new WorkerThread[numWorkerThreads];
+        for(int i = 0; i < numWorkerThreads; i++)
         {
-            genThreads[i] = new ChunkGeneratorThread(this, i);
-            genThreads[i].start();
-        }
-
-        popThreads = new ChunkPopulatorThread[numPopThreads];
-        for(int i = 0; i < numPopThreads; i++)
-        {
-            popThreads[i] = new ChunkPopulatorThread(this, i);
-            popThreads[i].start();
-        }
-
-        lightThreads = new ChunkLighterThread[numLightThreads];
-        for(int i = 0; i < numLightThreads; i++)
-        {
-            lightThreads[i] = new ChunkLighterThread(this, i);
-            lightThreads[i].start();
+            workerThreads[i] = new WorkerThread(this, i);
+            workerThreads[i].start();
         }
 
         //Report progress.
@@ -226,8 +208,8 @@ public class WorldGenerator implements Runnable
             System.out.println((chunkDone*100/chunkCt)+"%");
 
             boolean done = true;
-            for(int i = 0; i < numGenThreads; i++)
-                if(genThreads[i].isAlive()) done = false;
+            for(int i = 0; i < numWorkerThreads; i++)
+                if(workerThreads[i].isAlive()) done = false;
             if(done) break;
         }
 		
