@@ -39,7 +39,7 @@ public class Main extends JFrame
 		Function2D landheight = new PerlinNoise2D(70, 70, 80, 160);
 		landheight = new HeightmapErosion(landheight);
 		Function3D landvolume = new HeightFunction(landheight);
-		Function2D beachheight = new Constant2D(62);
+		Function2D beachheight = new Constant2D(63);
 		Function3D beachvolume = new HeightFunction(beachheight);
 		
 		Function3D terrainMap2 = new MathFunction3D(
@@ -80,7 +80,7 @@ public class Main extends JFrame
 //		tf = new HeightmapTerrain(new Constant2D(66), (short)1);
 		
 		tf = new TerrainOverlay(tf, (short)3, (short)1, 4);
-		tf = new BeachOverlay(tf, (short)12, (short)0, 5, 62, 65);
+		tf = new BeachOverlay(tf, (short)12, (short)0, 5, 62, 66);
 		tf = new SeaFunction(tf, (short)8, 64);
 		tf = new TerrainOverlay(tf, (short)2, (short)3, 1);
 		

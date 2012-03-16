@@ -45,10 +45,10 @@ public class WorldGenerator implements Runnable
     
     public WorldGenerator(String path)
     {
-        xMin = 0;
-        zMin = 0;
-        xSize = 32;
-        zSize = 32;
+        xMin = -64;
+        zMin = -64;
+        xSize = 128;
+        zSize = 128;
         chunks = new Chunk[xSize][zSize];
         savedChunks = new boolean[xSize][zSize];
         this.path = new File(path);

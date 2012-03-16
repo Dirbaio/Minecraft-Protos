@@ -34,7 +34,7 @@ public class ChunkGeneratorThread extends Thread
                 }
                 if(gen.stop) break;
 
-                Chunk c = new Chunk(p.x, p.y);
+                Chunk c = new Chunk(p.x+gen.xMin, p.y+gen.zMin);
 				int px = p.x*16 + gen.xMin*16;
 				int pz = p.y*16 + gen.zMin*16;
 				
