@@ -45,8 +45,8 @@ public class WorldGenerator implements Runnable
 		{
 			if(op < o.op) return 1;
 			if(op > o.op) return -1;
-			if(x < o.z) return 1;
-			if(x > o.z) return -1;
+			if(x < o.x) return 1;
+			if(x > o.x) return -1;
 			if(z < o.z) return 1;
 			if(z > o.z) return -1;
 			return 0;
@@ -175,9 +175,10 @@ public class WorldGenerator implements Runnable
         new Thread(this, "Generator reporting thread").start();
     }
     
+	ChunkStateViewer csv;
     public void run()
     {
-
+		csv = new ChunkStateViewer(xSize, zSize);
         //First setup!
         path.mkdirs();
         generateLevelDat();
@@ -276,7 +277,7 @@ public class WorldGenerator implements Runnable
     public void setChunkOpDone(int x, int z, int op)
     {
         chunks[x][z].opsDone[op] = true;
-        
+        csv.setChunkState(x, z, op+1);
         for(int xx = x-2; xx <= x+2; xx++)
             for(int zz = z-2; zz <= z+2; zz++)
                 if(canDoOpToChunk(xx, zz, op+1))
