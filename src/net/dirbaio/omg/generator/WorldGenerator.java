@@ -28,6 +28,7 @@ public class WorldGenerator implements Runnable
 	boolean[][] savedChunks;
 	
     public PriorityBlockingQueue<GeneratorTask> taskQueue;
+    public LinkedBlockingQueue<GeneratorTask> lockedTasksQueue;
 	
 	public static class GeneratorTask implements Comparable<GeneratorTask>
 	{
@@ -45,15 +46,15 @@ public class WorldGenerator implements Runnable
 		{
 			if(op < o.op) return 1;
 			if(op > o.op) return -1;
-			if(x < o.x) return 1;
-			if(x > o.x) return -1;
-			if(z < o.z) return 1;
-			if(z > o.z) return -1;
+			if(z < o.z) return -1;
+			if(z > o.z) return 1;
+			if(x < o.x) return -1;
+			if(x > o.x) return 1;
 			return 0;
 		}
 	}
 	
-	int numWorkerThreads = 3;
+	int numWorkerThreads = 9;
     WorkerThread[] workerThreads;
 
 	ChunkOutput out;
@@ -69,8 +70,8 @@ public class WorldGenerator implements Runnable
     {
         xMin = -64;
         zMin = -64;
-        xSize = 32;
-        zSize = 32;
+        xSize = 128;
+        zSize = 128;
         chunks = new Chunk[xSize][zSize];
         savedChunks = new boolean[xSize][zSize];
         this.path = new File(path);
@@ -178,14 +179,15 @@ public class WorldGenerator implements Runnable
 	ChunkStateViewer csv;
     public void run()
     {
-		csv = new ChunkStateViewer(xSize, zSize);
-        //First setup!
+//		csv = new ChunkStateViewer(xSize, zSize);
+
+		//First setup!
         path.mkdirs();
         generateLevelDat();
 
         //Create queue.
 		taskQueue = new PriorityBlockingQueue<GeneratorTask>();
-        
+        lockedTasksQueue = new LinkedBlockingQueue<GeneratorTask>();
 		//Fill it.
         int max = xSize>zSize?xSize:zSize;
         int p = 1;
@@ -277,8 +279,11 @@ public class WorldGenerator implements Runnable
     public void setChunkOpDone(int x, int z, int op)
     {
         chunks[x][z].opsDone[op] = true;
-        csv.setChunkState(x, z, op+1);
-        for(int xx = x-2; xx <= x+2; xx++)
+	
+		if(csv != null)
+	        csv.setChunkState(x, z, op+1);
+        
+		for(int xx = x-2; xx <= x+2; xx++)
             for(int zz = z-2; zz <= z+2; zz++)
                 if(canDoOpToChunk(xx, zz, op+1))
                     scheduleChunkForOp(xx, zz, op+1);
@@ -318,22 +323,37 @@ public class WorldGenerator implements Runnable
 //		setChunkOpDone(xc, zc, 3);
     }
     
-    public Chunk[][] createAndLockContext(int x, int z)
+    public synchronized Chunk[][] createAndLockContext(int x, int z, int op)
     {
         Chunk[][] context = new Chunk[3][3];
 
         for(int xx = 0; xx < 3; xx++)
             for(int zz = 0; zz < 3; zz++)
-            {
                 context[xx][zz] = getChunk(x+xx-1, z+zz-1);
-                if(context[xx][zz] != null)
-                    context[xx][zz].opLock.lock();
-            }
 
-        return context;
-    }
+		boolean locked = false;
+		
+        for(int xx = 0; xx < 3; xx++)
+            for(int zz = 0; zz < 3; zz++)
+				if(context[xx][zz] != null && context[xx][zz].opLock.isLocked())
+					locked = true;
+		
+		if(locked)
+		{
+			lockedTasksQueue.add(new GeneratorTask(x, z, op));
+			return null;
+		}
+		else
+		{
+			for(int xx = 0; xx < 3; xx++)
+				for(int zz = 0; zz < 3; zz++)
+					if(context[xx][zz] != null)
+	                    context[xx][zz].opLock.lock();
+	        return context;
+		}
+	}
 
-    public void unlockContext(int x, int z)
+    public synchronized void unlockContext(int x, int z)
     {
         for(int xx = 0; xx < 3; xx++)
             for(int zz = 0; zz < 3; zz++)
@@ -341,8 +361,11 @@ public class WorldGenerator implements Runnable
                 Chunk c = getChunk(x+xx-1, z+zz-1);
                 if(c != null)
                     c.opLock.unlock();
-            }        
+            }
+		taskQueue.addAll(lockedTasksQueue);
+		lockedTasksQueue.clear();
     }
+	
     public void generatedChunk(Chunk c, int xc, int zc)
     {
         if(chunks[xc][zc] != null)

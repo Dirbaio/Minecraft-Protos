@@ -42,26 +42,32 @@ public class WorkerThread extends Thread
 					}
 					case 1:
 					{
-						Chunk[][] ctx = gen.createAndLockContext(t.x, t.z);
-						int i = 0;/*
-						for(ChunkPopulator pop : ops)
+						Chunk[][] ctx = gen.createAndLockContext(t.x, t.z, t.op);
+						if(ctx != null) 
 						{
-							i++;
-							pop.setContext(ctx, Configuration.curr.seed+i);
-							pop.populate();
-						}*/
-						gen.unlockContext(t.x, t.z);
-						gen.getChunk(t.x, t.z).recalcHeightMap();
-						gen.setChunkOpDone(t.x, t.z, 1);
+							int i = 0;/*
+							for(ChunkPopulator pop : ops)
+							{
+								i++;
+								pop.setContext(ctx, Configuration.curr.seed+i);
+								pop.populate();
+							}*/
+							gen.unlockContext(t.x, t.z);
+							gen.getChunk(t.x, t.z).recalcHeightMap();
+							gen.setChunkOpDone(t.x, t.z, 1);
+						}
 						break;
 					}
 					case 2:
 					{
-						Chunk[][] ctx = gen.createAndLockContext(t.x, t.z);
-						cl.lightChunk(ctx);
-						gen.unlockContext(t.x, t.z);
+						Chunk[][] ctx = gen.createAndLockContext(t.x, t.z, t.op);
+						if(ctx != null)
+						{
+							cl.lightChunk(ctx);
+							gen.unlockContext(t.x, t.z);
 
-						gen.setChunkOpDone(t.x, t.z, 2);
+							gen.setChunkOpDone(t.x, t.z, 2);
+						}
 					}
 				}
             }

@@ -37,7 +37,7 @@ public class Main extends JFrame
 		Function2D seaheight = new PerlinNoise2D(30, 40, 50, 55);
 		Function3D seavolume = new HeightFunction(seaheight);
 		Function2D landheight = new PerlinNoise2D(70, 70, 80, 160);
-//		landheight = new HeightmapErosion(landheight);
+		landheight = new HeightmapErosion(landheight);
 		Function3D landvolume = new HeightFunction(landheight);
 		Function2D beachheight = new Constant2D(63);
 		Function3D beachvolume = new HeightFunction(beachheight);
@@ -77,17 +77,23 @@ public class Main extends JFrame
 
 		FunctionTerrain tf = new Terrain3D(f, (short)1);
 
-		tf = new HeightmapTerrain(new Constant2D(66), (short)1);
+//		tf = new HeightmapTerrain(new Constant2D(66), (short)1);
 		
 		tf = new TerrainOverlay(tf, (short)3, (short)1, 4);
 		tf = new BeachOverlay(tf, (short)12, (short)0, 5, 62, 66);
-		tf = new SeaFunction(tf, (short)8, 64);
+		tf = new SeaFunction(tf, (short)9, 64);
 		tf = new TerrainOverlay(tf, (short)2, (short)3, 1);
 		
-		Function3D caves = new PerlinNoise3D(30, 13, 30, -1, 1.2);
+		Function3D caveDistr = new PerlinNoise3D(160, 180, 130, -11.8, 5.4);
+		caveDistr = new MathFunction3D(
+				caveDistr,
+				new Constant3D(0),
+				MathFunction3D.FUNC_MIN);
+		
+		Function3D caves = new PerlinNoise3D(30, 13, 30, -1, 0.6);
 		caves = new MathFunction3D(
 				caves,
-				new PerlinNoise3D(100, 80, 400, -1.5, 0.4),
+				caveDistr,
 				MathFunction3D.FUNC_ADD);
 		
 		caves = new Limiter3D(caves, 30, 50);
@@ -95,6 +101,7 @@ public class Main extends JFrame
 		
 		tf = new TerrainJoin(tf, cavesTerrain, true);
 		tf = new BedrockLayer(tf);
+		tf = new SeaFunction(tf, (short)11, 10);
 		
 		WorldGenerator wg = new WorldGenerator(worldPath);
 		wg.mainFunc = tf;
