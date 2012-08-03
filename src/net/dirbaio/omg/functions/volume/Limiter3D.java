@@ -7,6 +7,10 @@ public class Limiter3D extends Function3D
 	Function3D base;
 	double minY, maxY;
 	double margin;
+
+    public Limiter3D()
+    {
+    }
 	
 	public Limiter3D(Function3D base, double minY, double maxY)
 	{

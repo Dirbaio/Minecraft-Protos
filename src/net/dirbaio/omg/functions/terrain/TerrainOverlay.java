@@ -10,6 +10,11 @@ public class TerrainOverlay extends FunctionTerrain
 	short surfaceblock; //0 means any
 	int depth;
 
+    public TerrainOverlay()
+    {
+    }
+
+    
 	public TerrainOverlay(FunctionTerrain base, short overlayblock, short surfaceblock, int depth)
 	{
 		this.base = base;
@@ -43,7 +48,6 @@ public class TerrainOverlay extends FunctionTerrain
 					}
 				}
 			}
-
 		return res;
 	}
 	

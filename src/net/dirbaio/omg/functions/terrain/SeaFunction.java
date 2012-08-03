@@ -8,6 +8,10 @@ public class SeaFunction extends FunctionTerrain
 	int height;
 	FunctionTerrain base;
 
+    public SeaFunction()
+    {
+    }
+
 	public SeaFunction(FunctionTerrain base, short block, int height)
 	{
 		this.base = base;

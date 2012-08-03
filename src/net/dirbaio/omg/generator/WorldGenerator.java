@@ -2,17 +2,15 @@ package net.dirbaio.omg.generator;
 
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.NbtIo;
-import java.awt.Point;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.dirbaio.omg.Chunk;
-import net.dirbaio.omg.functions.*;
+import net.dirbaio.omg.functions.FunctionTerrain;
  
 public class WorldGenerator implements Runnable
 {
@@ -30,41 +28,41 @@ public class WorldGenerator implements Runnable
     public PriorityBlockingQueue<GeneratorTask> taskQueue;
     public LinkedBlockingQueue<GeneratorTask> lockedTasksQueue;
 	
-	public static class GeneratorTask implements Comparable<GeneratorTask>
-	{
-		int x, z;
-		int op;
+    public static class GeneratorTask implements Comparable<GeneratorTask>
+    {
+        int x, z;
+        int op;
 
-		public GeneratorTask(int x, int z, int op)
-		{
-			this.x = x;
-			this.z = z;
-			this.op = op;
-		}
-		
-		public int compareTo(GeneratorTask o)
-		{
-			if(op < o.op) return 1;
-			if(op > o.op) return -1;
-			if(z < o.z) return -1;
-			if(z > o.z) return 1;
-			if(x < o.x) return -1;
-			if(x > o.x) return 1;
-			return 0;
-		}
-	}
-	
-	int numWorkerThreads = 9;
+        public GeneratorTask(int x, int z, int op)
+        {
+            this.x = x;
+            this.z = z;
+            this.op = op;
+        }
+
+        public int compareTo(GeneratorTask o)
+        {
+            if(op < o.op) return 1;
+            if(op > o.op) return -1;
+            if(z < o.z) return -1;
+            if(z > o.z) return 1;
+            if(x < o.x) return -1;
+            if(x > o.x) return 1;
+            return 0;
+        }
+    }
+
+    int numWorkerThreads = 9;
     WorkerThread[] workerThreads;
 
-	ChunkOutput out;
+    ChunkOutput out;
 
     public static final int opCount = 3;
 
     boolean stop = false;
 	
-	public FunctionTerrain mainFunc;
-	int ddone[] = new int[5];
+    public FunctionTerrain mainFunc;
+    int ddone[] = new int[5];
 	
     public WorldGenerator(String path)
     {
@@ -157,7 +155,8 @@ public class WorldGenerator implements Runnable
         chunks[x][z] = c;
     }
 
-    static public boolean deleteDirectory(File path) {
+    static public boolean deleteDirectory(File path)
+    {
         if (path.exists()) {
             File[] files = path.listFiles();
             for (int i = 0; i < files.length; i++) {
@@ -176,19 +175,20 @@ public class WorldGenerator implements Runnable
         new Thread(this, "Generator reporting thread").start();
     }
     
-	ChunkStateViewer csv;
+//	ChunkStateViewer csv;
     public void run()
     {
 //		csv = new ChunkStateViewer(xSize, zSize);
 
-		//First setup!
+        //First setup!
         path.mkdirs();
         generateLevelDat();
 
         //Create queue.
-		taskQueue = new PriorityBlockingQueue<GeneratorTask>();
+        taskQueue = new PriorityBlockingQueue<GeneratorTask>();
         lockedTasksQueue = new LinkedBlockingQueue<GeneratorTask>();
-		//Fill it.
+        
+        //Fill it.
         int max = xSize>zSize?xSize:zSize;
         int p = 1;
         while(p < max) p *= 2;
@@ -200,7 +200,7 @@ public class WorldGenerator implements Runnable
         chunkCt = xSize*zSize;
         chunksToSave = xSize*zSize;
         
-		mainFunc.prepare(xMin*16, zMin*16, xSize*16, zSize*16);
+        mainFunc.prepare(xMin*16, zMin*16, xSize*16, zSize*16);
 		
         //Now, create all the threads.
         //Each thread grabs a copy of all the modules in Configuration.curr
@@ -214,10 +214,7 @@ public class WorldGenerator implements Runnable
         //Report progress.
         while(!stop)
         {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-            }
+            try {Thread.sleep(1000);} catch (InterruptedException ex) {}
 
             System.out.print((ddone[0]*100/chunkCt)+"% ");
             System.out.print((ddone[1]*100/chunkCt)+"% ");
@@ -231,22 +228,19 @@ public class WorldGenerator implements Runnable
             if(done) break;
         }
 		
-		//Stop all threads.
-		for(int i = 0; i < numWorkerThreads; i++)
-			addTaskToQueue(-1, -1, -1);
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException ex) {
-		}
+        //Stop all threads.
+        for(int i = 0; i < numWorkerThreads; i++)
+                addTaskToQueue(-1, -1, -1);
 
-		int ct = 0;
-		for(int x = 0; x < xSize; x++)
-			for(int z = 0; z < zSize; z++)
-				if(chunks[x][z] != null)
-					ct++;
-		
-		System.out.println("Loaded chunks? "+ct);
+        try {Thread.sleep(1000);} catch (InterruptedException ex) {}
+
+        int ct = 0;
+        for(int x = 0; x < xSize; x++)
+                for(int z = 0; z < zSize; z++)
+                        if(chunks[x][z] != null)
+                                ct++;
+
+        System.out.println("Loaded chunks? "+ct);
     }
 
     //OP MANAGEMENT
@@ -280,10 +274,10 @@ public class WorldGenerator implements Runnable
     {
         chunks[x][z].opsDone[op] = true;
 	
-		if(csv != null)
+/*		if(csv != null)
 	        csv.setChunkState(x, z, op+1);
-        
-		for(int xx = x-2; xx <= x+2; xx++)
+  */      
+        for(int xx = x-2; xx <= x+2; xx++)
             for(int zz = z-2; zz <= z+2; zz++)
                 if(canDoOpToChunk(xx, zz, op+1))
                     scheduleChunkForOp(xx, zz, op+1);

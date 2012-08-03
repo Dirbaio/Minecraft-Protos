@@ -16,6 +16,10 @@ public class HeightmapErosion extends Function2D
 
 	double[][] heightmap;
 	int cx, cz, csx, csz;
+
+    public HeightmapErosion()
+    {
+    }
 	
 	public HeightmapErosion(Function2D base)
 	{

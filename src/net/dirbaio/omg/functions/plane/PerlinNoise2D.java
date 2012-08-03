@@ -1,6 +1,6 @@
 package net.dirbaio.omg.functions.plane;
 
-import java.util.*;
+import java.util.Random;
 import net.dirbaio.omg.functions.Function2D;
 import net.dirbaio.omg.functions.RandomSeed;
 
@@ -43,9 +43,7 @@ public class PerlinNoise2D extends Function2D
 			perm[i] = perm[j];
 			perm[j] = aux;
 		}
-
-		for (int i = 0; i < 256; i++)
-			perm[i + 256] = perm[i];
+        System.arraycopy(perm, 0, perm, 256, 256);
 	}
 
 // This method is a *lot* faster than using (int)Math.floor(x)

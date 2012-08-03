@@ -7,6 +7,10 @@ public class OverhangFunction extends Function3D
 	double height;
 	double strength;
 
+    public OverhangFunction()
+    {
+    }
+
 	public OverhangFunction(double height, double strength)
 	{
 		this.height = height;

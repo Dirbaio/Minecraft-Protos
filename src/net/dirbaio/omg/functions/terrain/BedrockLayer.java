@@ -6,6 +6,10 @@ public class BedrockLayer extends FunctionTerrain
 {
 	FunctionTerrain base;
 
+    public BedrockLayer()
+    {
+    }
+
 	public BedrockLayer(FunctionTerrain base)
 	{
 		this.base = base;

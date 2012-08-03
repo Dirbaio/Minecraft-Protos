@@ -10,6 +10,10 @@ public class BeachOverlay extends FunctionTerrain
 	short surfaceblock; //0 means any
 	int depth;
 	int minheight, maxheight;
+
+    public BeachOverlay()
+    {
+    }
 	
 	public BeachOverlay(FunctionTerrain base, short overlayblock, short surfaceblock, int depth, int minheight, int maxheight)
 	{

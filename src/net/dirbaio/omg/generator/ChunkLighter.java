@@ -1,7 +1,6 @@
 package net.dirbaio.omg.generator;
 
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import net.dirbaio.omg.Blocks;
 import net.dirbaio.omg.Chunk;
 

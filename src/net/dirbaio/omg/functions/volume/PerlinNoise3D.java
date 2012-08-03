@@ -42,9 +42,7 @@ public class PerlinNoise3D extends Function3D
 			perm[i] = perm[j];
 			perm[j] = aux;
 		}
-
-		for (int i = 0; i < 256; i++)
-			perm[i + 256] = perm[i];
+        System.arraycopy(perm, 0, perm, 256, 256);
 	}
 
 // This method is a *lot* faster than using (int)Math.floor(x)

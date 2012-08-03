@@ -18,7 +18,6 @@ public class Main extends JFrame
 
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
-	
 		Function3D terrainMap = new MathFunction3D(
 				new PerlinNoise3D(400, 2600, 330, -100, 600),
 				new PerlinNoise3D(170, 250, 120, -50, 50),
