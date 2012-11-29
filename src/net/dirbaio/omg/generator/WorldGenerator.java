@@ -52,12 +52,12 @@ public class WorldGenerator implements Runnable
         }
     }
 
-    int numWorkerThreads = 9;
+    int numWorkerThreads = 3;
     WorkerThread[] workerThreads;
 
     ChunkOutput out;
 
-    public static final int opCount = 3;
+    public static final int opCount = 4;
 
     boolean stop = false;
 	
@@ -66,10 +66,10 @@ public class WorldGenerator implements Runnable
 	
     public WorldGenerator(String path)
     {
-        xMin = -64;
-        zMin = -64;
-        xSize = 128;
-        zSize = 128;
+        xMin = -8;
+        zMin = -8;
+        xSize = 16;
+        zSize = 16;
         chunks = new Chunk[xSize][zSize];
         savedChunks = new boolean[xSize][zSize];
         this.path = new File(path);
@@ -236,9 +236,9 @@ public class WorldGenerator implements Runnable
 
         int ct = 0;
         for(int x = 0; x < xSize; x++)
-                for(int z = 0; z < zSize; z++)
-                        if(chunks[x][z] != null)
-                                ct++;
+            for(int z = 0; z < zSize; z++)
+                if(chunks[x][z] != null)
+                    ct++;
 
         System.out.println("Loaded chunks? "+ct);
     }
@@ -270,7 +270,7 @@ public class WorldGenerator implements Runnable
         return true;
     }
 
-    public void setChunkOpDone(int x, int z, int op)
+    public synchronized void setChunkOpDone(int x, int z, int op)
     {
         chunks[x][z].opsDone[op] = true;
 	
@@ -285,10 +285,7 @@ public class WorldGenerator implements Runnable
 
     public void scheduleChunkForOp(int x, int z, int op)
     {
-        if(op == opCount)
-            saveChunk(x, z);
-        else
-			addTaskToQueue(x, z, op);
+    	addTaskToQueue(x, z, op);
     }
 
     public void saveChunk(int xc, int zc)

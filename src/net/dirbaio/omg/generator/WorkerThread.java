@@ -68,7 +68,13 @@ public class WorkerThread extends Thread
 
 							gen.setChunkOpDone(t.x, t.z, 2);
 						}
+                        break;
 					}
+                    case 3:
+                    {
+                        gen.saveChunk(t.x, t.z);
+                        break;
+                    }
 				}
             }
         } catch (Exception e) {
