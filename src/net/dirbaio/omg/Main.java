@@ -10,20 +10,18 @@ import javax.swing.JFrame;
 import net.dirbaio.omg.functions.*;
 import net.dirbaio.omg.generator.*;
 import net.dirbaio.omg.previewer.WorldPreviewer;
+import sun.misc.FloatingDecimal;
 
 public class Main extends JFrame
 {
 
 //    public static String worldPath = "C:\\Users\\Dario\\AppData\\Roaming\\.minecraft\\saves\\World1\\";
-    public static String worldPath = "C:\\Users\\dirbaio.dirbaio-win7\\AppData\\Roaming\\.minecraft\\saves\\";
-//    public static String worldPath = "./generated-map/";
+//    public static String worldPath = "C:\\Users\\dirbaio.dirbaio-win7\\AppData\\Roaming\\.minecraft\\saves\\";
+    public static String worldPath = "./generated-map/";
 
-    public static void main(String[] args) throws FileNotFoundException, IOException
+    private static FunctionTerrain epicIslands()
     {
-        Function3D terrainMap = new Simple2DTo3D(
-                new ImageFunction2D("height.png"));
-
-        terrainMap = new MathFunction3D(
+        Function3D terrainMap = new MathFunction3D(
                 new PerlinNoise3D(270, 450, 280, -60, 130),
                 new PerlinNoise3D(370, 150, 420, -140, 250),
                 MathFunction3D.FUNC_ADD);
@@ -108,13 +106,68 @@ public class Main extends JFrame
 
         tf = new TerrainJoin(tf, cavesTerrain, true);
         tf = new BedrockLayer(tf);
-        tf = new SeaFunction(tf, (short) 11, 10);
+        tf = new SeaFunction(tf, (short) 11, 10);     
+        
+        return tf;
+    }
+    
+    private static FunctionTerrain floatingIslands()
+    {
+        Function3D f = new PerlinNoise3D(50, 50, 50, -200, 200);
+        f = new MathFunction3D(f, new PerlinNoise3D(15, 15, 15, -50, 50), MathFunction3D.FUNC_ADD);
+//        f = new MathFunction3D(f, new PerlinNoise3D(500, 1000, 500, -70, 70), MathFunction3D.FUNC_ADD);
+        f = new MathFunction3D(f, new HeightFunction(new Constant2D(64)), MathFunction3D.FUNC_SUB);
+        f = new MathFunction3D(
+                f, 
+                new MathFunction3D(
+                    new MathFunction3D(
+                        new Constant3D(0), 
+                        new HeightFunction(new Constant2D(64)),
+                        MathFunction3D.FUNC_MIN), 
+                    new Constant3D(10),
+                    MathFunction3D.FUNC_MUL),
+                MathFunction3D.FUNC_SUB);
 
+        FunctionTerrain t = new Terrain3D(f, (short)1);
+        t = new TerrainOverlay(t, (short) 3, (short) 1, 4);
+        t = new BeachOverlay(t, (short) 12, (short) 0, 8, 90, 100);
+        t = new SeaFunction(t, (short) 9, 92);
+        t = new TerrainOverlay(t, (short) 2, (short) 3, 1);
+
+        Function3D caveDistr = new PerlinNoise3D(160, 180, 130, -8, 9);
+        caveDistr = new MathFunction3D(
+                caveDistr,
+                new Constant3D(0),
+                MathFunction3D.FUNC_MIN);
+
+        Function3D caves = new PerlinNoise3D(30, 13, 30, -1, 0.6);
+        caves = new MathFunction3D(
+                caves,
+                caveDistr,
+                MathFunction3D.FUNC_ADD);
+
+        caves = new Limiter3D(caves, 0, 60);
+        FunctionTerrain cavesTerrain = new Terrain3D(caves, (short) 1);
+
+        t = new TerrainJoin(t, cavesTerrain, true);
+        t = new BedrockLayer(t);
+        t = new SeaFunction(t, (short) 11, 10);     
+        
+        return t;
+    }
+    public static void main(String[] args) throws FileNotFoundException, IOException
+    {
+        //Function3D terrainMap = new Simple2DTo3D(
+        //        new ImageFunction2D("height.png"));
+
+        
         WorldGenerator wg = new WorldGenerator();
-        wg.mainFunc = tf;
+        wg.mainFunc = floatingIslands();
 
+        int s = 64;
         if(false)
         {
+            s = 8;
             WorldPreviewer wp = new WorldPreviewer();
             wg.addChunkOutput(wp);
 
@@ -128,7 +181,6 @@ public class Main extends JFrame
         {
             wg.addChunkOutput(new DiskChunkOutput(new File(worldPath)));
         }
-        int s = 16;
         wg.setSize(-s, -s, s*2, s*2);
         
         wg.generate();
