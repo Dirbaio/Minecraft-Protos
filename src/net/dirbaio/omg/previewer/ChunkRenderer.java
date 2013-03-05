@@ -422,7 +422,7 @@ public class ChunkRenderer
 
         ArrayList<Block> l = new ArrayList<Block>();
 
-        int ymax = 126;
+        int ymax = 254;
 
         for (int xi = 15; xi >= 0; xi--)
             for (int zi = 15; zi >= 0; zi--)
@@ -496,7 +496,7 @@ public class ChunkRenderer
         for (Block bl : l)
         {
             int light;
-            if (bl.y == 127)
+            if (bl.y == 255)
                 light = c.getMaxLight(bl.x, bl.y, bl.z) + 5;
             else
                 light = c.getMaxLight(bl.x, bl.y + 1, bl.z) + 5;
@@ -552,7 +552,7 @@ public class ChunkRenderer
 
         ArrayList<Block> l = new ArrayList<Block>();
 
-        int ymax = 126;
+        int ymax = 254;
 
         for (int x = 15; x >= 0; x--)
             for (int z = 15; z >= 0; z--)

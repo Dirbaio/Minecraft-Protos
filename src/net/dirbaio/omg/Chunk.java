@@ -253,7 +253,7 @@ public class Chunk
 
     public void updateMap()
     {
-        cachedImg = new BufferedImage(70, 300, BufferedImage.TYPE_INT_ARGB);
-        ChunkRenderer.renderChunk(cachedImg, this, 35, 290);
+        cachedImg = new BufferedImage(70, 556, BufferedImage.TYPE_INT_ARGB);
+        ChunkRenderer.renderChunk(cachedImg, this, 35, 546);
     }
 }

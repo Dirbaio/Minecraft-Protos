@@ -165,7 +165,7 @@ public class Main extends JFrame
         wg.mainFunc = floatingIslands();
 
         int s = 64;
-        if(false)
+        if(true)
         {
             s = 8;
             WorldPreviewer wp = new WorldPreviewer();
