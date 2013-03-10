@@ -37,7 +37,7 @@ public class WorkerThread extends Thread
                         int px = t.x * 16 + gen.xMin * 16;
                         int pz = t.z * 16 + gen.zMin * 16;
 
-                        c.blocks = gen.mainFunc.getBlockData(px, pz, 16, 16);
+                        c.blocks = gen.mainFunc.getTerrainData(px, pz, 16, 16);
 
                         gen.generatedChunk(c, t.x, t.z);
                         break;

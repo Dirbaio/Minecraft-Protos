@@ -21,7 +21,7 @@ public class TerrainVolume extends FunctionTerrain
 	}
 
 	@Override
-	public short[] getBlockData(int px, int pz, int sx, int sz)
+	public short[] getTerrainData(int px, int pz, int sx, int sz)
 	{
 		short[] res = new short[sx*sz*Chunk.MAP_HEIGHT];
 		double[][][] data = field.get3DData(px, 0, pz, sx, Chunk.MAP_HEIGHT, sz);

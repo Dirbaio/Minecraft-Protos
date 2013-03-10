@@ -146,10 +146,10 @@ public class Main extends JFrame
     
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
-        WorldGenerator wg = new WorldGenerator(floatingIslands());
+        WorldGenerator wg = new WorldGenerator(new ConstantTerrain((short)8));
 
-        int s = 8;
-        if(false)
+        int s = 64;
+        if(true)
         {
             s = 8;
             WorldPreviewer wp = new WorldPreviewer();

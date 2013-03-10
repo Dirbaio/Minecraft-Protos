@@ -14,9 +14,9 @@ public class BedrockLayer extends FunctionTerrain
 	}
 
 	@Override
-	public short[] getBlockData(int px, int pz, int sx, int sz)
+	public short[] getTerrainData(int px, int pz, int sx, int sz)
 	{
-		short[] res = base.getBlockData(px, pz, sx, sz);
+		short[] res = base.getTerrainData(px, pz, sx, sz);
 		for(int i = 0; i < 256; i++)
 			res[i] = (short)7;
 		return res;

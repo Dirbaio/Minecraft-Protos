@@ -25,9 +25,9 @@ public class TerrainOverlay extends FunctionTerrain
 	
 	
 	@Override
-	public short[] getBlockData(int px, int pz, int sx, int sz)
+	public short[] getTerrainData(int px, int pz, int sx, int sz)
 	{
-		short[] res = base.getBlockData(px, pz, sx, sz);
+		short[] res = base.getTerrainData(px, pz, sx, sz);
 
 		for(int x = 0; x < sx; x++)
 			for(int z = 0; z < sz; z++)

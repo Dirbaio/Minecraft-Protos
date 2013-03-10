@@ -20,7 +20,7 @@ public class TerrainHeightmap extends FunctionTerrain
 	}
 
 	@Override
-	public short[] getBlockData(int px, int pz, int sx, int sz)
+	public short[] getTerrainData(int px, int pz, int sx, int sz)
 	{
 		short[] res = new short[sx*sz*Chunk.MAP_HEIGHT];
 		double[][] height = heightmap.get2DData(px, pz, sx, sz);

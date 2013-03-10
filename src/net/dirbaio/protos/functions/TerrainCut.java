@@ -14,10 +14,10 @@ public class TerrainCut extends FunctionTerrain
 	}
 
 	@Override
-	public short[] getBlockData(int px, int pz, int sx, int sz)
+	public short[] getTerrainData(int px, int pz, int sx, int sz)
 	{
-		short[] da = a.getBlockData(px, pz, sx, sz);
-		short[] db = b.getBlockData(px, pz, sx, sz);
+		short[] da = a.getTerrainData(px, pz, sx, sz);
+		short[] db = b.getTerrainData(px, pz, sx, sz);
 		
 		int len = da.length;
 		

@@ -20,9 +20,9 @@ public class Sea extends FunctionTerrain
 	}
 
 	@Override
-	public short[] getBlockData(int px, int pz, int sx, int sz)
+	public short[] getTerrainData(int px, int pz, int sx, int sz)
 	{
-		short[] r = base.getBlockData(px, pz, sx, sz);
+		short[] r = base.getTerrainData(px, pz, sx, sz);
 		int m = sx*sz*height;
 		for(int i = 0; i < m; i++)
 			if(r[i] == (short)0)
