@@ -1,14 +1,12 @@
 package net.dirbaio.protos.functions;
 
 import java.util.Random;
-import net.dirbaio.protos.functions.Function2D;
-import net.dirbaio.protos.functions.RandomSeed;
 
 public class SimplexNoise2D extends Function2D
 {
 
-	public double xscale;
-	public double zscale;
+	public double xScale;
+	public double zScale;
 	public double min;
 	public double max;
 	private static int perm[] = new int[512];
@@ -17,20 +15,22 @@ public class SimplexNoise2D extends Function2D
         {1, 0, 1}, {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1},
         {0, 1, 1}, {0, -1, 1}, {0, 1, -1}, {0, -1, -1}};
 
-	public int layers;
+    public SimplexNoise2D()
+    {
+    }
 	
 	public SimplexNoise2D(double xscale, double zscale, double min, double max)
 	{
-		this();
-		this.xscale = xscale;
-		this.zscale = zscale;
+		this.xScale = xscale;
+		this.zScale = zscale;
 		this.min = min;
 		this.max = max;
 	}
-	
-	public SimplexNoise2D()
-	{
-		Random r = new Random(RandomSeed.get());
+
+    @Override
+    public void setRandomSeed(long seed)
+    {
+		Random r = new Random(seed);
 		for (int i = 0; i < 256; i++)
 			perm[i] = i;
 
@@ -65,8 +65,8 @@ public class SimplexNoise2D extends Function2D
 		for (int x = 0; x < sx; x++)
 			for (int z = 0; z < sz; z++)
 			{
-				double xin = (x + px) / xscale;
-				double yin = (z + pz) / zscale;
+				double xin = (x + px) / xScale;
+				double yin = (z + pz) / zScale;
 				
 				double n0, n1, n2; // Noise contributions from the three corners
 				// Skew the input space to determine which simplex cell we're in

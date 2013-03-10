@@ -1,4 +1,4 @@
-package net.dirbaio.protos.functions;
+package net.dirbaio.protos.generator;
 
 public class RandomSeed
 {

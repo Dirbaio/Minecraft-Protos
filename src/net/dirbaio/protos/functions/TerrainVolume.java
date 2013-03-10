@@ -1,8 +1,6 @@
 package net.dirbaio.protos.functions;
 
 import net.dirbaio.protos.Chunk;
-import net.dirbaio.protos.functions.Function3D;
-import net.dirbaio.protos.functions.FunctionTerrain;
 
 public class TerrainVolume extends FunctionTerrain
 {

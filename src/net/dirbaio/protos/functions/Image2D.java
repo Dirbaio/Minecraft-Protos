@@ -1,16 +1,16 @@
 package net.dirbaio.protos.functions;
 
-import java.awt.image.*;
-import java.io.*;
-import java.util.logging.*;
-import javax.imageio.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
-public class PlaneImage extends Function2D
+public class Image2D extends Function2D
 {
     BufferedImage bi;
     String path;
     int x0, z0;
-    public PlaneImage(String path)
+    public Image2D(String path)
     {
         this.path = path;
     }

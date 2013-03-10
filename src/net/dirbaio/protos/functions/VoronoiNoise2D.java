@@ -1,5 +1,6 @@
 package net.dirbaio.protos.functions;
 
+import net.dirbaio.protos.generator.RandomSeed;
 import java.util.Random;
 
 public class VoronoiNoise2D extends Function2D
@@ -17,12 +18,12 @@ public class VoronoiNoise2D extends Function2D
 
     public enum DistanceMetric {Linear, Squared, Manhattan, Quadratic, Chebyshev, Wiggly}
 
-    private float xscale, zscale;
+    private float xScale, zScale;
     
     public VoronoiNoise2D(float xscale, float zscale, int size, int density, DistanceMetric metric, int level)
     {
-		this.xscale = xscale;
-		this.zscale = zscale;
+		this.xScale = xscale;
+		this.zScale = zscale;
 
         is2D = true;
         zsize = (is2D ? 1 : size);
@@ -139,8 +140,8 @@ public class VoronoiNoise2D extends Function2D
             throw new UnsupportedOperationException(
                 "Cannot create 2D Voronoi basis when instantiated with is2D = false.");
 
-        xin /= xscale;
-        yin /= zscale;
+        xin /= xScale;
+        yin /= zScale;
         
         int [] cell = { fastfloor(xin), fastfloor(yin) };
         double [] pos = { xin - cell[0], yin - cell[1] };

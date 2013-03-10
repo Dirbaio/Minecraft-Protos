@@ -1,13 +1,14 @@
 package net.dirbaio.protos.functions;
 
+import net.dirbaio.protos.generator.RandomSeed;
 import java.util.*;
 
 public class SimplexNoise3D extends Function3D
 {
 
-	public double xscale;
-	public double yscale;
-	public double zscale;
+	public double xScale;
+	public double yScale;
+	public double zScale;
 	public double min;
 	public double max;
 	private static int perm[] = new int[512];
@@ -15,20 +16,23 @@ public class SimplexNoise3D extends Function3D
         {1, 0, 1}, {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1},
         {0, 1, 1}, {0, -1, 1}, {0, 1, -1}, {0, -1, -1}};
 
+    public SimplexNoise3D()
+    {
+    }
+
 	public SimplexNoise3D(double xscale, double yscale, double zscale, double min, double max)
 	{
-		this();
-		this.xscale = xscale;
-		this.yscale = yscale;
-		this.zscale = zscale;
+		this.xScale = xscale;
+		this.yScale = yscale;
+		this.zScale = zscale;
 		this.min = min;
 		this.max = max;
 	}
 
-	
-	public SimplexNoise3D()
-	{
-		Random r = new Random(RandomSeed.get());
+    @Override
+    public void setRandomSeed(long seed)
+    {
+		Random r = new Random(seed);
 		for (int i = 0; i < 256; i++)
 			perm[i] = i;
 
@@ -69,9 +73,9 @@ public class SimplexNoise3D extends Function3D
 			for (int y = 0; y < sy; y++)
 				for (int z = 0; z < sz; z++)
 				{
-					double xin = (x + px) / xscale;
-					double yin = (y + py) / yscale;
-					double zin = (z + pz) / zscale;
+					double xin = (x + px) / xScale;
+					double yin = (y + py) / yScale;
+					double zin = (z + pz) / zScale;
 					double n0, n1, n2, n3; // Noise contributions from the four corners
 // Skew the input space to determine which simplex cell we're in
 					final double F3 = 1.0 / 3.0;

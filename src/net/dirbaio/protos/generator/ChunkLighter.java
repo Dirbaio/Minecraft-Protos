@@ -61,6 +61,8 @@ public class ChunkLighter
         return res;
     }
 
+    //Java generics suck
+    @SuppressWarnings("unchecked")
     public void lightChunk(Chunk[][] cs)
     {
         chunks = cs;
@@ -162,6 +164,7 @@ public class ChunkLighter
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void propagateSkyLight(int x, int y, int z, byte light, LinkedList[] ls)
     {
         if(x < 0 || x >= xSize*16) return;
@@ -180,6 +183,7 @@ public class ChunkLighter
             ls[light].add(new Pos(x, y, z, light));
     }
 
+    @SuppressWarnings("unchecked")
     private void propagateBlockLight(int x, int y, int z, byte light, LinkedList[] ls)
     {
         if(x < 0 || x >= xSize*16) return;
