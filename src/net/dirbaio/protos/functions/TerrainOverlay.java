@@ -21,10 +21,10 @@ import net.dirbaio.protos.Chunk;
 
 public class TerrainOverlay extends FunctionTerrain
 {
-	FunctionTerrain base;
-	short overlayblock;
-	short surfaceblock; //0 means any
-	int depth;
+	public FunctionTerrain base;
+	public short overlayBlock;
+	public short surfaceBlock; //0 means any
+	public int depth;
 
     public TerrainOverlay()
     {
@@ -34,8 +34,8 @@ public class TerrainOverlay extends FunctionTerrain
 	public TerrainOverlay(FunctionTerrain base, short overlayblock, short surfaceblock, int depth)
 	{
 		this.base = base;
-		this.overlayblock = overlayblock;
-		this.surfaceblock = surfaceblock;
+		this.overlayBlock = overlayblock;
+		this.surfaceBlock = surfaceblock;
 		this.depth = depth;
 	}
 	
@@ -58,8 +58,8 @@ public class TerrainOverlay extends FunctionTerrain
 						d = depth;
 					else
 					{
-						if(d > 0 && (surfaceblock == 0 || res[i] == surfaceblock))
-							res[i] = overlayblock;
+						if(d > 0 && (surfaceBlock == 0 || res[i] == surfaceBlock))
+							res[i] = overlayBlock;
 						d--;
 					}
 				}

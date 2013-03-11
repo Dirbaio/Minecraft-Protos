@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.dirbaio.protos.editor;
 
 import java.awt.Color;
@@ -25,21 +24,26 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import net.dirbaio.protos.functions.Function;
 
 public class FunctionEditor extends JPanel implements MouseListener, MouseMotionListener
 {
+
     Function f;
     private String functionName;
     ProjectEditor pe;
+
     public FunctionEditor(Function f, ProjectEditor pe)
     {
         this.f = f;
         this.pe = pe;
-        
+
         functionName = f.getClass().getSimpleName();
         loadProperties();
-        
+
         this.setLayout(new GridBagLayout());
 
         JLabel title = new JLabel(functionName);
@@ -47,7 +51,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         title.setOpaque(true);
         title.addMouseListener(this);
         title.addMouseMotionListener(this);
-        
+
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
@@ -55,9 +59,9 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         c.gridwidth = 2;
         c.ipadx = c.ipady = 10;
         add(title, c);
-        
+
         int y = 1;
-        for(Property p : properties)
+        for (Property p : properties)
         {
             JLabel label = new JLabel(p.name);
             JComponent comp = p.component;
@@ -69,27 +73,28 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             c.gridy = y++;
             add(label, c);
             c.gridx = 1;
+            c.weightx = 1;
             add(comp, c);
         }
         //===========
-        
+
         setLocation(f.xPos, f.yPos);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         setBackground(Color.YELLOW);
-        
+
         setSize(getPreferredSize());
         setOpaque(true);
     }
-    
     List<Property> properties = new ArrayList<>();
-    
+
     class Property
     {
+
         Field field;
         String name;
         JComponent component;
         int index;
-        
+
         public Property(Field f, String name, int index)
         {
             this.field = f;
@@ -97,94 +102,183 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             this.index = index;
             this.component = createComponent();
         }
-        
+
         public Object getValue()
         {
             try
             {
                 return field.get(f);
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 ex.printStackTrace();
             }
-            
+
             return null;
         }
-        
+
         public void setValue(Object val)
         {
             try
             {
                 field.set(f, val);
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 ex.printStackTrace();
             }
         }
-        
+
         private JComponent createComponent()
         {
             Class type = field.getType();
-            if(Function.class.isAssignableFrom(type))
+            if (Function.class.isAssignableFrom(type))
             {
-                JButton res = new JButton("Change...");
+                JButton res = new JButton("Select...");
                 final Property self = this;
-                res.addActionListener(new ActionListener() {
-
+                res.addActionListener(new ActionListener()
+                {
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
+                        if (pe.editedProperty != null)
+                            pe.editedProperty.endFunctionEdition();
                         pe.editedProperty = self;
                         pe.mx = f.xPos;
                         pe.my = f.yPos;
                         pe.repaint();
+                        JButton but = (JButton) component;
+                        but.setText("...");
                     }
                 });
                 return res;
-            }
-            else
+            } else
             {
                 String val = getValue().toString();
                 JTextField res = new JTextField(val);
-
-                res.addActionListener(new ActionListener() {
+                res.getDocument().addDocumentListener(new DocumentListener()
+                {
+                    @Override
+                    public void changedUpdate(DocumentEvent e)
+                    {
+                        modified();
+                    }
 
                     @Override
-                    public void actionPerformed(ActionEvent e)
+                    public void removeUpdate(DocumentEvent e)
                     {
-                        System.out.println("Modified "+name+"!");
+                        modified();
+                    }
+
+                    @Override
+                    public void insertUpdate(DocumentEvent e)
+                    {
+                        modified();
                     }
                 });
                 return res;
             }
         }
+
+        public void endFunctionEdition()
+        {
+            JButton but = (JButton) component;
+            but.setText("Select...");
+        }
+        Border savedBorder;
+        boolean hasSavedBorder;
+
+        private void modified()
+        {
+            JTextField tf = (JTextField) component;
+            String text = tf.getText();
+            Object val = null;
+            try
+            {
+                val = fromString(text);
+            } catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+
+            if (val != null)
+            {
+                setValue(val);
+                if (hasSavedBorder)
+                    tf.setBorder(savedBorder);
+            } else
+            {
+                if (!hasSavedBorder)
+                {
+                    savedBorder = tf.getBorder();
+                    hasSavedBorder = true;
+                }
+                tf.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+            }
+        }
+
+        private Object fromString(String val)
+        {
+            Class type = field.getType();
+            if (type == String.class)
+                return val;
+            if (type == int.class)
+                return Integer.parseInt(val);
+            if (type == short.class)
+                return Short.parseShort(val);
+            if (type == double.class)
+                return Double.parseDouble(val);
+
+            return null;
+        }
     }
-    
+
+    private String unCamelCase(String s)
+    {
+        String res = "";
+        boolean first = true;
+        for (int i = 0; i < s.length(); i++)
+        {
+            char c = s.charAt(i);
+            if (first)
+                res += Character.toUpperCase(c);
+            else
+            {
+                if (Character.isUpperCase(c))
+                    res += " " + Character.toLowerCase(c);
+                else
+                    res += c;
+            }
+
+            first = false;
+        }
+        return res;
+    }
+
     private void loadProperties()
     {
         Class c = f.getClass();
         Field[] fields = c.getFields();
         int i = 0;
-        for(Field fi : fields)
+        for (Field fi : fields)
         {
-            if(fi.getName().equals("xPos") || fi.getName().equals("yPos"))
+            if (fi.getName().equals("xPos") || fi.getName().equals("yPos"))
+            {
                 continue;
-            properties.add(new Property(fi, fi.getName(), i++));
+            }
+            properties.add(new Property(fi, unCamelCase(fi.getName()), i++));
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e)
     {
-        if(pe.editedProperty != null)
+        if (pe.editedProperty != null)
+        {
             pe.selectFunction(this);
+        }
     }
-
     boolean down = false;
     int downX, downY;
-    
+
     @Override
     public void mousePressed(MouseEvent e)
     {
@@ -203,23 +297,32 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     public void mouseEntered(MouseEvent e)
     {
         pe.hovered = this;
-        if(pe.editedProperty != null)
+        if (pe.editedProperty != null)
+        {
             pe.repaint();
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e)
     {
         pe.hovered = null;
-        if(pe.editedProperty != null)
+        if (pe.editedProperty != null)
+        {
             pe.repaint();
+        }
     }
 
     @Override
     public void mouseDragged(MouseEvent e)
     {
-        f.xPos = downX + e.getXOnScreen();
-        f.yPos = downY + e.getYOnScreen();
+        setPos(downX + e.getXOnScreen(), downY + e.getYOnScreen());
+    }
+
+    public void setPos(int x, int y)
+    {
+        f.xPos = x;
+        f.yPos = y;
         setLocation(f.xPos, f.yPos);
         pe.repaint();
     }
@@ -229,4 +332,3 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     {
     }
 }
-

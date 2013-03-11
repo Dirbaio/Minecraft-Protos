@@ -22,11 +22,11 @@ import net.dirbaio.protos.Chunk;
 public class BeachOverlay extends FunctionTerrain
 {
 
-    FunctionTerrain base;
-    short overlayblock;
-    short surfaceblock; //0 means any
-    int depth;
-    int minheight, maxheight;
+    public FunctionTerrain base;
+    public short overlayBlock;
+    public short surfaceBlock; //0 means any
+    public int depth;
+    public int minHeight, maxHeight;
 
     public BeachOverlay()
     {
@@ -35,11 +35,11 @@ public class BeachOverlay extends FunctionTerrain
     public BeachOverlay(FunctionTerrain base, short overlayblock, short surfaceblock, int depth, int minheight, int maxheight)
     {
         this.base = base;
-        this.overlayblock = overlayblock;
-        this.surfaceblock = surfaceblock;
+        this.overlayBlock = overlayblock;
+        this.surfaceBlock = surfaceblock;
         this.depth = depth;
-        this.minheight = minheight;
-        this.maxheight = maxheight;
+        this.minHeight = minheight;
+        this.maxHeight = maxheight;
     }
 
     @Override
@@ -59,12 +59,12 @@ public class BeachOverlay extends FunctionTerrain
                     if (res[i] == 0)
                     {
                         d = depth;
-                        paint = y <= maxheight && y >= minheight;
+                        paint = y <= maxHeight && y >= minHeight;
                     }
                     else
                     {
-                        if (d > 0 && (surfaceblock == 0 || res[i] == surfaceblock) && paint)
-                            res[i] = overlayblock;
+                        if (d > 0 && (surfaceBlock == 0 || res[i] == surfaceBlock) && paint)
+                            res[i] = overlayBlock;
                         d--;
                     }
                 }

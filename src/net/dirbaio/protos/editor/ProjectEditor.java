@@ -18,6 +18,7 @@
 package net.dirbaio.protos.editor;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
 import net.dirbaio.protos.functions.Function;
+import net.dirbaio.protos.functions.Output;
 
 public class ProjectEditor extends JPanel implements MouseMotionListener, MouseListener
 {
@@ -52,7 +54,83 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         
         addMouseListener(this);
         addMouseMotionListener(this);
+        doAutoLayout();
+        doNormalize();
     }
+    
+    private void doNormalize()
+    {
+        int xMin = 0;
+        int yMin = 0;
+        for(FunctionEditor e : editors)
+        {
+            if(e.getX() < xMin)
+                xMin = e.getX();
+            if(e.getY() < yMin)
+                yMin = e.getY();
+        }
+        
+        for(FunctionEditor e : editors)
+            e.setPos(e.getX()-xMin, e.getY()-yMin);
+        int xMax = 0;
+        int yMax = 0;
+
+        for(FunctionEditor e : editors)
+        {
+            if(e.getX()+e.getWidth() > xMax)
+                xMax = e.getX() + e.getWidth();
+            if(e.getY()+e.getHeight() > yMax)
+                yMax = e.getY() + e.getHeight();
+        }
+        
+        setSize(xMax, yMax);
+        setPreferredSize(new Dimension(xMax, yMax));
+    }
+    
+    private void doAutoLayout()
+    {
+        FunctionEditor first = null;
+        for(FunctionEditor e : editors)
+            if(e.f instanceof Output)
+                first = e;
+        
+        doAutoLayout(first, 1200, 50);
+    }
+    
+    private FunctionEditor[] getChildren(FunctionEditor e)
+    {
+        ArrayList<FunctionEditor> l = new ArrayList<>();
+        for(FunctionEditor.Property p : e.properties)
+        {
+            Object val = p.getValue();
+            if(val != null && val instanceof Function)
+                l.add(editorsByFunction.get(val));
+        }
+        
+        return l.toArray(new FunctionEditor[0]);
+    }
+    
+    private int getHeight(FunctionEditor e)
+    {
+        int r = -10;
+        for(FunctionEditor e2 : getChildren(e))
+            r += getHeight(e2) + 10;
+        int r2 = e.getHeight() + 10;
+        
+        return r2 > r ? r2 : r;
+    }
+    
+    private void doAutoLayout(FunctionEditor e, int x, int y)
+    {
+        e.setPos(x, y);
+        
+        for(FunctionEditor e2 : getChildren(e))
+        {
+            doAutoLayout(e2, x-e2.getWidth()-30, y);
+            y += getHeight(e2);
+        }
+    }
+    
 
     @Override
     public boolean isOptimizedDrawingEnabled()
@@ -105,10 +183,15 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     
     private void drawConnection(Graphics g, int x, int y, int x2, int y2, int index)
     {
-        g.drawLine(x, y, x+5, y);
-        x += 5;
-        g.drawLine(x2, y2, x2-5, y2);
-        x2 -= 5;
+        //TODO Improve
+        g.drawLine(x, y, x+8, y);
+        x += 8;
+        g.drawLine(x2, y2, x2-8, y2);
+        x2 -= 8;
+        
+        g.drawLine(x, y, x2, y2);
+        
+        /*
         if(x2 < x)
         {
             g.drawLine(x2, y2, x2-3*index, y2);
@@ -121,7 +204,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         {
             g.drawLine(x, y, x, y2);
             g.drawLine(x, y2, x2, y2);
-        }
+        }*/
     }
 
     @Override
@@ -141,6 +224,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     void selectFunction(FunctionEditor func)
     {
         editedProperty.setValue(func.f);
+        editedProperty.endFunctionEdition();
         editedProperty = null;
         repaint();
     }
@@ -150,6 +234,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     {
         if(editedProperty != null)
         {
+            editedProperty.endFunctionEdition();
             editedProperty = null;
             repaint();
         }

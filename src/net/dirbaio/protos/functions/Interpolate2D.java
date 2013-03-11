@@ -19,8 +19,8 @@ package net.dirbaio.protos.functions;
 
 public class Interpolate2D extends Function2D
 {
-	Function2D a, b;
-	Function2D weight;
+	public Function2D a, b;
+	public Function2D weight;
 
 	public Interpolate2D(Function2D a, Function2D b, Function2D weight)
 	{

@@ -21,9 +21,9 @@ import net.dirbaio.protos.functions.FunctionTerrain;
 
 public class Sea extends FunctionTerrain
 {
-	short block;
-	int height;
-	FunctionTerrain base;
+	public short block;
+	public int height;
+	public FunctionTerrain base;
 
     public Sea()
     {

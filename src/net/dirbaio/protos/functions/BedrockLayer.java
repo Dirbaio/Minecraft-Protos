@@ -2,7 +2,7 @@ package net.dirbaio.protos.functions;
 
 public class BedrockLayer extends FunctionTerrain
 {
-	FunctionTerrain base;
+	public FunctionTerrain base;
 
     public BedrockLayer()
     {

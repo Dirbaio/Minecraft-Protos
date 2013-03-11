@@ -22,7 +22,7 @@ import net.dirbaio.protos.Chunk;
 public class TerrainHeightmap extends FunctionTerrain
 {
 	public Function2D heightmap;
-	short block;
+	public short block;
 
 	public TerrainHeightmap()
 	{

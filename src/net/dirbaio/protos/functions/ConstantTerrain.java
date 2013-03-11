@@ -24,7 +24,7 @@ import net.dirbaio.protos.functions.FunctionTerrain;
 public class ConstantTerrain extends FunctionTerrain
 {
 
-	short block;
+	public short block;
 
 	public ConstantTerrain()
 	{

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import net.dirbaio.protos.editor.Project;
 import net.dirbaio.protos.editor.ProjectEditor;
 import net.dirbaio.protos.functions.*;
@@ -166,14 +167,10 @@ public class Main extends JFrame
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
         Function2D a, b;
-        Project p = new Project();
-        p.funcs.add(a = new SimplexNoise2D(10, 10, -1, 1));
-        p.funcs.add(b = new SimplexNoise2D(10, 10, -10, 10));
-        p.funcs.add(new Add2D(a, b));
-        
+        Project p = new Project(new Output(floatingIslands()));
         JFrame fr = new JFrame("Protos Editor");
         fr.setSize(500, 500);
-        fr.add(new ProjectEditor(p), BorderLayout.CENTER);
+        fr.add(new JScrollPane(new ProjectEditor(p)), BorderLayout.CENTER);
         fr.setVisible(true);
         fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

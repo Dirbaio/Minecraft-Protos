@@ -19,8 +19,8 @@ package net.dirbaio.protos.functions;
 
 public class Interpolate3D extends Function3D
 {
-	Function3D a, b;
-	Function3D weight;
+	public Function3D a, b;
+	public Function3D weight;
 
 	public Interpolate3D(Function3D a, Function3D b, Function3D weight)
 	{

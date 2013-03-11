@@ -17,11 +17,9 @@
 
 package net.dirbaio.protos.functions;
 
-import net.dirbaio.protos.functions.Function2D;
-
 public class HeightmapErosion extends Function2D
 {
-	Function2D base;
+	public Function2D base;
 
     public int erosionIterations = 500;
     public double erosionSlopeStart = 0.5;

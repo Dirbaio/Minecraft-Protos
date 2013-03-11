@@ -19,9 +19,9 @@ package net.dirbaio.protos.functions;
 
 public class Limiter3D extends Function3D
 {
-	Function3D base;
-	double minY, maxY;
-	double margin;
+	public Function3D base;
+	public double minY, maxY;
+	public double margin;
 
     public Limiter3D()
     {

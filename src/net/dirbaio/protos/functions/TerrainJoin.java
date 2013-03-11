@@ -19,7 +19,7 @@ package net.dirbaio.protos.functions;
 
 public class TerrainJoin extends FunctionTerrain
 {
-	FunctionTerrain a, b;
+	public FunctionTerrain a, b;
 	
 	public TerrainJoin()
 	{
