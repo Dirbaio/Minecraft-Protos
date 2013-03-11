@@ -19,13 +19,13 @@ package net.dirbaio.protos.functions;
 
 public class Output extends Function
 {
-    public Function output;
+    public FunctionTerrain output;
 
     public Output()
     {
     }
 
-    public Output(Function base)
+    public Output(FunctionTerrain base)
     {
         this.output = base;
     }

@@ -17,8 +17,10 @@
 package net.dirbaio.protos.editor;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -28,6 +30,9 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.dirbaio.protos.functions.Function;
+import net.dirbaio.protos.functions.Function2D;
+import net.dirbaio.protos.functions.Function3D;
+import net.dirbaio.protos.functions.FunctionTerrain;
 
 public class FunctionEditor extends JPanel implements MouseListener, MouseMotionListener
 {
@@ -46,8 +51,8 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
 
         this.setLayout(new GridBagLayout());
 
-        JLabel title = new JLabel(functionName);
-        title.setBackground(Color.RED);
+        JLabel title = new JLabel(unCamelCase(functionName));
+        title.setBackground(getColorForClass(f.getClass()));
         title.setOpaque(true);
         title.addMouseListener(this);
         title.addMouseMotionListener(this);
@@ -61,7 +66,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         add(title, c);
 
         int y = 1;
-        for (Property p : properties)
+        for(Property p : properties)
         {
             JLabel label = new JLabel(p.name);
             JComponent comp = p.component;
@@ -69,6 +74,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
 
             c = new GridBagConstraints();
             c.fill = GridBagConstraints.HORIZONTAL;
+            c.insets = new Insets(3, 3, 3, 3);
             c.gridx = 0;
             c.gridy = y++;
             add(label, c);
@@ -101,6 +107,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             this.name = name;
             this.index = index;
             this.component = createComponent();
+            component.setPreferredSize(new Dimension(100, component.getPreferredSize().height));
         }
 
         public Object getValue()
@@ -108,7 +115,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             try
             {
                 return field.get(f);
-            } catch (Exception ex)
+            } catch(Exception ex)
             {
                 ex.printStackTrace();
             }
@@ -121,7 +128,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             try
             {
                 field.set(f, val);
-            } catch (Exception ex)
+            } catch(Exception ex)
             {
                 ex.printStackTrace();
             }
@@ -130,7 +137,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         private JComponent createComponent()
         {
             Class type = field.getType();
-            if (Function.class.isAssignableFrom(type))
+            if(Function.class.isAssignableFrom(type))
             {
                 JButton res = new JButton("Select...");
                 final Property self = this;
@@ -139,7 +146,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
-                        if (pe.editedProperty != null)
+                        if(pe.editedProperty != null)
                             pe.editedProperty.endFunctionEdition();
                         pe.editedProperty = self;
                         pe.mx = f.xPos;
@@ -150,7 +157,8 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
                     }
                 });
                 return res;
-            } else
+            }
+            else
             {
                 String val = getValue().toString();
                 JTextField res = new JTextField(val);
@@ -194,19 +202,19 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             try
             {
                 val = fromString(text);
-            } catch (Exception ex)
+            } catch(Exception ex)
             {
-                ex.printStackTrace();
             }
 
-            if (val != null)
+            if(val != null)
             {
                 setValue(val);
-                if (hasSavedBorder)
+                if(hasSavedBorder)
                     tf.setBorder(savedBorder);
-            } else
+            }
+            else
             {
-                if (!hasSavedBorder)
+                if(!hasSavedBorder)
                 {
                     savedBorder = tf.getBorder();
                     hasSavedBorder = true;
@@ -218,13 +226,13 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         private Object fromString(String val)
         {
             Class type = field.getType();
-            if (type == String.class)
+            if(type == String.class)
                 return val;
-            if (type == int.class)
+            if(type == int.class)
                 return Integer.parseInt(val);
-            if (type == short.class)
+            if(type == short.class)
                 return Short.parseShort(val);
-            if (type == double.class)
+            if(type == double.class)
                 return Double.parseDouble(val);
 
             return null;
@@ -235,17 +243,24 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     {
         String res = "";
         boolean first = true;
-        for (int i = 0; i < s.length(); i++)
+        boolean last = true;
+        for(int i = 0; i < s.length(); i++)
         {
             char c = s.charAt(i);
-            if (first)
+            if(first)
                 res += Character.toUpperCase(c);
             else
             {
-                if (Character.isUpperCase(c))
+                if(Character.isUpperCase(c) || Character.isDigit(c) && !last)
+                {
+                    last = true;
                     res += " " + Character.toLowerCase(c);
+                }
                 else
+                {
+                    last = false;
                     res += c;
+                }
             }
 
             first = false;
@@ -258,12 +273,10 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         Class c = f.getClass();
         Field[] fields = c.getFields();
         int i = 0;
-        for (Field fi : fields)
+        for(Field fi : fields)
         {
-            if (fi.getName().equals("xPos") || fi.getName().equals("yPos"))
-            {
+            if(fi.getName().equals("xPos") || fi.getName().equals("yPos"))
                 continue;
-            }
             properties.add(new Property(fi, unCamelCase(fi.getName()), i++));
         }
     }
@@ -271,10 +284,8 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     @Override
     public void mouseClicked(MouseEvent e)
     {
-        if (pe.editedProperty != null)
-        {
+        if(pe.editedProperty != null)
             pe.selectFunction(this);
-        }
     }
     boolean down = false;
     int downX, downY;
@@ -297,20 +308,16 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     public void mouseEntered(MouseEvent e)
     {
         pe.hovered = this;
-        if (pe.editedProperty != null)
-        {
+        if(pe.editedProperty != null)
             pe.repaint();
-        }
     }
 
     @Override
     public void mouseExited(MouseEvent e)
     {
         pe.hovered = null;
-        if (pe.editedProperty != null)
-        {
+        if(pe.editedProperty != null)
             pe.repaint();
-        }
     }
 
     @Override
@@ -330,5 +337,17 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     @Override
     public void mouseMoved(MouseEvent e)
     {
+    }
+
+    public static Color getColorForClass(Class c)
+    {
+        if(FunctionTerrain.class.isAssignableFrom(c))
+            return new Color(100, 200, 60);
+        if(Function2D.class.isAssignableFrom(c))
+            return new Color(220, 150, 60);
+        if(Function3D.class.isAssignableFrom(c))
+            return new Color(30, 150, 200);
+
+        return new Color(160, 150, 170);
     }
 }

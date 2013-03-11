@@ -17,9 +17,12 @@
 
 package net.dirbaio.protos.editor;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -148,11 +151,13 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     {
         super.paintComponent(g);
 
+        Graphics2D g2 = (Graphics2D) g;
         for(FunctionEditor ed : editors)
             for(FunctionEditor.Property p : ed.properties)
             {
                 if(Function.class.isAssignableFrom(p.field.getType()))
                 {
+                    g.setColor(FunctionEditor.getColorForClass(p.field.getType()));
                     int x = ed.f.xPos;
                     int y = ed.f.yPos+p.component.getY()+p.component.getHeight()/2;
                     if(p == editedProperty)
@@ -161,10 +166,10 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
                         {
                             int x2 = hovered.f.xPos+hovered.getWidth();
                             int y2 = hovered.f.yPos+10;
-                            drawConnection(g, x2, y2, x, y, p.index);
+                            drawConnection(g2, x2, y2, x, y, p.index);
                         }
                         else
-                            drawConnection(g, mx, my, x, y, p.index);
+                            drawConnection(g2, mx, my, x, y, p.index);
                     }
                     else
                     {
@@ -174,15 +179,17 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
                             FunctionEditor e2 = editorsByFunction.get(f2);
                             int x2 = f2.xPos+e2.getWidth();
                             int y2 = f2.yPos+10;
-                            drawConnection(g, x2, y2, x, y, p.index);
+                            drawConnection(g2, x2, y2, x, y, p.index);
                         }
                     }
                 }
             }
     }
     
-    private void drawConnection(Graphics g, int x, int y, int x2, int y2, int index)
+    private void drawConnection(Graphics2D g, int x, int y, int x2, int y2, int index)
     {
+        Stroke s = g.getStroke();
+        g.setStroke(new BasicStroke(2));
         //TODO Improve
         g.drawLine(x, y, x+8, y);
         x += 8;
@@ -191,6 +198,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         
         g.drawLine(x, y, x2, y2);
         
+        g.setStroke(s);
         /*
         if(x2 < x)
         {
