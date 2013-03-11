@@ -1,18 +1,27 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2013 dirbaio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package net.dirbaio.protos;
 
-/**
- *
- * @author Dario
- */
 public class Blocks
 {
-    public static Object[][] blockColours = {
+    public static Object[][] blockColors = {
 
+            //Name, r, g, b, a
             { "0 - Air", 			0, 		0, 		0, 		0 },	// air
             { "1 - Rock",			120, 	120, 	120, 	255 }, 	// rock
             { "2 - Grass",			103, 	166, 	43, 	255 },	// grass
@@ -21,8 +30,8 @@ public class Blocks
             { "5 - Wood",			150, 	120, 	75, 	255 },	// wood
             { "6 - Shrub",			91, 	111, 	36, 	255 },	// shrub
             { "7 - Blackrock",		64, 	64, 	80, 	255 },	// blackrock
-            { "8 - Water",			44, 	120, 	255, 	90 },	// water
-            { "9 - Still Water",	35, 	120, 	255, 	90 },	// waterstill
+            { "8 - Water",			44, 	120, 	255, 	24 },	// water
+            { "9 - Still Water",	35, 	120, 	255, 	24 },	// waterstill
 
             { "10 - Lava",				250, 	185, 	15,		255 },	// lava 10
             { "11 - Still Lava",		240, 	170, 	15,		255 },	// lavastill

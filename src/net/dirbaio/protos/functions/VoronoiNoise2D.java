@@ -1,6 +1,22 @@
+/*
+ * Copyright (C) 2013 dirbaio
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.dirbaio.protos.functions;
 
-import net.dirbaio.protos.generator.RandomSeed;
 import java.util.Random;
 
 public class VoronoiNoise2D extends Function2D
@@ -28,12 +44,18 @@ public class VoronoiNoise2D extends Function2D
         is2D = true;
         zsize = (is2D ? 1 : size);
         dimensions = (is2D ? 2 : 3);
-        grid = new double[size][size][zsize][density][dimensions];
-        r = new Random(RandomSeed.get());
         this.size = size;
         this.density = density;
         this.metric = metric;
         this.level = level;
+
+        grid = new double[size][size][zsize][density][dimensions];
+    }
+
+    @Override
+    public void setRandomSeed(long seed)
+    {
+        r = new Random(seed);
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++)
                 for (int k = 0; k < zsize; k++)
@@ -42,6 +64,7 @@ public class VoronoiNoise2D extends Function2D
                             grid[i][j][k][d][e] = r.nextDouble();
     }
 
+    
     private double distance(double[] a, int[] offset, double[] b)
     {
         double [] m = new double[dimensions];
