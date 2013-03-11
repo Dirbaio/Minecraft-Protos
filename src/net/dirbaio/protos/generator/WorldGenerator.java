@@ -17,13 +17,15 @@
 
 package net.dirbaio.protos.generator;
 
-import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.dirbaio.protos.Chunk;
+import net.dirbaio.protos.functions.Function;
 import net.dirbaio.protos.functions.FunctionTerrain;
 
 public class WorldGenerator implements Runnable
@@ -93,6 +95,30 @@ public class WorldGenerator implements Runnable
 
         //Autodetect based on number of cores!
         numWorkerThreads = Runtime.getRuntime().availableProcessors();
+        
+        //Set seed!
+        try
+        {
+            setSeed(f, 92164286);
+        } catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+    private void setSeed(Function f, long seed) throws IllegalArgumentException, IllegalAccessException
+    {
+        f.setRandomSeed(seed);
+        Field[] fs = f.getClass().getFields();
+        
+        for(Field ff : fs)
+        {
+            if(Function.class.isAssignableFrom(ff.getType()))
+            {
+                setSeed((Function)ff.get(f), seed*20);
+                seed++;
+            }
+        }
     }
     
     public void setSize(int xMin, int zMin, int xSize, int zSize)

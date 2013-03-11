@@ -36,7 +36,6 @@ import net.dirbaio.protos.functions.FunctionTerrain;
 
 public class FunctionEditor extends JPanel implements MouseListener, MouseMotionListener
 {
-
     Function f;
     private String functionName;
     ProjectEditor pe;

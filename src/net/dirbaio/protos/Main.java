@@ -18,7 +18,6 @@
 package net.dirbaio.protos;
 
 import java.awt.BorderLayout;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JFrame;
@@ -26,7 +25,7 @@ import javax.swing.JScrollPane;
 import net.dirbaio.protos.editor.Project;
 import net.dirbaio.protos.editor.ProjectEditor;
 import net.dirbaio.protos.functions.*;
-import net.dirbaio.protos.generator.DiskChunkOutput;
+import net.dirbaio.protos.generator.DaniChunkOutput;
 import net.dirbaio.protos.generator.WorldGenerator;
 import net.dirbaio.protos.previewer.WorldPreviewer;
 
@@ -164,7 +163,45 @@ public class Main extends JFrame
         new ImageViewer(f.render(0, 0, 512, 512, -1, 1)).setVisible(true);
     }
     
+    
     public static void main(String[] args) throws FileNotFoundException, IOException
+    {
+        Function3D f = new SimplexNoise3D(50, 50, 50, -200, 200);
+        f = new Add3D(f, new SimplexNoise3D(15, 15, 15, -50, 50));
+//        f = new Add3D(f, new PerlinNoise3D(500, 1000, 500, -70, 70));
+        f = new Substract3D(f, new Substract3D(new GetYCoord(), new Constant(64)));
+        f = new Substract3D(
+                f, 
+                new Multiply3D(
+                    new Min3D(
+                        new Constant(0), 
+                        new Substract3D(new GetYCoord(), new Constant(64))), 
+                    new Constant(10)));
+
+        FunctionTerrain t = new TerrainVolume(f, (short)1);
+        
+        WorldGenerator wg = new WorldGenerator(t);
+        int s = 8;
+        if(false) //Set to true to enable preview
+        {
+            WorldPreviewer wp = new WorldPreviewer();
+            wg.addChunkOutput(wp);
+
+            JFrame fr = new JFrame("Minecraft Protos Previewer");
+            fr.setSize(500, 500);
+            fr.add(wp, BorderLayout.CENTER);
+            fr.setVisible(true);
+            fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
+        else
+        {
+            wg.addChunkOutput(new DaniChunkOutput("out.bin"));
+        }
+        wg.setSize(-s, -s, s*2, s*2);
+        
+        wg.run();
+    }
+    public static void main3(String[] args) throws FileNotFoundException, IOException
     {
         Function2D a, b;
         Project p = new Project(new Output(floatingIslands()));
