@@ -164,7 +164,7 @@ public class Main extends JFrame
     }
     
     
-    public static void main(String[] args) throws FileNotFoundException, IOException
+    public static void main_dani(String[] args) throws FileNotFoundException, IOException
     {
         Function3D f = new SimplexNoise3D(50, 50, 50, -200, 200);
         f = new Add3D(f, new SimplexNoise3D(15, 15, 15, -50, 50));
@@ -201,8 +201,10 @@ public class Main extends JFrame
         
         wg.run();
     }
-    public static void main3(String[] args) throws FileNotFoundException, IOException
+    public static void main(String[] args) throws FileNotFoundException, IOException
     {
+        Images.init();
+        
         Function2D a, b;
         Project p = new Project(new Output(floatingIslands()));
         JFrame fr = new JFrame("Protos Editor");

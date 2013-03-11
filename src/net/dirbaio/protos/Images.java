@@ -17,12 +17,13 @@
 
 package net.dirbaio.protos;
 
+import java.lang.reflect.Field;
 import javax.swing.ImageIcon;
 
 public class Images
 {
-    public static ImageIcon neww, open, save, gen, delete, settings, prev, prevstop;
-
+    public static ImageIcon open, save, gen, delete, settings, preview, stop;
+    public static ImageIcon function2d, function3d, functionterrain;
     static
     {
         init();
@@ -30,14 +31,25 @@ public class Images
     
     public static void init()
     {
-        neww = createIcon("new.gif");
-        open = createIcon("open.png");
-        save = createIcon("save.png");
-        gen = createIcon("gen.png");
-        delete = createIcon("delete.png");
-        settings = createIcon("settings.png");
-        prev = createIcon("preview.png");
-        prevstop = createIcon("stop.png");
+        try
+        {
+            Field[] ff = Images.class.getFields();
+            for(Field f : ff)
+            {
+                if(f.getType().isAssignableFrom(ImageIcon.class))
+                    f.set(null, createIcon(f.getName() + ".png"));
+            }
+        } catch(SecurityException e)
+        {
+            e.printStackTrace();
+        } catch(IllegalArgumentException e)
+        {
+            e.printStackTrace();
+        } catch(IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        
     }
     /*
     private static ImageIcon createAdd(ImageIcon icon )

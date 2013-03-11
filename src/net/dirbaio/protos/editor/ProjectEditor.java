@@ -184,6 +184,13 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
                     }
                 }
             }
+        
+        g2.setColor(Color.BLACK);
+        if(editedProperty != null)
+        {
+            FunctionEditor e = editedProperty.ed;
+            g.drawString("Click a function!", e.getX(), e.getY()+e.getHeight()+20);
+        }
     }
     
     private void drawConnection(Graphics2D g, int x, int y, int x2, int y2, int index)
@@ -232,7 +239,6 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     void selectFunction(FunctionEditor func)
     {
         editedProperty.setValue(func.f);
-        editedProperty.endFunctionEdition();
         editedProperty = null;
         repaint();
     }
@@ -242,7 +248,6 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     {
         if(editedProperty != null)
         {
-            editedProperty.endFunctionEdition();
             editedProperty = null;
             repaint();
         }
