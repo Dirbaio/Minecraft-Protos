@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.dirbaio.protos.functions;
+package net.dirbaio.protos.editor;
 
-public abstract class Function
+import java.util.ArrayList;
+import java.util.List;
+import net.dirbaio.protos.functions.Function;
+
+public class Project
 {
-    public int xPos, yPos;
-    
-	public void prepare(int x, int z, int sx, int sz) {}
-    public void setRandomSeed(long seed) {}
+    public List<Function> funcs = new ArrayList<>();
 }

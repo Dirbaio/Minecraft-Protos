@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JFrame;
+import net.dirbaio.protos.editor.Project;
+import net.dirbaio.protos.editor.ProjectEditor;
 import net.dirbaio.protos.functions.*;
 import net.dirbaio.protos.generator.DiskChunkOutput;
 import net.dirbaio.protos.generator.WorldGenerator;
@@ -163,8 +165,20 @@ public class Main extends JFrame
     
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
-        WorldGenerator wg = new WorldGenerator(floatingIslands());
+        Function2D a, b;
+        Project p = new Project();
+        p.funcs.add(a = new SimplexNoise2D(10, 10, -1, 1));
+        p.funcs.add(b = new SimplexNoise2D(10, 10, -10, 10));
+        p.funcs.add(new Add2D(a, b));
+        
+        JFrame fr = new JFrame("Protos Editor");
+        fr.setSize(500, 500);
+        fr.add(new ProjectEditor(p), BorderLayout.CENTER);
+        fr.setVisible(true);
+        fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        /*
+        WorldGenerator wg = new WorldGenerator(floatingIslands());
         int s = 64;
         if(true)
         {
@@ -184,6 +198,6 @@ public class Main extends JFrame
         }
         wg.setSize(-s, -s, s*2, s*2);
         
-        wg.run();
+        wg.run();*/
     }
 }

@@ -60,7 +60,9 @@ package net.dirbaio.protos;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.zip.*;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 public class RegionFile {
 
@@ -119,7 +121,7 @@ public class RegionFile {
 
             /* set up the available sector map */
             int nSectors = (int) file.length() / SECTOR_BYTES;
-            sectorFree = new ArrayList<Boolean>(nSectors);
+            sectorFree = new ArrayList<>(nSectors);
 
             for (int i = 0; i < nSectors; ++i) {
                 sectorFree.add(true);
@@ -255,6 +257,7 @@ public class RegionFile {
             this.z = z;
         }
 
+        @Override
         public void close() {
             RegionFile.this.write(x, z, buf, count);
         }
