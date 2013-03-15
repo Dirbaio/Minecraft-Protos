@@ -16,6 +16,7 @@
  */
 package net.dirbaio.protos.editor;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -23,6 +24,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.*;
 import java.lang.reflect.Field;
@@ -45,7 +47,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     ProjectEditor pe;
     List<Property> properties = new ArrayList<>();
 
-    public FunctionEditor(Function f, ProjectEditor pe)
+    public FunctionEditor(final Function f, final ProjectEditor pe)
     {
         this.f = f;
         this.pe = pe;
@@ -56,30 +58,47 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         this.setLayout(new GridBagLayout());
         final Color col = getColorForClass(f.getClass());
         ImageIcon icon = getIconForClass(f.getClass());
-        JLabel title = new JLabel(unCamelCase(functionName), icon, JLabel.LEADING){
+        JLabel title = new JLabel(unCamelCase(functionName), icon, JLabel.LEADING);
+        title.setBorder(BorderFactory.createEmptyBorder(1,6,1,0));
+        title.addMouseListener(this);
+        title.addMouseMotionListener(this);
+
+        JPanel buttonsPanel = new JPanel(new GridLayout(1, 2));
+        buttonsPanel.setOpaque(false);
+        JIconButton deleteButton = new JIconButton(Images.delete);
+        deleteButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                pe.deleteFunction(f);
+            }
+        });
+        JIconButton previewButton = new JIconButton(Images.preview);
+        buttonsPanel.add(deleteButton);
+        buttonsPanel.add(previewButton);
+        
+        JPanel titlePanel = new JPanel(new BorderLayout()){
 
             @Override
             protected void paintComponent(Graphics g)
             {
+                super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setPaint(new GradientPaint(0, 0, col, 0, getHeight(), Color.WHITE));
                 g2.fillRect(0, 0, getWidth(), getHeight());
-                super.paintComponent(g);
             }
             
         };
-        title.setBorder(BorderFactory.createEmptyBorder(1,6,1,0));
-//        title.setOpaque(true);
-        title.addMouseListener(this);
-        title.addMouseMotionListener(this);
-
+        titlePanel.add(title, BorderLayout.CENTER);
+        titlePanel.add(buttonsPanel, BorderLayout.EAST);
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 0;
         c.gridwidth = 2;
         c.ipadx = c.ipady = 10;
-        add(title, c);
+        add(titlePanel, c);
 
         int y = 1;
         for(Property p : properties)
@@ -162,10 +181,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
-                        pe.editedProperty = self;
-                        pe.mx = f.xPos;
-                        pe.my = f.yPos;
-                        pe.repaint();
+                        pe.editProperty(self);
                     }
                 });
                 return res;
@@ -285,12 +301,6 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e)
-    {
-        if(pe.editedProperty != null)
-            pe.selectFunction(this);
-    }
     boolean down = false;
     int downX, downY;
 
@@ -311,17 +321,11 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     @Override
     public void mouseEntered(MouseEvent e)
     {
-        pe.hovered = this;
-        if(pe.editedProperty != null)
-            pe.repaint();
     }
 
     @Override
     public void mouseExited(MouseEvent e)
     {
-        pe.hovered = null;
-        if(pe.editedProperty != null)
-            pe.repaint();
     }
 
     @Override

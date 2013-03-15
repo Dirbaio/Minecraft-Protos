@@ -39,10 +39,12 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     Project p;
     List<FunctionEditor> editors = new ArrayList<>();
     Map<Function, FunctionEditor> editorsByFunction = new HashMap<>();
+    ProjectEditorTop pet;
     
-    public ProjectEditor(Project p)
+    public ProjectEditor(Project p, ProjectEditorTop pet)
     {
         this.p = p;
+        this.pet = pet;
         
         setLayout(null);
         setBackground(Color.WHITE);
@@ -150,8 +152,14 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     protected void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-
         Graphics2D g2 = (Graphics2D) g;
+
+        if(hovered != null)
+        {
+            g2.setColor(Color.red);
+            g2.fillRect(hovered.getX()-10, hovered.getY()-10, hovered.getWidth()+20, hovered.getHeight()+20);
+        }
+        
         for(FunctionEditor ed : editors)
             for(FunctionEditor.Property p : ed.properties)
             {
@@ -271,5 +279,33 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     @Override
     public void mouseExited(MouseEvent e)
     {
+    }
+
+    void deleteFunction(Function f)
+    {
+        FunctionEditor ed = editorsByFunction.get(f);
+        remove(ed);
+        editors.remove(ed);
+        editedProperty = null;
+        p.funcs.remove(f);
+        
+        for(FunctionEditor e : editors)
+            for(FunctionEditor.Property p : e.properties)
+                if(p.getValue() == f)
+                    p.setValue(null);
+        repaint();
+    }
+
+    void editProperty(FunctionEditor.Property p)
+    {
+        editedProperty = p;
+        repaint();
+        
+        pet.h.setVisible(p != null);
+    }
+    
+    void endEditProperty()
+    {
+        
     }
 }
