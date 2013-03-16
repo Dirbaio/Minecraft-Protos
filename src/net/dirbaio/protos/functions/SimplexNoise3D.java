@@ -22,11 +22,11 @@ import java.util.Random;
 public class SimplexNoise3D extends Function3D
 {
 
-	public double xScale;
-	public double yScale;
-	public double zScale;
-	public double min;
-	public double max;
+	public double xScale = 10;
+	public double yScale = 10;
+	public double zScale = 10;
+	public double min = -1;
+	public double max = 1;
 	private static int perm[] = new int[512];
     private static int grad3[][] = {{1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0},
         {1, 0, 1}, {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1},

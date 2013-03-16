@@ -26,10 +26,7 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.dirbaio.protos.Images;
-import net.dirbaio.protos.functions.Function;
-import net.dirbaio.protos.functions.Function2D;
-import net.dirbaio.protos.functions.Function3D;
-import net.dirbaio.protos.functions.FunctionTerrain;
+import net.dirbaio.protos.functions.*;
 
 public class FunctionEditor extends JPanel implements MouseListener, MouseMotionListener
 {
@@ -70,7 +67,8 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             }
         });
         JIconButton previewButton = new JIconButton(Images.preview);
-        buttonsPanel.add(deleteButton);
+        if(f.getClass() != Output.class)
+            buttonsPanel.add(deleteButton);
         buttonsPanel.add(previewButton);
         
         JPanel titlePanel = new JPanel(new BorderLayout()){
@@ -263,7 +261,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         }
     }
 
-    private String unCamelCase(String s)
+    public static String unCamelCase(String s)
     {
         String res = "";
         char last = '_';
@@ -294,11 +292,8 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         Field[] fields = c.getFields();
         int i = 0;
         for(Field fi : fields)
-        {
-            if(fi.getName().equals("xPos") || fi.getName().equals("yPos"))
-                continue;
-            properties.add(new Property(fi, unCamelCase(fi.getName()), i++, this));
-        }
+            if(fi.getDeclaringClass() != Function.class)
+                properties.add(new Property(fi, unCamelCase(fi.getName()), i++, this));
     }
 
     boolean down = false;

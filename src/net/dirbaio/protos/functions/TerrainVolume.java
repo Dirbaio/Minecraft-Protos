@@ -23,7 +23,7 @@ public class TerrainVolume extends FunctionTerrain
 {
 
 	public Function3D field;
-	public short block;
+	public short block = 1;
 
 	public TerrainVolume()
 	{

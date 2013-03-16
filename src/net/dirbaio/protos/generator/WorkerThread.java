@@ -37,7 +37,6 @@ public class WorkerThread extends Thread
     @Override
     public void run()
     {
-        System.out.println("Start Worker Thread" + threadId);
         try
         {
             while (true)
@@ -103,6 +102,5 @@ public class WorkerThread extends Thread
             System.err.println("Aborting generation!");
             System.exit(1);
         }
-        System.out.println("Stop Worker Thread " + threadId);
     }
 }

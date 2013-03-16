@@ -17,10 +17,25 @@
 
 package net.dirbaio.protos.functions;
 
+import java.util.Random;
+
 public abstract class Function
 {
     public int xPos, yPos;
+    public long randomSeedOffset;
+
+    public Function()
+    {
+        Random r = new Random();
+        randomSeedOffset = r.nextLong();
+    }
     
 	public void prepare(int x, int z, int sx, int sz) {}
-    public void setRandomSeed(long seed) {}
+    
+    protected void setRandomSeed(long seed) {}
+    
+    public final void doSetRandomSeed(long seed)
+    {
+        doSetRandomSeed(seed+randomSeedOffset);
+    }
 }

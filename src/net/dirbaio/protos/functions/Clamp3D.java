@@ -21,7 +21,7 @@ public class Clamp3D extends Function3D
 {
 
     public Function3D f;
-    public double min, max;
+    public double min = -1, max = 1;
     
     public Clamp3D()
     {

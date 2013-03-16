@@ -20,8 +20,8 @@ public class Sea extends FunctionTerrain
 {
 
     public FunctionTerrain base;
-    public short block;
-    public int height;
+    public short block = 8;
+    public int height = 64;
 
     public Sea()
     {

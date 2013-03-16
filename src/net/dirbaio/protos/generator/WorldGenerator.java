@@ -95,20 +95,22 @@ public class WorldGenerator implements Runnable
 
         //Autodetect based on number of cores!
         numWorkerThreads = Runtime.getRuntime().availableProcessors();
+        System.out.println("Using "+numWorkerThreads+"worker threads for generation.");
         
         //Set seed!
         try
         {
             setSeed(f, 92164286);
-        } catch(Exception ex)
+        } catch(IllegalArgumentException | IllegalAccessException ex)
         {
+            System.err.println("Could not set seed!");
             ex.printStackTrace();
         }
     }
     
     private void setSeed(Function f, long seed) throws IllegalArgumentException, IllegalAccessException
     {
-        f.setRandomSeed(seed);
+        f.doSetRandomSeed(seed);
         Field[] fs = f.getClass().getFields();
         
         for(Field ff : fs)

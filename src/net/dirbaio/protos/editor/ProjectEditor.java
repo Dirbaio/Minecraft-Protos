@@ -21,10 +21,13 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import net.dirbaio.protos.functions.Function;
 import net.dirbaio.protos.functions.Output;
@@ -84,7 +87,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
             e.setPos(e.getX()-xMin+margin, e.getY()-yMin+margin);
         
         Dimension size = new Dimension(xMax-xMin+2*margin, yMax-yMin+2*margin);
-        setSize(size);
+        setMinimumSize(size);
         setPreferredSize(size);
     }
     
@@ -343,5 +346,35 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     void endEditProperty()
     {
         editProperty(null);
+    }
+
+    void addFunction(Class c)
+    {
+        try
+        {
+            Function f = (Function)c.getConstructor().newInstance();
+            f.xPos = getWidth()/2;
+            f.yPos = getHeight()/2;
+            System.out.println(f);
+            p.funcs.add(f);
+            FunctionEditor e = new FunctionEditor(f, this);
+            add(e);
+            e.validate();
+            editors.add(e);
+            editorsByFunction.put(f, e);
+            
+            if(editedProperty != null)
+            {
+                e.setPos(editedProperty.ed.getX()-e.getWidth()-30, editedProperty.ed.getY());
+                selectFunction(e);
+            }
+            doNormalize();
+            repaint();
+        }
+        catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
+        {
+            ex.printStackTrace();
+        }
+        
     }
 }

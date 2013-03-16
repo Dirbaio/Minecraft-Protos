@@ -18,13 +18,11 @@
 package net.dirbaio.protos.functions;
 
 import net.dirbaio.protos.Chunk;
-import net.dirbaio.protos.functions.Function3D;
-import net.dirbaio.protos.functions.FunctionTerrain;
 
 public class ConstantTerrain extends FunctionTerrain
 {
 
-	public short block;
+	public short block = 1;
 
 	public ConstantTerrain()
 	{

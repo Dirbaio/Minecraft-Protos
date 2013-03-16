@@ -20,9 +20,8 @@ package net.dirbaio.protos.editor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.dirbaio.protos.functions.Function;
+import net.dirbaio.protos.functions.Output;
 
 public class Project
 {
@@ -49,7 +48,7 @@ public class Project
                 try
                 {
                     f2 = (Function) fi.get(f);
-                } catch (Exception ex)
+                } catch (IllegalArgumentException | IllegalAccessException ex)
                 {
                     ex.printStackTrace();
                 }
@@ -58,5 +57,14 @@ public class Project
                     addFunc(f2);
             }
         }
+    }
+    
+    public Output getOutput()
+    {
+        for(Function f : funcs)
+            if(f instanceof Output)
+                return (Output) f;
+
+        return null;
     }
 }

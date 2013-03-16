@@ -23,10 +23,10 @@ public class BeachOverlay extends FunctionTerrain
 {
 
     public FunctionTerrain base;
-    public short overlayBlock;
+    public short overlayBlock = 12;
     public short surfaceBlock; //0 means any
-    public int depth;
-    public int minHeight, maxHeight;
+    public int depth = 3;
+    public int minHeight = 62, maxHeight = 66;
 
     public BeachOverlay()
     {

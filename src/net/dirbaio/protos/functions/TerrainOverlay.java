@@ -22,9 +22,9 @@ import net.dirbaio.protos.Chunk;
 public class TerrainOverlay extends FunctionTerrain
 {
 	public FunctionTerrain base;
-	public short overlayBlock;
+	public short overlayBlock = 3;
 	public short surfaceBlock; //0 means any
-	public int depth;
+	public int depth = 4;
 
     public TerrainOverlay()
     {
