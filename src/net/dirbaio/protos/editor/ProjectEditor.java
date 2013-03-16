@@ -17,12 +17,7 @@
 
 package net.dirbaio.protos.editor;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -63,33 +58,34 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         doNormalize();
     }
     
-    private void doNormalize()
+    void doNormalize()
     {
-        int xMin = 0;
-        int yMin = 0;
+        int xMin = Integer.MAX_VALUE;
+        int yMin = Integer.MAX_VALUE;
+        int xMax = Integer.MIN_VALUE;
+        int yMax = Integer.MIN_VALUE;
+
         for(FunctionEditor e : editors)
         {
             if(e.getX() < xMin)
                 xMin = e.getX();
             if(e.getY() < yMin)
                 yMin = e.getY();
-        }
-        
-        for(FunctionEditor e : editors)
-            e.setPos(e.getX()-xMin, e.getY()-yMin);
-        int xMax = 0;
-        int yMax = 0;
 
-        for(FunctionEditor e : editors)
-        {
             if(e.getX()+e.getWidth() > xMax)
                 xMax = e.getX() + e.getWidth();
             if(e.getY()+e.getHeight() > yMax)
                 yMax = e.getY() + e.getHeight();
         }
         
-        setSize(xMax, yMax);
-        setPreferredSize(new Dimension(xMax, yMax));
+        int margin = 50;
+        
+        for(FunctionEditor e : editors)
+            e.setPos(e.getX()-xMin+margin, e.getY()-yMin+margin);
+        
+        Dimension size = new Dimension(xMax-xMin+2*margin, yMax-yMin+2*margin);
+        setSize(size);
+        setPreferredSize(size);
     }
     
     private void doAutoLayout()
@@ -105,11 +101,11 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     private FunctionEditor[] getChildren(FunctionEditor e)
     {
         ArrayList<FunctionEditor> l = new ArrayList<>();
-        for(FunctionEditor.Property p : e.properties)
+        for(FunctionEditor.Property pr : e.properties)
         {
-            Object val = p.getValue();
+            Object val = pr.getValue();
             if(val != null && val instanceof Function)
-                l.add(editorsByFunction.get(val));
+                l.add(editorsByFunction.get((Function)val));
         }
         
         return l.toArray(new FunctionEditor[0]);
@@ -149,85 +145,92 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     FunctionEditor hovered = null;
     
     @Override
-    protected void paintComponent(Graphics g)
+    protected void paintComponent(Graphics gr)
     {
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
+        super.paintComponent(gr);
+        Graphics2D g2 = (Graphics2D) gr;
+        g2.setRenderingHint(
+            RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(
+            RenderingHints.KEY_TEXT_ANTIALIASING,
+            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        
 
-        if(hovered != null)
+        g2.setColor(Color.BLACK);
+        if(editedProperty != null)
         {
-            g2.setColor(Color.red);
-            g2.fillRect(hovered.getX()-10, hovered.getY()-10, hovered.getWidth()+20, hovered.getHeight()+20);
+            if(hovered != null)
+            {
+                Color c = FunctionEditor.getColorForClass(hovered.f.getClass());
+                int r = c.getRed();
+                int g = c.getGreen();
+                int b = c.getBlue();
+                r = (r+255)/2;
+                g = (g+255)/2;
+                b = (b+255)/2;
+                g2.setColor(new Color(r, g, b));
+                g2.fillRect(hovered.getX()-10, hovered.getY()-10, hovered.getWidth()+20, hovered.getHeight()+20);
+            }
+            
+            FunctionEditor e = editedProperty.ed;
+            
+            g2.setColor(Color.BLACK);
+            g2.drawString("Click a function!", e.getX(), e.getY()+e.getHeight()+20);
         }
         
         for(FunctionEditor ed : editors)
-            for(FunctionEditor.Property p : ed.properties)
+            for(FunctionEditor.Property pr : ed.properties)
             {
-                if(Function.class.isAssignableFrom(p.field.getType()))
+                if(Function.class.isAssignableFrom(pr.field.getType()))
                 {
-                    g.setColor(FunctionEditor.getColorForClass(p.field.getType()));
+                    gr.setColor(FunctionEditor.getColorForClass(pr.field.getType()));
                     int x = ed.f.xPos;
-                    int y = ed.f.yPos+p.component.getY()+p.component.getHeight()/2;
-                    if(p == editedProperty)
+                    int y = ed.f.yPos+pr.component.getY()+pr.component.getHeight()/2;
+                    if(pr == editedProperty)
                     {
                         if(hovered != null)
                         {
                             int x2 = hovered.f.xPos+hovered.getWidth();
                             int y2 = hovered.f.yPos+10;
-                            drawConnection(g2, x2, y2, x, y, p.index);
+                            drawConnection(g2, x2, y2, x, y);
                         }
                         else
-                            drawConnection(g2, mx, my, x, y, p.index);
+                            drawConnection(g2, mx, my, x, y);
                     }
                     else
                     {
-                        Function f2 = (Function) p.getValue();
+                        Function f2 = (Function) pr.getValue();
                         if(f2 != null)
                         {
                             FunctionEditor e2 = editorsByFunction.get(f2);
                             int x2 = f2.xPos+e2.getWidth();
                             int y2 = f2.yPos+10;
-                            drawConnection(g2, x2, y2, x, y, p.index);
+                            drawConnection(g2, x2, y2, x, y);
                         }
                     }
                 }
             }
         
-        g2.setColor(Color.BLACK);
-        if(editedProperty != null)
-        {
-            FunctionEditor e = editedProperty.ed;
-            g.drawString("Click a function!", e.getX(), e.getY()+e.getHeight()+20);
-        }
     }
     
-    private void drawConnection(Graphics2D g, int x, int y, int x2, int y2, int index)
+    private void drawConnection(Graphics2D g, int x, int y, int x2, int y2)
     {
-        Stroke s = g.getStroke();
+        Stroke st = g.getStroke();
         g.setStroke(new BasicStroke(2));
-        //TODO Improve
-        g.drawLine(x, y, x+8, y);
-        x += 8;
+        Color c = g.getColor();
+        g.setColor(Color.BLACK);
+        int s = 1;
+        x += s; y += s; x2 += s; y2 += s;
+        g.drawLine(x-s, y, x+8, y);
         g.drawLine(x2, y2, x2-8, y2);
-        x2 -= 8;
-        
-        g.drawLine(x, y, x2, y2);
-        
-        g.setStroke(s);
-        /*
-        if(x2 < x)
-        {
-            g.drawLine(x2, y2, x2-3*index, y2);
-            x2 -= 3*index;
-            g.drawLine(x, y, x, y-20);
-            g.drawLine(x, y-20, x2, y-20);
-            g.drawLine(x2, y-20, x2, y2);
-        }
-        else
-        {
-            g.drawLine(x, y, x, y2);
-            g.drawLine(x, y2, x2, y2);
-        }*/
+        g.drawLine(x+8, y, x2-8, y2);
+        g.setColor(c);
+        x -= s; y -= s; x2 -= s; y2 -= s;
+        g.drawLine(x, y, x+8, y);
+        g.drawLine(x2, y2, x2-8, y2);
+        g.drawLine(x+8, y, x2-8, y2);
+        g.setStroke(st);
     }
 
     @Override
@@ -244,21 +247,10 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         repaint();
     }
 
-    void selectFunction(FunctionEditor func)
-    {
-        editedProperty.setValue(func.f);
-        editedProperty = null;
-        repaint();
-    }
-
+    
     @Override
     public void mouseClicked(MouseEvent e)
     {
-        if(editedProperty != null)
-        {
-            editedProperty = null;
-            repaint();
-        }
     }
 
     @Override
@@ -286,26 +278,70 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         FunctionEditor ed = editorsByFunction.get(f);
         remove(ed);
         editors.remove(ed);
-        editedProperty = null;
+        editProperty(null);
         p.funcs.remove(f);
         
         for(FunctionEditor e : editors)
-            for(FunctionEditor.Property p : e.properties)
-                if(p.getValue() == f)
-                    p.setValue(null);
+            for(FunctionEditor.Property pr : e.properties)
+                if(pr.getValue() == f)
+                    pr.setValue(null);
         repaint();
     }
 
     void editProperty(FunctionEditor.Property p)
     {
+        hovered = null;
         editedProperty = p;
         repaint();
         
         pet.h.setVisible(p != null);
+        
+        if(p != null)
+        {
+            for(FunctionEditor e : editors)
+            {
+                e.isProcessed = false;
+                e.hasChildEdited = false;
+            }
+            
+            for(FunctionEditor e : editors)
+                if(!e.isProcessed)
+                    process(e);
+            for(FunctionEditor e : editors)
+            {
+                e.canBeSelected = p.field.getType().isAssignableFrom(e.f.getClass()) && !e.hasChildEdited;
+            }
+        }
     }
     
+    private void process(FunctionEditor e)
+    {
+        if(e.isProcessed) return;
+        e.isProcessed = true;
+        
+        if(editedProperty.ed == e)
+        {
+            e.hasChildEdited = true;
+        }
+
+        FunctionEditor[] c = getChildren(e);
+        for(FunctionEditor e2 : c)
+        {
+            process(e2);
+            if(e2.hasChildEdited)
+                e.hasChildEdited = true;
+        }
+    }
+    
+    void selectFunction(FunctionEditor func)
+    {
+        if(editedProperty == null) return;
+        editedProperty.setValue(func.f);
+        endEditProperty();
+    }
+
     void endEditProperty()
     {
-        
+        editProperty(null);
     }
 }

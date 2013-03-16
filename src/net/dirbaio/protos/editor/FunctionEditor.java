@@ -16,16 +16,7 @@
  */
 package net.dirbaio.protos.editor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -46,6 +37,10 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     private String functionName;
     ProjectEditor pe;
     List<Property> properties = new ArrayList<>();
+    
+    boolean canBeSelected;
+    boolean hasChildEdited;
+    boolean isProcessed;
 
     public FunctionEditor(final Function f, final ProjectEditor pe)
     {
@@ -126,6 +121,11 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         setOpaque(true);
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e)
+    {
+    }
+
     
     class Property
     {
@@ -150,7 +150,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             try
             {
                 return field.get(f);
-            } catch(Exception ex)
+            } catch(IllegalArgumentException | IllegalAccessException ex)
             {
                 ex.printStackTrace();
             }
@@ -163,7 +163,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             try
             {
                 field.set(f, val);
-            } catch(Exception ex)
+            } catch(IllegalArgumentException | IllegalAccessException ex)
             {
                 ex.printStackTrace();
             }
@@ -303,11 +303,12 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
 
     boolean down = false;
     int downX, downY;
-
+    boolean moved;
     @Override
     public void mousePressed(MouseEvent e)
     {
         down = true;
+        moved = false;
         downX = f.xPos - e.getXOnScreen();
         downY = f.yPos - e.getYOnScreen();
     }
@@ -316,6 +317,8 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     public void mouseReleased(MouseEvent e)
     {
         down = false;
+        if(moved)
+            pe.doNormalize();
     }
 
     @Override
@@ -332,6 +335,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     public void mouseDragged(MouseEvent e)
     {
         setPos(downX + e.getXOnScreen(), downY + e.getYOnScreen());
+        moved = true;
     }
 
     public void setPos(int x, int y)

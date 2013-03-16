@@ -16,15 +16,7 @@
  */
 package net.dirbaio.protos.editor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -35,21 +27,21 @@ public class ProjectEditorTop extends JPanel
 {
     final ProjectEditor e;
     final Project p;
-    final HackPanel h;
+    final OverlayPanel h;
     
     public ProjectEditorTop(Project p)
     {
-        setLayout(new HackLayout(e = new ProjectEditor(p, this)));
+        setLayout(new OverlayLayout(e = new ProjectEditor(p, this)));
         this.p = p;
         GridBagConstraints ct = new GridBagConstraints();
         ct.fill = GridBagConstraints.BOTH;
         ct.weightx = 1;
         ct.weighty = 1;
         add(e, new GridBagConstraints());
-        add(h = new HackPanel(), ct);
+        add(h = new OverlayPanel(), ct);
         setComponentZOrder(h, 0);
         setComponentZOrder(e, 1);
-//        h.setVisible(false);
+        h.setVisible(false);
     }
 
     @Override
@@ -58,16 +50,22 @@ public class ProjectEditorTop extends JPanel
         return false;
     }
     
-    public class HackPanel extends JComponent implements MouseListener, MouseMotionListener
+    public class OverlayPanel extends JComponent implements MouseListener, MouseMotionListener
     {
 
+        public OverlayPanel()
+        {
+            this.addMouseListener(this);
+            this.addMouseMotionListener(this);
+        }
+        
         @Override
         protected void paintComponent(Graphics g)
         {
-            g.setColor(Color.red);
-            g.fillRect(0, 0, 100, 100);
-            addMouseListener(this);
-            addMouseMotionListener(this);
+            g.setColor(new Color(255, 255, 255, 128));
+            for(FunctionEditor ed : e.editors)
+                if(!ed.canBeSelected)
+                    g.fillRect(ed.getX(), ed.getY(), ed.getWidth(), ed.getHeight());
         }
 
         @Override
@@ -76,8 +74,15 @@ public class ProjectEditorTop extends JPanel
         }
 
         @Override
-        public void mousePressed(MouseEvent e)
+        public void mousePressed(MouseEvent ev)
         {
+            int x = ev.getX();
+            int y = ev.getY();
+            
+            if(e.hovered != null)
+                e.selectFunction(e.hovered);
+            else
+                e.endEditProperty();
         }
 
         @Override
@@ -109,22 +114,20 @@ public class ProjectEditorTop extends JPanel
             int y = ev.getY();
             e.mx = x;
             e.my = y;
+ 
             for(FunctionEditor ed : e.editors)
-            {
-                if(ed.getBounds().contains(x, y))
+                if(ed.canBeSelected && ed.getBounds().contains(x, y))
                     e.hovered = ed;
-            }
-            
-            if(e.hovered != old)
-                e.repaint();
+ 
+            e.repaint();
         }
     }
     
-    private class HackLayout implements LayoutManager
+    private class OverlayLayout implements LayoutManager
     {
         JComponent a;
 
-        public HackLayout(JComponent a)
+        public OverlayLayout(JComponent a)
         {
             this.a = a;
         }
