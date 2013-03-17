@@ -22,23 +22,17 @@ import java.awt.image.BufferedImage;
 
 public abstract class Function2D extends Function3D
 {
-	public abstract double[][] get2DData(int px, int pz, int sx, int sz);
+	public abstract double[] get2DData(int px, int pz, int sx, int sz);
 
     @Override
-    public double[][][] get3DData(int px, int py, int pz, int sx, int sy, int sz)
+    public double[] get3DData(int px, int py, int pz, int sx, int sy, int sz)
     {
-        double[][] data = get2DData(px, pz, sx, sz);
-
-		double[][][] res = new double[sx][sy][sz];
+        double[] data = get2DData(px, pz, sx, sz);
+		double[] res = new double[sx*sy*sz];
 		
-        for(int i = 0; i < sx; i++)
-            for(int k = 0; k < sz; k++)
-            {
-                double val = data[i][k];
-
-                for(int j = 0; j < sy; j++)
-					res[i][j][k] = val;
-            }
+        int s = sx*sz;
+        for(int y = 0; y < sy; y++)
+            System.arraycopy(data, 0, res, y*s, s);
         
 		return res;
     }
@@ -52,12 +46,12 @@ public abstract class Function2D extends Function3D
     public BufferedImage renderPrepared(int px, int pz, int sx, int sz, double min, double max)
     {
         BufferedImage res = new BufferedImage(sx, sz, BufferedImage.TYPE_INT_RGB);
-        double[][] data = get2DData(px, pz, sx, sz);
+        double[] data = get2DData(px, pz, sx, sz);
         
         for(int x = 0; x < sx; x++)
             for(int z = 0; z < sz; z++)
             {
-                double val = data[x][z];
+                double val = data[x*sz + z];
                 val = (val-min)/(max-min)*256;
                 int shade = (int) val;
                 int col = shade | (shade<<8) | (shade<<16);

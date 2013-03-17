@@ -32,28 +32,23 @@ public class Min3D extends Function3D
         this.b = b;
     }
 
-    @Override
-    public double[][][] get3DData(int px, int py, int pz, int sx, int sy, int sz)
+	@Override
+	public double[] get3DData(int px, int py, int pz, int sx, int sy, int sz)
     {
-        double[][][] da = a.get3DData(px, py, pz, sx, sy, sz);
-        double[][][] db;
+        double[] da = a.get3DData(px, py, pz, sx, sy, sz);
+        double[] db;
 
         if (a == b)
             db = da;
         else
             db = b.get3DData(px, py, pz, sx, sy, sz);
 
-        for (int i = 0; i < sx; i++)
-            for (int j = 0; j < sy; j++)
-                for (int k = 0; k < sz; k++)
-                {
-                    double na = da[i][j][k];
-                    double nb = db[i][j][k];
-
-                    da[i][j][k] = na < nb ? na : nb;
-                }
+        int s = sx*sy*sz;
+		for(int i = 0; i < s; i++)
+            da[i] = da[i] < db[i] ? da[i] : db[i];
+        
         return da;
-    }
+	}
 
     @Override
     public void prepare(int x, int z, int sx, int sz)

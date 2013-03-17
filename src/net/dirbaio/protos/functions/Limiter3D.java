@@ -35,16 +35,19 @@ public class Limiter3D extends Function3D
 	}
 	
 	@Override
-	public double[][][] get3DData(int px, int py, int pz, int sx, int sy, int sz)
+	public double[] get3DData(int px, int py, int pz, int sx, int sy, int sz)
 	{
-		double[][][] res = base.get3DData(px, py, pz, sx, sy, sz);
-		for(int i = 0; i < sx; i++)
-			for(int j = 0; j < sy; j++)
-				for(int k = 0; k < sz; k++)
-				{
-                    if(j > maxY-margin)
-						res[i][j][k] -= (j-maxY+margin)/margin;
-				}
+		double[] res = base.get3DData(px, py, pz, sx, sy, sz);
+        int s = sz*sz;
+        int i = 0;
+        for(int y = 0; y < sy; y++)
+        {
+            double sub = (y-maxY+margin)/margin;
+            if(sub < 0) sub = 0;
+            
+            for(int j = 0; j < s; j++)
+                res[i++] -= sub;
+        }
 		return res;
 	}
 

@@ -31,27 +31,22 @@ public class Constant extends Function2D
     }
 	
 	@Override
-	public double[][] get2DData(int px, int pz, int sx, int sz)
+	public double[] get2DData(int px, int pz, int sx, int sz)
 	{
-		double[][] res = new double[sx][sz];
-		for(int i = 0; i < sx; i++)
-			for(int j = 0; j < sz; j++)
-				res[i][j] = value;
+        int s = sx*sz;
+		double[] res = new double[s];
+		for(int i = 0; i < s; i++)
+            res[i] = value;
 		return res;
 	}
 
     @Override
-    public double[][][] get3DData(int px, int py, int pz, int sx, int sy, int sz)
+    public double[] get3DData(int px, int py, int pz, int sx, int sy, int sz)
     {
-        double[][] data = get2DData(px, pz, sx, sz);
-
-		double[][][] res = new double[sx][sy][sz];
-		
-        for(int i = 0; i < sx; i++)
-            for(int j = 0; j < sy; j++)
-                for(int kk = 0; kk < sz; kk++)
-    				res[i][j][kk] = value;
-        
+        int s = sx*sy*sz;
+		double[] res = new double[s];
+		for(int i = 0; i < s; i++)
+            res[i] = value;
 		return res;
     }
     

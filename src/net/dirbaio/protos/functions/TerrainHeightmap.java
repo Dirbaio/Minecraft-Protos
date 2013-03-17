@@ -38,12 +38,12 @@ public class TerrainHeightmap extends FunctionTerrain
 	public short[] getTerrainData(int px, int pz, int sx, int sz)
 	{
 		short[] res = new short[sx*sz*Chunk.MAP_HEIGHT];
-		double[][] height = heightmap.get2DData(px, pz, sx, sz);
+		double[] height = heightmap.get2DData(px, pz, sx, sz);
 		
 		for(int x = 0; x < sx; x++)
 			for(int z = 0; z < sz; z++)
 			{
-				double h = height[x][z];
+				double h = height[x*sz + z];
 				int i = z + x*sz;
 				for(int y = 0; y < h && y < Chunk.MAP_HEIGHT; y++)
 				{

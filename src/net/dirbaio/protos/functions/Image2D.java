@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.dirbaio.protos.functions;
 
 import java.awt.image.BufferedImage;
@@ -24,6 +23,7 @@ import javax.imageio.ImageIO;
 
 public class Image2D extends Function2D
 {
+
     BufferedImage bi;
     public String path;
     public int x0, z0;
@@ -31,12 +31,12 @@ public class Image2D extends Function2D
     public Image2D()
     {
     }
-    
+
     public Image2D(String path)
     {
         this.path = path;
     }
-    
+
     @Override
     public void prepare(int x, int z, int sx, int sz)
     {
@@ -54,14 +54,14 @@ public class Image2D extends Function2D
     }
 
     @Override
-    public double[][] get2DData(int px, int pz, int sx, int sz)
+    public double[] get2DData(int px, int pz, int sx, int sz)
     {
-        double[][] r = new double[sx][sz];
-        for(int x = 0; x < sx; x++)
-            for(int z = 0; z < sz; z++)
+        double[] r = new double[sz * sz];
+        for (int x = 0; x < sx; x++)
+            for (int z = 0; z < sz; z++)
             {
-                int val = bi.getRGB(x+px-x0, z+pz-z0) & 0xFF;
-                r[x][z] = (val-128);
+                int val = bi.getRGB(x + px - x0, z + pz - z0) & 0xFF;
+                r[x * sz + z] = (val - 128);
             }
         return r;
     }

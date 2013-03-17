@@ -208,15 +208,15 @@ public class VoronoiNoise2D extends Function2D
     
     
 	@Override
-	public double[][] get2DData(int px, int pz, int sx, int sz)
+	public double[] get2DData(int px, int pz, int sx, int sz)
 	{
-		double[][] res = new double[sx][sz];
+		double[] res = new double[sx*sz];
 
+        int i = 0;
 		for (int x = 0; x < sx; x++)
 			for (int z = 0; z < sz; z++)
-			{
-                res[x][z] = get(x+px, z+pz);
-            }
+                res[i++] = get(x+px, z+pz);
+
         return res;
     }
 }

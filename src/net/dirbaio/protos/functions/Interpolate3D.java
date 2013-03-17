@@ -34,25 +34,24 @@ public class Interpolate3D extends Function3D
 	}
 
 	@Override
-	public double[][][] get3DData(int px, int py, int pz, int sx, int sy, int sz)
+	public double[] get3DData(int px, int py, int pz, int sx, int sy, int sz)
 	{
-		double[][][] sa = a.get3DData(px, py, pz, sx, sy, sz);
-		double[][][] sb = b.get3DData(px, py, pz, sx, sy, sz);
-		double[][][] sw = weight.get3DData(px, py, pz, sx, sy, sz);
+		double[] sa = a.get3DData(px, py, pz, sx, sy, sz);
+		double[] sb = b.get3DData(px, py, pz, sx, sy, sz);
+		double[] sw = weight.get3DData(px, py, pz, sx, sy, sz);
 		
-		for(int i = 0; i < sx; i++)
-			for(int j = 0; j < sy; j++)
-				for(int k = 0; k < sz; k++)
-				{
-					double w = sw[i][j][k];
-					if(w < 0) w = 0;
-					if(w > 1) w = 1;
-					
-					double va = sa[i][j][k];
-					double vb = sb[i][j][k];
-					
-					sa[i][j][k] = va * w + vb*(1-w);
-				}
+		int s = sx*sy*sz;
+		for(int i = 0; i < s; i++)
+        {
+            double w = sw[i];
+            if(w < 0) w = 0;
+            if(w > 1) w = 1;
+
+            double va = sa[i];
+            double vb = sb[i];
+
+            sa[i] = va * w + vb*(1-w);
+        }
 		
 		return sa;
 	}

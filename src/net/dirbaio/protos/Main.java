@@ -21,11 +21,7 @@ import java.awt.BorderLayout;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import net.dirbaio.protos.editor.EditorWindow;
 import net.dirbaio.protos.editor.MainWindow;
-import net.dirbaio.protos.editor.Project;
-import net.dirbaio.protos.editor.ProjectEditorTop;
 import net.dirbaio.protos.functions.*;
 import net.dirbaio.protos.generator.DaniChunkOutput;
 import net.dirbaio.protos.generator.WorldGenerator;
@@ -38,7 +34,7 @@ public class Main extends JFrame
 //    public static String worldPath = "C:\\Users\\dirbaio.dirbaio-win7\\AppData\\Roaming\\.minecraft\\saves\\";
     public static String worldPath = "./generated-map/";
 
-    private static FunctionTerrain epicIslands()
+    public static FunctionTerrain epicIslands()
     {
         Function3D terrainMap = new Add3D(
                 new SimplexNoise3D(270, 1050, 280, -60, 130),

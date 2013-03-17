@@ -75,10 +75,11 @@ public class SimplexNoise2D extends Function2D
 	}
 
 	@Override
-	public double[][] get2DData(int px, int pz, int sx, int sz)
+	public double[] get2DData(int px, int pz, int sx, int sz)
 	{
-		double[][] res = new double[sx][sz];
+		double[] res = new double[sx*sz];
 
+        int ind = 0;
 		for (int x = 0; x < sx; x++)
 			for (int z = 0; z < sz; z++)
 			{
@@ -158,7 +159,7 @@ public class SimplexNoise2D extends Function2D
 				// The result is scaled to return values in the interval [-1,1].
 
 				double val = 35.0 * (n0 + n1 + n2) + 0.5;
-				res[x][z] = min + val * (max - min);
+				res[ind++] = min + val * (max - min);
 			}
 		
 		return res;

@@ -81,12 +81,13 @@ public class SimplexNoise3D extends Function3D
 	}
 
 	@Override
-	public double[][][] get3DData(int px, int py, int pz, int sx, int sy, int sz)
+	public double[] get3DData(int px, int py, int pz, int sx, int sy, int sz)
 	{
-		double[][][] res = new double[sx][sy][sz];
-
-		for (int x = 0; x < sx; x++)
-			for (int y = 0; y < sy; y++)
+		double[] res = new double[sx*sy*sz];
+        int ind = 0;
+        
+        for (int y = 0; y < sy; y++)
+            for (int x = 0; x < sx; x++)
 				for (int z = 0; z < sz; z++)
 				{
 					double xin = (x + px) / xScale;
@@ -237,7 +238,7 @@ public class SimplexNoise3D extends Function3D
 // The result is scaled to stay just inside [-1,1]
 
 					double val = 16.0 * (n0 + n1 + n2 + n3) + 0.5;
-					res[x][y][z] = min + val * (max - min);
+					res[ind++] = min + val * (max - min);
 				}
 
 		return res;

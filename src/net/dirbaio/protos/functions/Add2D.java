@@ -30,27 +30,23 @@ public class Add2D extends Function2D
 		this.a = a;
 		this.b = b;
 	}
-		
+	
 	@Override
-	public double[][] get2DData(int px, int pz, int sx, int sz)
+	public double[] get2DData(int px, int pz, int sx, int sz)
 	{
-		double[][] da = a.get2DData(px, pz, sx, sz);
-		double[][] db;
+		double[] da = a.get2DData(px, pz, sx, sz);
+		double[] db;
 		
 		if(a == b)
 			db = da;
 		else
 			db = b.get2DData(px, pz, sx, sz);
 		
-		for(int i = 0; i < sx; i++)
-			for(int j = 0; j < sz; j++)
-			{
-				double na = da[i][j];
-				double nb = db[i][j];
-				
-				da[i][j] = na+nb;
-			}
-		return da;
+        int s = sx*sz;
+		for(int i = 0; i < s; i++)
+            da[i] = da[i] + db[i];
+        
+        return da;
 	}
 
 	@Override

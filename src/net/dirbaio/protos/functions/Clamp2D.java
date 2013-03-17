@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.dirbaio.protos.functions;
 
 public class Clamp2D extends Function2D
@@ -22,7 +21,7 @@ public class Clamp2D extends Function2D
 
     public Function2D f;
     public double min = -1, max = 1;
-    
+
     public Clamp2D()
     {
     }
@@ -35,19 +34,21 @@ public class Clamp2D extends Function2D
     }
 
     @Override
-    public double[][] get2DData(int px, int pz, int sx, int sz)
+    public double[] get2DData(int px, int pz, int sx, int sz)
     {
-        double[][] d = f.get2DData(px, pz, sx, sz);
+        double[] d = f.get2DData(px, pz, sx, sz);
 
-        for (int i = 0; i < sx; i++)
-                for (int k = 0; k < sz; k++)
-                {
-                    double n = d[i][k];
-                    if(n < min) n = min;
-                    if(n > max) n = max;
-                    
-                    d[i][k] = n;
-                }
+        int s = sx * sz;
+        for (int i = 0; i < s; i++)
+        {
+            double n = d[i];
+            if (n < min)
+                n = min;
+            if (n > max)
+                n = max;
+
+            d[i] = n;
+        }
 
         return d;
     }

@@ -24,6 +24,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
+import net.dirbaio.protos.Main;
+import net.dirbaio.protos.functions.Output;
 import net.dirbaio.protos.generator.WorldGenerator;
 import net.dirbaio.protos.previewer.WorldPreviewer;
 
@@ -39,7 +41,7 @@ public class MainWindow extends JFrame implements ActionListener
         JToolBar tb = new JToolBar();
         add(tb, BorderLayout.NORTH);
         
-        ed = new EditorWindow(p = new Project());
+        ed = new EditorWindow(p = new Project(new Output(Main.epicIslands())));
         add(ed, BorderLayout.CENTER);
         
         tb.add(previewButton = new JButton("Preview"));

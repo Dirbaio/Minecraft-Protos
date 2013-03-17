@@ -32,9 +32,17 @@ public class Project
         addFunc(new Output());
     }
     
+    public Project(Function f)
+    {
+        addFunc(f);
+    }
+    
     
     private void addFunc(Function f)
     {
+        if(funcs.contains(f))
+            return;
+        
         funcs.add(f);
         Field[] fields = f.getClass().getFields();
         for(Field fi : fields)

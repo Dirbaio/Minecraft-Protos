@@ -43,12 +43,12 @@ public class HeightmapErosion extends Function2D
 	
 	
 	@Override
-	public double[][] get2DData(int px, int pz, int sx, int sz)
+	public double[] get2DData(int px, int pz, int sx, int sz)
 	{
-		double[][] res = new double[sx][sz];
+		double[] res = new double[sx*sz];
 		for(int i = 0; i < sx; i++)
 			for(int j = 0; j < sz; j++)
-				res[i][j] = heightmap[px-cx+i][pz-cz+j];
+				res[i*sz + j] = heightmap[px-cx+i][pz-cz+j];
 		
 		return res;
 	}
@@ -84,8 +84,13 @@ public class HeightmapErosion extends Function2D
 		csx = sx;
 		csz = sz;
 		
-		double[][] h = base.get2DData(xx, zz, sx, sz);
-		
+		double[] hh = base.get2DData(xx, zz, sx, sz);
+		double[][] h = new double[sx][sz];
+        int ind = 0;
+        for(int x = 0; x < sz; x++)
+            for(int z = 0; z < sz; z++)
+                h[x][z] = hh[ind++];
+        
         for(int i = 0; i < erosionIterations; i++)
         {
             double t = erosionSlopeStart + (erosionSlopeEnd-erosionSlopeStart)*i/erosionIterations;

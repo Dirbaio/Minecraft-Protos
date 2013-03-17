@@ -35,20 +35,21 @@ public class Clamp3D extends Function3D
     }
 
     @Override
-    public double[][][] get3DData(int px, int py, int pz, int sx, int sy, int sz)
+    public double[] get3DData(int px, int pz, int py, int sy, int sx, int sz)
     {
-        double[][][] d = f.get3DData(px, py, pz, sx, sy, sz);
+        double[] d = f.get3DData(px, pz, py, sy, sx, sz);
 
-        for (int i = 0; i < sx; i++)
-            for (int j = 0; j < sy; j++)
-                for (int k = 0; k < sz; k++)
-                {
-                    double n = d[i][j][k];
-                    if(n < min) n = min;
-                    if(n > max) n = max;
-                    
-                    d[i][j][k] = n;
-                }
+        int s = sx * sy * sz;
+        for (int i = 0; i < s; i++)
+        {
+            double n = d[i];
+            if (n < min)
+                n = min;
+            if (n > max)
+                n = max;
+
+            d[i] = n;
+        }
 
         return d;
     }
