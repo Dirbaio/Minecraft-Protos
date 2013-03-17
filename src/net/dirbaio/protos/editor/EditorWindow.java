@@ -15,27 +15,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.dirbaio.protos.functions;
+package net.dirbaio.protos.editor;
 
-import java.util.Random;
+import java.awt.BorderLayout;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
-public abstract class Function
+public class EditorWindow extends JPanel
 {
-    public int xPos, yPos;
-    public long randomSeedOffset;
+    Project p;
+    ProjectEditorTop pet;
+    FunctionChooser fc;
+    
+    public EditorWindow(Project p)
+    {
+        super(new BorderLayout());
+        this.p = p;
+        add(new JScrollPane(pet = new ProjectEditorTop(p)), BorderLayout.CENTER);
+        add(new JScrollPane(fc = new FunctionChooser(pet.e)), BorderLayout.WEST);
+    }
 
-    public Function()
-    {
-        Random r = new Random();
-        randomSeedOffset = r.nextLong();
-    }
-    
-	public void prepare(int x, int z, int sx, int sz) {}
-    
-    protected void setRandomSeed(long seed) {}
-    
-    public final void doSetRandomSeed(long seed)
-    {
-        setRandomSeed(seed+randomSeedOffset);
-    }
 }
+

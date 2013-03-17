@@ -29,12 +29,9 @@ public class Project
 
     public Project()
     {
+        addFunc(new Output());
     }
     
-    public Project(Function f)
-    {
-        addFunc(f);
-    }
     
     private void addFunc(Function f)
     {

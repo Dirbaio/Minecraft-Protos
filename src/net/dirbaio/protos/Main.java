@@ -23,6 +23,7 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import net.dirbaio.protos.editor.EditorWindow;
+import net.dirbaio.protos.editor.MainWindow;
 import net.dirbaio.protos.editor.Project;
 import net.dirbaio.protos.editor.ProjectEditorTop;
 import net.dirbaio.protos.functions.*;
@@ -205,14 +206,8 @@ public class Main extends JFrame
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
         Images.init();
-        
-        Function2D a, b;
-        Project p = new Project(new Output(null));
-        JFrame fr = new JFrame("Protos Editor");
-        fr.setSize(500, 500);
-        fr.add(new EditorWindow(p), BorderLayout.CENTER);
-        fr.setVisible(true);
-        fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+     
+        new MainWindow().setVisible(true);
 
         /*
         WorldGenerator wg = new WorldGenerator(floatingIslands());

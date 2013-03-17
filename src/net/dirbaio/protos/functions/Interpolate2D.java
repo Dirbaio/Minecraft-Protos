@@ -22,6 +22,10 @@ public class Interpolate2D extends Function2D
 	public Function2D a, b;
 	public Function2D weight;
 
+    public Interpolate2D()
+    {
+    }
+
 	public Interpolate2D(Function2D a, Function2D b, Function2D weight)
 	{
 		this.a = a;

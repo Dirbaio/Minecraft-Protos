@@ -27,6 +27,10 @@ public class Image2D extends Function2D
     BufferedImage bi;
     public String path;
     public int x0, z0;
+
+    public Image2D()
+    {
+    }
     
     public Image2D(String path)
     {

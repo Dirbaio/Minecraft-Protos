@@ -17,13 +17,10 @@
 
 package net.dirbaio.protos.generator;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.dirbaio.protos.Chunk;
 import net.dirbaio.protos.functions.Function;
 import net.dirbaio.protos.functions.FunctionTerrain;
@@ -42,7 +39,7 @@ public class WorldGenerator implements Runnable
     private int numWorkerThreads = 1;
     private WorkerThread[] workerThreads;
     
-    private ArrayList<ChunkOutput> out = new ArrayList<ChunkOutput>();
+    private ArrayList<ChunkOutput> out = new ArrayList<>();
     
     int xMin, zMin;
     int xSize, zSize;
@@ -66,6 +63,7 @@ public class WorldGenerator implements Runnable
             this.op = op;
         }
 
+        @Override
         public int compareTo(GeneratorTask o)
         {
             if (op < o.op)
@@ -176,12 +174,13 @@ public class WorldGenerator implements Runnable
     }
 
 
-    public void runInThread() throws IOException
+    public void runInThread()
     {
         new Thread(this, "Generator reporting thread").start();
     }
 
     
+    @Override
     public void run()
     {
         //First setup!
@@ -192,8 +191,8 @@ public class WorldGenerator implements Runnable
             o.generationStarted(xMin, zMin, xSize, zSize);
 
         //Create queue.
-        taskQueue = new PriorityBlockingQueue<GeneratorTask>();
-        lockedTasksQueue = new LinkedBlockingQueue<GeneratorTask>();
+        taskQueue = new PriorityBlockingQueue<>();
+        lockedTasksQueue = new LinkedBlockingQueue<>();
 
         //Fill it.
         int max = xSize > zSize ? xSize : zSize;
@@ -251,7 +250,7 @@ public class WorldGenerator implements Runnable
         System.out.println("Finishing...");
         for(ChunkOutput o : out)
             o.generationFinished();
-
+        System.gc();
         System.out.println("Generation finished!");
     }
 
@@ -311,7 +310,6 @@ public class WorldGenerator implements Runnable
         chunks[xc][zc].opsDone[3] = true;
 
         chunksLeft--;
-
         Chunk c = getChunk(xc, zc);
 
         for (ChunkOutput o : out)

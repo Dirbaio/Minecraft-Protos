@@ -34,6 +34,8 @@ public class BedrockLayer extends FunctionTerrain
 	public short[] getTerrainData(int px, int pz, int sx, int sz)
 	{
 		short[] res = base.getTerrainData(px, pz, sx, sz);
+            
+        //FIXME Hardcoded size!
 		for(int i = 0; i < 256; i++)
 			res[i] = (short)7;
 		return res;

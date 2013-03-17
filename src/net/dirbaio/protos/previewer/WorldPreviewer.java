@@ -23,7 +23,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import javax.swing.*;
+import javax.swing.JComponent;
 import net.dirbaio.protos.Chunk;
 import net.dirbaio.protos.generator.ChunkOutput;
 
@@ -70,29 +70,35 @@ public class WorldPreviewer extends JComponent implements ChunkOutput, MouseList
             }
     }
 
+    @Override
     public void mouseClicked(MouseEvent e)
     {
     }
     int downX, downY;
 
+    @Override
     public void mousePressed(MouseEvent e)
     {
         downX = e.getX();
         downY = e.getY();
     }
 
+    @Override
     public void mouseReleased(MouseEvent e)
     {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e)
     {
     }
 
+    @Override
     public void mouseExited(MouseEvent e)
     {
     }
 
+    @Override
     public void mouseDragged(MouseEvent e)
     {
         x0 -= downX - e.getX();
@@ -102,10 +108,12 @@ public class WorldPreviewer extends JComponent implements ChunkOutput, MouseList
         repaint();
     }
 
+    @Override
     public void mouseMoved(MouseEvent e)
     {
     }
     
+    @Override
     public void chunkDone(Chunk c)
     {
         chunks[c.xPos-xMin][c.zPos-zMin] = c;
@@ -113,6 +121,7 @@ public class WorldPreviewer extends JComponent implements ChunkOutput, MouseList
         repaint();
     }
     
+    @Override
     public void generationStarted(int xMin, int zMin, int xSize, int zSize)
     {
         this.xSize = xSize;
@@ -122,6 +131,7 @@ public class WorldPreviewer extends JComponent implements ChunkOutput, MouseList
         this.chunks = new Chunk[xSize][zSize];
     }
 
+    @Override
     public void generationFinished()
     {
     }

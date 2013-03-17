@@ -22,6 +22,10 @@ public class Interpolate3D extends Function3D
 	public Function3D a, b;
 	public Function3D weight;
 
+    public Interpolate3D()
+    {
+    }
+
 	public Interpolate3D(Function3D a, Function3D b, Function3D weight)
 	{
 		this.a = a;
