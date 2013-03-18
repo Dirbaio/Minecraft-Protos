@@ -41,7 +41,7 @@ public class MainWindow extends JFrame implements ActionListener
         JToolBar tb = new JToolBar();
         add(tb, BorderLayout.NORTH);
         
-        ed = new EditorWindow(p = new Project(new Output(Main.epicIslands())));
+        ed = new EditorWindow(p = new Project());
         add(ed, BorderLayout.CENTER);
         
         tb.add(previewButton = new JButton("Preview"));

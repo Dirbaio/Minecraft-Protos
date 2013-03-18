@@ -99,16 +99,29 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             JLabel label = new JLabel(p.name);
             JComponent comp = p.component;
             label.setLabelFor(comp);
-
-            c = new GridBagConstraints();
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.insets = new Insets(3, 3, 3, 3);
-            c.gridx = 0;
-            c.gridy = y++;
-            add(label, c);
-            c.gridx = 1;
-            c.weightx = 1;
-            add(comp, c);
+            if(comp instanceof JTextArea)
+            {
+                c = new GridBagConstraints();
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.insets = new Insets(3, 3, 3, 3);
+                c.gridx = 0;
+                c.gridy = y++;
+                c.gridwidth = 2;
+                c.weightx = 1;
+                add(comp, c);
+            }
+            else
+            {
+                c = new GridBagConstraints();
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.insets = new Insets(3, 3, 3, 3);
+                c.gridx = 0;
+                c.gridy = y++;
+                add(label, c);
+                c.gridx = 1;
+                c.weightx = 1;
+                add(comp, c);
+            }
         }
 
         setLocation(f.xPos, f.yPos);
@@ -140,7 +153,8 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             this.name = name;
             this.index = index;
             this.component = createComponent();
-            component.setPreferredSize(new Dimension(100, component.getPreferredSize().height));
+            if(!(component instanceof JTextArea))
+                component.setPreferredSize(new Dimension(100, component.getPreferredSize().height));
         }
 
         public Object getValue()
@@ -186,9 +200,9 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             }
             else
             {
-                String val = getValue().toString();
-                JTextField res = new JTextField(val);
-                res.getDocument().addDocumentListener(new DocumentListener()
+                Object oval = getValue();
+                String val = oval == null ? "" : oval.toString();
+                DocumentListener dl = new DocumentListener()
                 {
                     @Override
                     public void changedUpdate(DocumentEvent e)
@@ -207,8 +221,19 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
                     {
                         modified();
                     }
-                });
-                return res;
+                };
+                if(field.getDeclaringClass() == Notes.class)
+                {
+                    JTextArea res = new JTextArea(val);
+                    res.getDocument().addDocumentListener(dl);
+                    return res;
+                }
+                else
+                {
+                    JTextField res = new JTextField(val);
+                    res.getDocument().addDocumentListener(dl);
+                    return res;
+                }
             }
         }
 
@@ -218,8 +243,19 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
 
         private void modified()
         {
-            JTextField tf = (JTextField) component;
-            String text = tf.getText();
+            String text;
+            if(component instanceof JTextArea)
+            {
+                text = ((JTextArea) component).getText();
+                component.validate();
+                component.setSize(component.getPreferredSize());
+                ed.validate();
+                ed.setSize(ed.getPreferredSize());
+            }
+            else
+                text = ((JTextField) component).getText();
+    
+            System.out.println("<"+text+">");
             Object val = null;
             try
             {
@@ -232,16 +268,16 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             {
                 setValue(val);
                 if(hasSavedBorder)
-                    tf.setBorder(savedBorder);
+                    component.setBorder(savedBorder);
             }
             else
             {
                 if(!hasSavedBorder)
                 {
-                    savedBorder = tf.getBorder();
+                    savedBorder = component.getBorder();
                     hasSavedBorder = true;
                 }
-                tf.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+                component.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
             }
         }
 

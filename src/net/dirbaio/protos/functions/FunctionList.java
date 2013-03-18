@@ -19,7 +19,6 @@ package net.dirbaio.protos.functions;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.dirbaio.protos.functions.*;
 
 public class FunctionList
 {
@@ -28,6 +27,7 @@ public class FunctionList
     static
     {
         functions = new ArrayList<>();
+        functions.add(Notes.class);
         functions.add(Add2D.class);
         functions.add(Add3D.class);
         functions.add(BeachOverlay.class);
