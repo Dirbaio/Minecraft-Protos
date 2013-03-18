@@ -21,17 +21,21 @@ import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
-import net.dirbaio.protos.Main;
-import net.dirbaio.protos.functions.Output;
+import net.dirbaio.protos.generator.ChunkOutput;
+import net.dirbaio.protos.generator.DaniChunkOutput;
+import net.dirbaio.protos.generator.DiskChunkOutput;
 import net.dirbaio.protos.generator.WorldGenerator;
 import net.dirbaio.protos.previewer.WorldPreviewer;
 
 public class MainWindow extends JFrame implements ActionListener
 {
     JButton previewButton;
+    JButton generateButton;
+    JButton generateDaniButton;
     EditorWindow ed;
     Project p;
     
@@ -46,6 +50,10 @@ public class MainWindow extends JFrame implements ActionListener
         
         tb.add(previewButton = new JButton("Preview"));
         previewButton.addActionListener(this);
+        tb.add(generateButton = new JButton("Generate"));
+        generateButton.addActionListener(this);
+        tb.add(generateDaniButton = new JButton("Towerthousand Generation™"));
+        generateDaniButton.addActionListener(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(getPreferredSize());
     }
@@ -53,7 +61,8 @@ public class MainWindow extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        if(e.getSource() == previewButton)
+        Object s = e.getSource();
+        if(s == previewButton)
         {
             WorldGenerator wg = new WorldGenerator(p.getOutput().output);
             
@@ -67,6 +76,31 @@ public class MainWindow extends JFrame implements ActionListener
 
             //Don't remove this or very bad things will happen
             fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+            
+            wg.runInThread();
+        }
+        else if(s == generateButton)
+        {
+            WorldGenerator wg = new WorldGenerator(p.getOutput().output);
+            
+            DiskChunkOutput out = new DiskChunkOutput(new File("./generated-map/"));
+            wg.addChunkOutput(out);
+            
+            ProgressFrame pf = new ProgressFrame();
+            pf.setVisible(true);
+            wg.addProgressListener(pf);
+            
+            wg.runInThread();
+        }else if(s == generateDaniButton)
+        {
+            WorldGenerator wg = new WorldGenerator(p.getOutput().output);
+            
+            ChunkOutput out = new DaniChunkOutput("out.bin");
+            wg.addChunkOutput(out);
+            
+            ProgressFrame pf = new ProgressFrame();
+            pf.setVisible(true);
+            wg.addProgressListener(pf);
             
             wg.runInThread();
         }

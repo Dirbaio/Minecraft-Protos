@@ -40,6 +40,7 @@ public class WorldGenerator implements Runnable
     private WorkerThread[] workerThreads;
     
     private ArrayList<ChunkOutput> out = new ArrayList<>();
+    private ArrayList<ProgressListener> listeners = new ArrayList<>();
     
     int xMin, zMin;
     int xSize, zSize;
@@ -93,7 +94,7 @@ public class WorldGenerator implements Runnable
 
         //Autodetect based on number of cores!
         numWorkerThreads = Runtime.getRuntime().availableProcessors();
-        System.out.println("Using "+numWorkerThreads+"worker threads for generation.");
+        System.out.println("Using "+numWorkerThreads+" worker threads for generation.");
         
         //Set seed!
         try
@@ -156,6 +157,11 @@ public class WorldGenerator implements Runnable
     public void addChunkOutput(ChunkOutput out)
     {
         this.out.add(out);
+    }
+    
+    public void addProgressListener(ProgressListener l)
+    {
+        listeners.add(l);
     }
 
     public Chunk getChunk(int x, int z)
@@ -232,6 +238,12 @@ public class WorldGenerator implements Runnable
             System.out.print((ddone[2] * 100 / chunkCount) + "% ");
             System.out.print((ddone[3] * 100 / chunkCount) + "% ");
             System.out.println();
+            
+            double percent = ddone[0] + ddone[1] + ddone[2] + ddone[3];
+            percent *= 25;
+            percent /= chunkCount;
+            for(ProgressListener pl : listeners)
+                pl.setPercent(percent);
         }
 
         //Stop all threads.
@@ -252,6 +264,9 @@ public class WorldGenerator implements Runnable
             o.generationFinished();
         System.gc();
         System.out.println("Generation finished!");
+        
+        for(ProgressListener pl : listeners)
+            pl.finished();
     }
 
     //OP MANAGEMENT
