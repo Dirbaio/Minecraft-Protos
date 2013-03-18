@@ -69,7 +69,9 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         JIconButton previewButton = new JIconButton(Images.preview);
         if(f.getClass() != Output.class)
             buttonsPanel.add(deleteButton);
-        buttonsPanel.add(previewButton);
+        
+        //Meh. Beta won't have per-function preview.
+//        buttonsPanel.add(previewButton);
         
         JPanel titlePanel = new JPanel(new BorderLayout()){
 
@@ -247,15 +249,14 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             if(component instanceof JTextArea)
             {
                 text = ((JTextArea) component).getText();
-                component.validate();
                 component.setSize(component.getPreferredSize());
-                ed.validate();
+//                ed.validate();
                 ed.setSize(ed.getPreferredSize());
             }
             else
                 text = ((JTextField) component).getText();
     
-            System.out.println("<"+text+">");
+            
             Object val = null;
             try
             {
