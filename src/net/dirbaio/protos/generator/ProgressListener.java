@@ -14,27 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.dirbaio.protos.functions;
+package net.dirbaio.protos.generator;
 
-
-public class Output extends Function
+/**
+ *
+ * @author dirbaio
+ */
+public interface ProgressListener
 {
-    public FunctionTerrain output;
-    public BiomeFunction biome;
-    
-    public Output()
-    {
-    }
-
-    public Output(FunctionTerrain base)
-    {
-        this.output = base;
-    }
-
-    @Override
-    public void prepare(int x, int z, int sx, int sz)
-    {
-        output.prepare(x, z, sx, sz);
-    }
-    
+    public void setPercent(double percent);
+    public void finished();
 }

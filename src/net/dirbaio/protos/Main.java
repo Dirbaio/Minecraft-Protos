@@ -17,23 +17,16 @@
 
 package net.dirbaio.protos;
 
-import java.awt.BorderLayout;
+import net.dirbaio.protos.previewer.ImageViewer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.JFrame;
 import net.dirbaio.protos.editor.MainWindow;
 import net.dirbaio.protos.functions.*;
-import net.dirbaio.protos.generator.DaniChunkOutput;
-import net.dirbaio.protos.generator.WorldGenerator;
-import net.dirbaio.protos.previewer.WorldPreviewer;
+import net.dirbaio.protos.previewer.BiomePreviewer;
 
 public class Main extends JFrame
 {
-
-//    public static String worldPath = "C:\\Users\\Dario\\AppData\\Roaming\\.minecraft\\saves\\World1\\";
-//    public static String worldPath = "C:\\Users\\dirbaio.dirbaio-win7\\AppData\\Roaming\\.minecraft\\saves\\";
-    public static String worldPath = "./generated-map/";
-
     public static FunctionTerrain epicIslands()
     {
         Function3D terrainMap = new Add3D(
@@ -161,71 +154,27 @@ public class Main extends JFrame
         new ImageViewer(f.render(0, 0, 512, 512, -1, 1)).setVisible(true);
     }
     
-    
-    public static void main_dani(String[] args) throws FileNotFoundException, IOException
-    {
-        Function3D f = new SimplexNoise3D(50, 50, 50, -200, 200);
-        f = new Add3D(f, new SimplexNoise3D(15, 15, 15, -50, 50));
-//        f = new Add3D(f, new PerlinNoise3D(500, 1000, 500, -70, 70));
-        f = new Substract3D(f, new Substract3D(new GetYCoord(), new Constant(64)));
-        f = new Substract3D(
-                f, 
-                new Multiply3D(
-                    new Min3D(
-                        new Constant(0), 
-                        new Substract3D(new GetYCoord(), new Constant(64))), 
-                    new Constant(10)));
-
-        FunctionTerrain t = new TerrainVolume(f, (short)1);
-        
-        WorldGenerator wg = new WorldGenerator(t);
-        int s = 8;
-        if(false) //Set to true to enable preview
-        {
-            WorldPreviewer wp = new WorldPreviewer();
-            wg.addChunkOutput(wp);
-
-            JFrame fr = new JFrame("Minecraft Protos Previewer");
-            fr.setSize(500, 500);
-            fr.add(wp, BorderLayout.CENTER);
-            fr.setVisible(true);
-            fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        }
-        else
-        {
-            wg.addChunkOutput(new DaniChunkOutput("out.bin"));
-        }
-        wg.setSize(-s, -s, s*2, s*2);
-        
-        wg.run();
-    }
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
         Images.init();
      
         new MainWindow().setVisible(true);
-
-        /*
-        WorldGenerator wg = new WorldGenerator(floatingIslands());
-        int s = 64;
-        if(true)
-        {
-            s = 8;
-            WorldPreviewer wp = new WorldPreviewer();
-            wg.addChunkOutput(wp);
-
-            JFrame fr = new JFrame("Minecraft Protos Previewer");
-            fr.setSize(500, 500);
-            fr.add(wp, BorderLayout.CENTER);
-            fr.setVisible(true);
-            fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        }
-        else
-        {
-            wg.addChunkOutput(new DiskChunkOutput(new File(worldPath)));
-        }
-        wg.setSize(-s, -s, s*2, s*2);
+    }
+    
+    public static void mainb(String[] args) throws FileNotFoundException, IOException
+    {
+        int sx = 1024;
+        int sz = 1024;
+        BiomeFunction f = new GenLayerIsland();
+        int[] data = f.getBiomeData(-sx/2, -sz/2, sx, sz);
+        Biome[][] biomes = new Biome[sx][sz];
+        for(int x = 0; x < sx; x++)
+            for(int z = 0; z < sz; z++)
+            {
+                int v = data[x+z*sx];
+                biomes[x][z] = v >= 0 ? Biome.biomeList[v] : Biome.hell;
+            }
         
-        wg.run();*/
+        new BiomePreviewer(biomes).setVisible(true);
     }
 }

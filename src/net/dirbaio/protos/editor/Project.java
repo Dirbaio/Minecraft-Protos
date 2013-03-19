@@ -38,7 +38,7 @@ public class Project
     }
     
     
-    private void addFunc(Function f)
+    public void addFunc(Function f)
     {
         if(funcs.contains(f))
             return;

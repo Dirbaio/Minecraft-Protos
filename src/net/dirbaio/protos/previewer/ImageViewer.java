@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.dirbaio.protos;
+package net.dirbaio.protos.previewer;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -32,7 +32,7 @@ public class ImageViewer extends JFrame
 
     public ImageViewer(Image i)
     {
-        super("MCMap");
+        super("Protos ImageViewer");
         ii = i;
         setSize(800, 500);
         add(new JScrollPane(new ImagePreviewerControl()), BorderLayout.CENTER);

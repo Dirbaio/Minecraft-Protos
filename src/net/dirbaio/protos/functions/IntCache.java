@@ -16,25 +16,12 @@
  */
 package net.dirbaio.protos.functions;
 
-
-public class Output extends Function
+class IntCache
 {
-    public FunctionTerrain output;
-    public BiomeFunction biome;
-    
-    public Output()
+    static int[] getIntCache(int size)
     {
-    }
-
-    public Output(FunctionTerrain base)
-    {
-        this.output = base;
-    }
-
-    @Override
-    public void prepare(int x, int z, int sx, int sz)
-    {
-        output.prepare(x, z, sx, sz);
+        //TODO Optimize
+        return new int[size];
     }
     
 }

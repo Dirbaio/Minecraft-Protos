@@ -346,6 +346,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         editProperty(null);
     }
 
+    @SuppressWarnings("unchecked")
     void addFunction(Class c)
     {
         try
