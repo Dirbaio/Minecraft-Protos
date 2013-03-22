@@ -17,7 +17,6 @@
 
 package net.dirbaio.protos.generator;
 
-import java.awt.Point;
 import net.dirbaio.protos.Chunk;
 
 public class WorkerThread extends Thread

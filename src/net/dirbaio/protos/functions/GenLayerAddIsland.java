@@ -28,34 +28,33 @@ public class GenLayerAddIsland extends BiomeFunction
                 int var15 = var9[var12 + 0 + (var11 + 2) * var7];
                 int var16 = var9[var12 + 2 + (var11 + 2) * var7];
                 int var17 = var9[var12 + 1 + (var11 + 1) * var7];
-                this.setPosForRandom(var12 + px, var11 + pz);
 
                 if (var17 == 0 && (var13 != 0 || var14 != 0 || var15 != 0 || var16 != 0))
                 {
                     int var18 = 1;
                     int var19 = 1;
 
-                    if (var13 != 0 && this.nextInt(var18++) == 0)
+                    if (var13 != 0 && this.randForPos(var18++, var12 + px, var11 + pz, 0) == 0)
                     {
                         var19 = var13;
                     }
 
-                    if (var14 != 0 && this.nextInt(var18++) == 0)
+                    if (var14 != 0 && this.randForPos(var18++, var12 + px, var11 + pz, 1) == 0)
                     {
                         var19 = var14;
                     }
 
-                    if (var15 != 0 && this.nextInt(var18++) == 0)
+                    if (var15 != 0 && this.randForPos(var18++, var12 + px, var11 + pz, 2) == 0)
                     {
                         var19 = var15;
                     }
 
-                    if (var16 != 0 && this.nextInt(var18++) == 0)
+                    if (var16 != 0 && this.randForPos(var18++, var12 + px, var11 + pz, 3) == 0)
                     {
                         var19 = var16;
                     }
 
-                    if (this.nextInt(3) == 0)
+                    if (this.randForPos(3, var12 + px, var11 + pz, 4) == 0)
                     {
                         var10[var12 + var11 * sx] = var19;
                     }
@@ -70,7 +69,7 @@ public class GenLayerAddIsland extends BiomeFunction
                 }
                 else if (var17 > 0 && (var13 == 0 || var14 == 0 || var15 == 0 || var16 == 0))
                 {
-                    if (this.nextInt(5) == 0)
+                    if (this.randForPos(5, var12 + px, var11 + pz, 5) == 0)
                     {
                         if (var17 == Biome.icePlains.biomeID)
                         {

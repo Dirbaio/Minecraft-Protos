@@ -31,9 +31,7 @@ public class GenLayerSmooth extends BiomeFunction
 
                 if (var13 == var14 && var15 == var16)
                 {
-                    this.setPosForRandom(var12 + px, var11 + pz);
-
-                    if (this.nextInt(2) == 0)
+                    if (this.randForPos(2, var12 + px, var11 + pz, 0) == 0)
                     {
                         var17 = var13;
                     }

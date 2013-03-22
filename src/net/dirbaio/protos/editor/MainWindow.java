@@ -56,7 +56,7 @@ public class MainWindow extends JFrame implements ActionListener
     EditorWindow ed;
     Project p;
 
-    private BiomeFunction getBiome()
+    public static BiomeFunction getBiome()
     {
 
         GenLayerIsland var3 = new GenLayerIsland();
@@ -72,7 +72,6 @@ public class MainWindow extends JFrame implements ActionListener
         GenLayerAddMushroomIsland var16 = new GenLayerAddMushroomIsland(var10);
 
         int zoomCt = 4; //6 = Large biomes
-
         BiomeFunction var5 = GenLayerZoom.multiZoom(var16, 0);
         GenLayerRiverInit var13 = new GenLayerRiverInit(var5);
         var5 = GenLayerZoom.multiZoom(var13, zoomCt + 2);

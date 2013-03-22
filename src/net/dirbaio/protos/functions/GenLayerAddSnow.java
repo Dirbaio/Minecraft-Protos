@@ -24,15 +24,13 @@ public class GenLayerAddSnow extends BiomeFunction
             for (int var12 = 0; var12 < sx; ++var12)
             {
                 int var13 = var9[var12 + 1 + (var11 + 1) * var7];
-                this.setPosForRandom(var12 + px, var11 + pz);
-
                 if (var13 == 0)
                 {
                     var10[var12 + var11 * sx] = 0;
                 }
                 else
                 {
-                    int var14 = this.nextInt(5);
+                    int var14 = this.randForPos(5, var12 + px, var11 + pz, 0);
 
                     if (var14 == 0)
                     {

@@ -8,18 +8,11 @@ public class GenLayerIsland extends BiomeFunction
         int[] res = IntCache.getIntCache(sx * sz);
 
         for (int z = 0; z < sz; ++z)
-        {
             for (int x = 0; x < sx; ++x)
-            {
-                this.setPosForRandom(px + x, pz + z);
-                res[x + z * sx] = this.nextInt(10) == 0 ? 1 : 0;
-            }
-        }
+                res[x + z * sx] = this.randForPos(10, px + x, pz + z, 0) == 0 ? 1 : 0;
 
         if (px > -sx && px <= 0 && pz > -sz && pz <= 0)
-        {
             res[-px + -pz * sx] = 1;
-        }
 
         return res;
     }

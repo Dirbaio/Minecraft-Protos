@@ -28,9 +28,7 @@ public class GenLayerAddMushroomIsland extends BiomeFunction
                 int var15 = var9[var12 + 0 + (var11 + 2) * var7];
                 int var16 = var9[var12 + 2 + (var11 + 2) * var7];
                 int var17 = var9[var12 + 1 + (var11 + 1) * var7];
-                this.setPosForRandom(var12 + px, var11 + pz);
-
-                if (var17 == 0 && var13 == 0 && var14 == 0 && var15 == 0 && var16 == 0 && this.nextInt(100) == 0)
+                if (var17 == 0 && var13 == 0 && var14 == 0 && var15 == 0 && var16 == 0 && this.randForPos(100, var12 + px, var11 + pz, 0) == 0)
                 {
                     var10[var12 + var11 * sx] = Biome.mushroomIsland.biomeID;
                 }

@@ -19,7 +19,6 @@ public class GenLayerShore extends BiomeFunction
         {
             for (int var8 = 0; var8 < sx; ++var8)
             {
-                this.setPosForRandom(var8 + px, var7 + pz);
                 int var9 = var5[var8 + 1 + (var7 + 1) * (sx + 2)];
                 int var10;
                 int var11;

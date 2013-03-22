@@ -23,7 +23,6 @@ public class GenLayerBiome extends BiomeFunction
         {
             for (int var8 = 0; var8 < sx; ++var8)
             {
-                this.setPosForRandom(var8 + px, var7 + pz);
                 int var9 = var5[var8 + var7 * sx];
 
                 if (var9 == 0)
@@ -36,11 +35,11 @@ public class GenLayerBiome extends BiomeFunction
                 }
                 else if (var9 == 1)
                 {
-                    var6[var8 + var7 * sx] = this.allowedBiomes[this.nextInt(this.allowedBiomes.length)].biomeID;
+                    var6[var8 + var7 * sx] = this.allowedBiomes[this.randForPos(this.allowedBiomes.length, var8 + px, var7 + pz, 0)].biomeID;
                 }
                 else
                 {
-                    int var10 = this.allowedBiomes[this.nextInt(this.allowedBiomes.length)].biomeID;
+                    int var10 = this.allowedBiomes[this.randForPos(this.allowedBiomes.length, var8 + px, var7 + pz, 1)].biomeID;
 
                     if (var10 == Biome.taiga.biomeID)
                     {

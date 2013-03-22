@@ -18,10 +18,9 @@ public class GenLayerHills extends BiomeFunction
         {
             for (int var8 = 0; var8 < sx; ++var8)
             {
-                this.setPosForRandom(var8 + px, var7 + pz);
                 int var9 = var5[var8 + 1 + (var7 + 1) * (sx + 2)];
 
-                if (this.nextInt(3) == 0)
+                if (this.randForPos(3, var8 + px, var7 + pz, 0) == 0)
                 {
                     int var10 = var9;
 

@@ -27,13 +27,12 @@ public class GenLayerFuzzyZoom extends BiomeFunction
 
             for (int x = 0; x < sx2 - 1; ++x)
             {
-                this.setPosForRandom(x + px2 << 1, z + pz2 << 1);
                 int var18 = data2[x + 1 + (z + 0) * sx2];
                 int var19 = data2[x + 1 + (z + 1) * sx2];
                 data[var14] = var15;
-                data[var14++ + var11] = this.choose(var15, var16);
-                data[var14] = this.choose(var15, var18);
-                data[var14++ + var11] = this.choose(var15, var18, var16, var19);
+                data[var14++ + var11] = this.choose(var15, var16, x + px2 << 1, z + pz2 << 1, 0);
+                data[var14] = this.choose(var15, var18, x + px2 << 1, z + pz2 << 1, 1);
+                data[var14++ + var11] = this.choose(var15, var18, var16, var19, x + px2 << 1, z + pz2 << 1, 2);
                 var15 = var18;
                 var16 = var19;
             }
@@ -52,17 +51,17 @@ public class GenLayerFuzzyZoom extends BiomeFunction
     /**
      * randomly choose between the two args
      */
-    protected int choose(int par1, int par2)
+    protected int choose(int par1, int par2, int x, int z, int n)
     {
-        return this.nextInt(2) == 0 ? par1 : par2;
+        return this.randForPos(2, x, z, n) == 0 ? par1 : par2;
     }
 
     /**
      * randomly choose between the four args
      */
-    protected int choose(int par1, int par2, int par3, int par4)
+    protected int choose(int par1, int par2, int par3, int par4, int x, int z, int n)
     {
-        int var5 = this.nextInt(4);
+        int var5 = this.randForPos(4, x, z, n);
         return var5 == 0 ? par1 : (var5 == 1 ? par2 : (var5 == 2 ? par3 : par4));
     }
 }

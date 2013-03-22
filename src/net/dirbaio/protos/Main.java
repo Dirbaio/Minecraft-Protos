@@ -24,6 +24,7 @@ import javax.swing.JFrame;
 import net.dirbaio.protos.editor.MainWindow;
 import net.dirbaio.protos.functions.*;
 import net.dirbaio.protos.previewer.BiomePreviewer;
+import net.dirbaio.protos.previewer.StupidFrame;
 
 public class Main extends JFrame
 {
@@ -154,27 +155,16 @@ public class Main extends JFrame
         new ImageViewer(f.render(0, 0, 512, 512, -1, 1)).setVisible(true);
     }
     
-    public static void main(String[] args) throws FileNotFoundException, IOException
+    public static void mainb(String[] args) throws FileNotFoundException, IOException
     {
         Images.init();
      
         new MainWindow().setVisible(true);
     }
     
-    public static void mainb(String[] args) throws FileNotFoundException, IOException
+    public static void main(String[] args) throws FileNotFoundException, IOException
     {
-        int sx = 1024;
-        int sz = 1024;
-        BiomeFunction f = new GenLayerIsland();
-        int[] data = f.getBiomeData(-sx/2, -sz/2, sx, sz);
-        Biome[][] biomes = new Biome[sx][sz];
-        for(int x = 0; x < sx; x++)
-            for(int z = 0; z < sz; z++)
-            {
-                int v = data[x+z*sx];
-                biomes[x][z] = v >= 0 ? Biome.biomeList[v] : Biome.hell;
-            }
-        
-        new BiomePreviewer(biomes).setVisible(true);
+        BiomeFunction f = MainWindow.getBiome();
+        new StupidFrame(new BiomePreviewer(f)).setVisible(true);
     }
 }

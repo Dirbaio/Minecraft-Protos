@@ -23,7 +23,7 @@ import javax.swing.ImageIcon;
 public class Images
 {
     public static ImageIcon open, save, gen, delete, settings, preview, stop;
-    public static ImageIcon function2d, function3d, functionterrain;
+    public static ImageIcon function2d, function3d, functionterrain, beingPainted;
     static
     {
         init();
