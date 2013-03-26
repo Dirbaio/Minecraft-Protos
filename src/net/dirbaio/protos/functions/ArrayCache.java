@@ -16,12 +16,22 @@
  */
 package net.dirbaio.protos.functions;
 
-class IntCache
+class ArrayCache
 {
-    static int[] getIntCache(int size)
+    //TODO Improve this shit so it actually caches.
+    
+    static int[] newInt(int size)
     {
-        //TODO Optimize
         return new int[size];
     }
-    
+
+    static double[] newDouble(int size)
+    {
+        return new double[size];
+    }
+
+    static short[] newShort(int size)
+    {
+        return new short[size];
+    }
 }

@@ -16,7 +16,7 @@ public class GenLayerRiverMix extends BiomeFunction
     {
         int[] var5 = this.biomePattern.getBiomeData(px, pz, sx, sz);
         int[] var6 = this.riverPattern.getBiomeData(px, pz, sx, sz);
-        int[] var7 = IntCache.getIntCache(sx * sz);
+        int[] var7 = ArrayCache.newInt(sx * sz);
 
         for (int var8 = 0; var8 < sx * sz; ++var8)
         {

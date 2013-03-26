@@ -12,40 +12,40 @@ public class GenLayerZoom extends BiomeFunction
     @Override
     public int[] getBiomeData(int px, int pz, int sx, int sz)
     {
-        int var5 = px >> 1;
-        int var6 = pz >> 1;
-        int var7 = (sx >> 1) + 3;
-        int var8 = (sz >> 1) + 3;
-        int[] var9 = this.base.getBiomeData(var5, var6, var7, var8);
-        int[] var10 = IntCache.getIntCache(var7 * 2 * var8 * 2);
-        int var11 = var7 << 1;
+        int px2 = px >> 1;
+        int pz2 = pz >> 1;
+        int sx2 = (sx >> 1) + 3;
+        int sz2 = (sz >> 1) + 3;
+        int[] data2 = base.getBiomeData(px2, pz2, sx2, sz2);
+        int[] data = ArrayCache.newInt(sx2 * 2 * sz2 * 2);
+        int var11 = sx2 << 1;
         int var13;
 
-        for (int var12 = 0; var12 < var8 - 1; ++var12)
+        for (int z = 0; z < sz2 - 1; ++z)
         {
-            var13 = var12 << 1;
+            var13 = z << 1;
             int var14 = var13 * var11;
-            int var15 = var9[0 + (var12 + 0) * var7];
-            int var16 = var9[0 + (var12 + 1) * var7];
+            int var15 = data2[0 + (z + 0) * sx2];
+            int var16 = data2[0 + (z + 1) * sx2];
 
-            for (int var17 = 0; var17 < var7 - 1; ++var17)
+            for (int x = 0; x < sx2 - 1; ++x)
             {
-                int var18 = var9[var17 + 1 + (var12 + 0) * var7];
-                int var19 = var9[var17 + 1 + (var12 + 1) * var7];
-                var10[var14] = var15;
-                var10[var14++ + var11] = this.choose(var15, var16, var17 + var5 << 1, var12 + var6 << 1, 0);
-                var10[var14] = this.choose(var15, var18, var17 + var5 << 1, var12 + var6 << 1, 0);
-                var10[var14++ + var11] = this.modeOrRandom(var15, var18, var16, var19, var17 + var5 << 1, var12 + var6 << 1, 0);
+                int var18 = data2[x + 1 + (z + 0) * sx2];
+                int var19 = data2[x + 1 + (z + 1) * sx2];
+                data[var14] = var15;
+                data[var14++ + var11] = this.choose(var15, var16, x + px2 << 1, z + pz2 << 1, 0);
+                data[var14] = this.choose(var15, var18, x + px2 << 1, z + pz2 << 1, 1);
+                data[var14++ + var11] = this.modeOrRandom(var15, var18, var16, var19, x + px2 << 1, z + pz2 << 1, 2);
                 var15 = var18;
                 var16 = var19;
             }
         }
 
-        int[] var20 = IntCache.getIntCache(sx * sz);
+        int[] var20 = ArrayCache.newInt(sx * sz);
 
         for (var13 = 0; var13 < sz; ++var13)
         {
-            System.arraycopy(var10, (var13 + (pz & 1)) * (var7 << 1) + (px & 1), var20, var13 * sx, sx);
+            System.arraycopy(data, (var13 + (pz & 1)) * (sx2 << 1) + (px & 1), var20, var13 * sx, sx);
         }
 
         return var20;

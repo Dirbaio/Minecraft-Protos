@@ -12,86 +12,58 @@ public class GenLayerAddIsland extends BiomeFunction
     @Override
     public int[] getBiomeData(int px, int pz, int sx, int sz)
     {
-        int var5 = px - 1;
-        int var6 = pz - 1;
-        int var7 = sx + 2;
-        int var8 = sz + 2;
-        int[] var9 = this.base.getBiomeData(var5, var6, var7, var8);
-        int[] var10 = IntCache.getIntCache(sx * sz);
+        int px2 = px - 1;
+        int pz2 = pz - 1;
+        int sx2 = sx + 2;
+        int sz2 = sz + 2;
+        int[] base = this.base.getBiomeData(px2, pz2, sx2, sz2);
+        int[] data = ArrayCache.newInt(sx * sz);
 
-        for (int var11 = 0; var11 < sz; ++var11)
+        for (int z = 0; z < sz; ++z)
         {
-            for (int var12 = 0; var12 < sx; ++var12)
+            for (int x = 0; x < sx; ++x)
             {
-                int var13 = var9[var12 + 0 + (var11 + 0) * var7];
-                int var14 = var9[var12 + 2 + (var11 + 0) * var7];
-                int var15 = var9[var12 + 0 + (var11 + 2) * var7];
-                int var16 = var9[var12 + 2 + (var11 + 2) * var7];
-                int var17 = var9[var12 + 1 + (var11 + 1) * var7];
+                int topLeft     = base[x + 0 + (z + 0) * sx2];
+                int topRight    = base[x + 2 + (z + 0) * sx2];
+                int bottomLeft  = base[x + 0 + (z + 2) * sx2];
+                int bottomRight = base[x + 2 + (z + 2) * sx2];
+                int center      = base[x + 1 + (z + 1) * sx2];
 
-                if (var17 == 0 && (var13 != 0 || var14 != 0 || var15 != 0 || var16 != 0))
+                if (center == 0 && (topLeft != 0 || topRight != 0 || bottomLeft != 0 || bottomRight != 0))
                 {
-                    int var18 = 1;
-                    int var19 = 1;
+                    int max = 1;
+                    int r = 1;
 
-                    if (var13 != 0 && this.randForPos(var18++, var12 + px, var11 + pz, 0) == 0)
-                    {
-                        var19 = var13;
-                    }
+                    //Choose randomly from the 4 values one that's not 0
+                    if (    topLeft != 0 && this.randForPos(max++, x + px, z + pz, 0) == 0) r = topLeft;
+                    if (   topRight != 0 && this.randForPos(max++, x + px, z + pz, 1) == 0) r = topRight;
+                    if ( bottomLeft != 0 && this.randForPos(max++, x + px, z + pz, 2) == 0) r = bottomLeft;
+                    if (bottomRight != 0 && this.randForPos(max++, x + px, z + pz, 3) == 0) r = bottomRight;
 
-                    if (var14 != 0 && this.randForPos(var18++, var12 + px, var11 + pz, 1) == 0)
-                    {
-                        var19 = var14;
-                    }
-
-                    if (var15 != 0 && this.randForPos(var18++, var12 + px, var11 + pz, 2) == 0)
-                    {
-                        var19 = var15;
-                    }
-
-                    if (var16 != 0 && this.randForPos(var18++, var12 + px, var11 + pz, 3) == 0)
-                    {
-                        var19 = var16;
-                    }
-
-                    if (this.randForPos(3, var12 + px, var11 + pz, 4) == 0)
-                    {
-                        var10[var12 + var11 * sx] = var19;
-                    }
-                    else if (var19 == Biome.icePlains.biomeID)
-                    {
-                        var10[var12 + var11 * sx] = Biome.frozenOcean.biomeID;
-                    }
+                    if (this.randForPos(3, x + px, z + pz, 4) == 0)
+                        data[x + z * sx] = r;
+                    else if (r == Biome.icePlains.biomeID)
+                        data[x + z * sx] = Biome.frozenOcean.biomeID;
                     else
-                    {
-                        var10[var12 + var11 * sx] = 0;
-                    }
+                        data[x + z * sx] = 0;
                 }
-                else if (var17 > 0 && (var13 == 0 || var14 == 0 || var15 == 0 || var16 == 0))
+                else if (center > 0 && (topLeft == 0 || topRight == 0 || bottomLeft == 0 || bottomRight == 0))
                 {
-                    if (this.randForPos(5, var12 + px, var11 + pz, 5) == 0)
+                    if (this.randForPos(5, x + px, z + pz, 5) == 0)
                     {
-                        if (var17 == Biome.icePlains.biomeID)
-                        {
-                            var10[var12 + var11 * sx] = Biome.frozenOcean.biomeID;
-                        }
+                        if (center == Biome.icePlains.biomeID)
+                            data[x + z * sx] = Biome.frozenOcean.biomeID;
                         else
-                        {
-                            var10[var12 + var11 * sx] = 0;
-                        }
+                            data[x + z * sx] = 0;
                     }
                     else
-                    {
-                        var10[var12 + var11 * sx] = var17;
-                    }
+                        data[x + z * sx] = center;
                 }
                 else
-                {
-                    var10[var12 + var11 * sx] = var17;
-                }
+                    data[x + z * sx] = center;
             }
         }
 
-        return var10;
+        return data;
     }
 }

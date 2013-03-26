@@ -12,40 +12,34 @@ public class GenLayerAddSnow extends BiomeFunction
     @Override
     public int[] getBiomeData(int px, int pz, int sx, int sz)
     {
-        int var5 = px - 1;
-        int var6 = pz - 1;
-        int var7 = sx + 2;
-        int var8 = sz + 2;
-        int[] var9 = this.base.getBiomeData(var5, var6, var7, var8);
-        int[] var10 = IntCache.getIntCache(sx * sz);
+        int px2 = px - 1;
+        int pz2 = pz - 1;
+        int sx2 = sx + 2;
+        int sz2 = sz + 2;
+        int[] data2 = this.base.getBiomeData(px2, pz2, sx2, sz2);
+        int[] data = ArrayCache.newInt(sx * sz);
 
-        for (int var11 = 0; var11 < sz; ++var11)
+        for (int z = 0; z < sz; ++z)
         {
-            for (int var12 = 0; var12 < sx; ++var12)
+            for (int x = 0; x < sx; ++x)
             {
-                int var13 = var9[var12 + 1 + (var11 + 1) * var7];
-                if (var13 == 0)
-                {
-                    var10[var12 + var11 * sx] = 0;
-                }
+                int val = data2[x + 1 + (z + 1) * sx2];
+                if (val == 0)
+                    data[x + z * sx] = 0;
                 else
                 {
-                    int var14 = this.randForPos(5, var12 + px, var11 + pz, 0);
+                    int var14 = this.randForPos(5, x + px, z + pz, 0);
 
                     if (var14 == 0)
-                    {
                         var14 = Biome.icePlains.biomeID;
-                    }
                     else
-                    {
                         var14 = 1;
-                    }
 
-                    var10[var12 + var11 * sx] = var14;
+                    data[x + z * sx] = var14;
                 }
             }
         }
 
-        return var10;
+        return data;
     }
 }

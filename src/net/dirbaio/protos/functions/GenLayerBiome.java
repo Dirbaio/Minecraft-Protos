@@ -9,50 +9,49 @@ public class GenLayerBiome extends BiomeFunction
 
     public GenLayerBiome(BiomeFunction base)
     {
-        this.allowedBiomes = new Biome[] {Biome.desert, Biome.forest, Biome.extremeHills, Biome.swampland, Biome.plains, Biome.taiga, Biome.jungle};
+        this.allowedBiomes = new Biome[] {
+            Biome.desert, 
+            Biome.forest, 
+            Biome.extremeHills, 
+            Biome.swampland, 
+            Biome.plains, 
+            Biome.taiga, 
+            Biome.jungle
+        };
+        
         this.base = base;
     }
     
     @Override
     public int[] getBiomeData(int px, int pz, int sx, int sz)
     {
-        int[] var5 = this.base.getBiomeData(px, pz, sx, sz);
-        int[] var6 = IntCache.getIntCache(sx * sz);
+        int[] data2 = this.base.getBiomeData(px, pz, sx, sz);
+        int[] data = ArrayCache.newInt(sx * sz);
 
-        for (int var7 = 0; var7 < sz; ++var7)
+        for (int z = 0; z < sz; ++z)
         {
-            for (int var8 = 0; var8 < sx; ++var8)
+            for (int x = 0; x < sx; ++x)
             {
-                int var9 = var5[var8 + var7 * sx];
+                int val = data2[x + z * sx];
 
-                if (var9 == 0)
-                {
-                    var6[var8 + var7 * sx] = 0;
-                }
-                else if (var9 == Biome.mushroomIsland.biomeID)
-                {
-                    var6[var8 + var7 * sx] = var9;
-                }
-                else if (var9 == 1)
-                {
-                    var6[var8 + var7 * sx] = this.allowedBiomes[this.randForPos(this.allowedBiomes.length, var8 + px, var7 + pz, 0)].biomeID;
-                }
+                if (val == 0)
+                    data[x + z * sx] = 0;
+                else if (val == Biome.mushroomIsland.biomeID)
+                    data[x + z * sx] = val;
+                else if (val == 1)
+                    data[x + z * sx] = this.allowedBiomes[this.randForPos(this.allowedBiomes.length, x + px, z + pz, 0)].biomeID;
                 else
                 {
-                    int var10 = this.allowedBiomes[this.randForPos(this.allowedBiomes.length, var8 + px, var7 + pz, 1)].biomeID;
+                    int val2 = this.allowedBiomes[this.randForPos(this.allowedBiomes.length, x + px, z + pz, 1)].biomeID;
 
-                    if (var10 == Biome.taiga.biomeID)
-                    {
-                        var6[var8 + var7 * sx] = var10;
-                    }
+                    if (val2 == Biome.taiga.biomeID)
+                        data[x + z * sx] = val2;
                     else
-                    {
-                        var6[var8 + var7 * sx] = Biome.icePlains.biomeID;
-                    }
+                        data[x + z * sx] = Biome.icePlains.biomeID;
                 }
             }
         }
 
-        return var6;
+        return data;
     }
 }

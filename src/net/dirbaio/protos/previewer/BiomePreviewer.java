@@ -18,6 +18,8 @@ package net.dirbaio.protos.previewer;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -55,7 +57,13 @@ public class BiomePreviewer extends JComponent implements MouseListener, MouseMo
 
         //TODO/IMPORTANT: Halt the threads on closing. 
     }
-
+    
+    public void stopThreads()
+    {
+        for(WorkerThread t : workerThreads)
+            t.halt();
+    }
+    
     public static Biome[][] dataToBiome(int[] data, int sx, int sz)
     {
         Biome[][] biomes = new Biome[sx][sz];
@@ -63,17 +71,17 @@ public class BiomePreviewer extends JComponent implements MouseListener, MouseMo
             for (int z = 0; z < sz; z++)
             {
                 int v = data[x + z * sx];
-                biomes[x][z] = v >= 0 ? Biome.biomeList[v] : Biome.hell;
+                biomes[x][z] = v >= 0 ? Biome.biomeList[v] : Biome.undefined;
             }
         return biomes;
     }
 
     private static int divideDown(int a, int b)
     {
-        int r = a / b;
-        if (r <= 0 && r * b != a)
-            return r - 1;
-        return r;
+        if(a >= 0) 
+            return a/b;
+        else
+            return (a+1)/b-1;
     }
 
     @Override
@@ -96,11 +104,36 @@ public class BiomePreviewer extends JComponent implements MouseListener, MouseMo
                 if (c != null)
                     g.drawImage(c.img, x * CHUNK_SIZE - xPos, z * CHUNK_SIZE - zPos, null);
             }
+        
+        if(in && !down)
+        {
+            ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            g.setColor(new Color(0, 0, 0, 128));
+            g.fillRect(mouseX+10, mouseZ+10, 100, 50);
+            g.setColor(Color.WHITE);
+            Biome b = null;
+            int cx = divideDown(xPos+mouseX, CHUNK_SIZE);
+            int cz = divideDown(zPos+mouseZ, CHUNK_SIZE);
+            BiomeChunk c = chunks.getChunk(cx, cz);
+            if(c != null && c.biomes != null)
+                b = c.biomes[(xPos+mouseX)- cx*CHUNK_SIZE][(zPos+mouseZ)- cz*CHUNK_SIZE];
+            String s = "???";
+            if(b != null)
+                s = b.name;
+            g.drawString(s, mouseX+16, mouseZ+30);
+            g.drawString((mouseX + xPos) + ", " + (mouseZ + zPos), mouseX+16, mouseZ+50);
+        }
     }
     boolean down = false;
+    boolean in = false;
     int downX = 0;
     int downZ = 0;
     int speed = 2;
+    
+    int mouseX = 0;
+    int mouseZ = 0;
 
     @Override
     public void mouseClicked(MouseEvent e)
@@ -111,29 +144,39 @@ public class BiomePreviewer extends JComponent implements MouseListener, MouseMo
     public void mousePressed(MouseEvent e)
     {
         down = true;
+        in = true;
         downX = xPos + e.getX() * speed;
         downZ = zPos + e.getY() * speed;
+        repaint();
     }
 
     @Override
     public void mouseReleased(MouseEvent e)
     {
         down = false;
+        repaint();
     }
 
     @Override
     public void mouseEntered(MouseEvent e)
     {
+        in = true;
+        repaint();
     }
 
     @Override
     public void mouseExited(MouseEvent e)
     {
+        in = false;
+        repaint();
     }
 
     @Override
     public void mouseDragged(MouseEvent e)
     {
+        in = true;
+        mouseX = e.getX();
+        mouseZ = e.getY();
         xPos = downX - e.getX() * speed;
         zPos = downZ - e.getY() * speed;
         repaint();
@@ -142,6 +185,10 @@ public class BiomePreviewer extends JComponent implements MouseListener, MouseMo
     @Override
     public void mouseMoved(MouseEvent e)
     {
+        in = true;
+        mouseX = e.getX();
+        mouseZ = e.getY();
+        repaint();
     }
 
     class Task
@@ -165,6 +212,11 @@ public class BiomePreviewer extends JComponent implements MouseListener, MouseMo
     class WorkerThread extends Thread
     {
 
+        public WorkerThread()
+        {
+            super("BiomePreviewer");
+        }
+
         boolean running = true;
 
         @Override
@@ -179,8 +231,7 @@ public class BiomePreviewer extends JComponent implements MouseListener, MouseMo
                         chunks.setChunk(t.px, t.pz, chunks.makeChunk(t.px, t.pz));
                         repaint();
                     }
-                }
-                catch (InterruptedException ex)
+                } catch (InterruptedException ex)
                 {
                 }
         }
@@ -251,6 +302,10 @@ public class BiomePreviewer extends JComponent implements MouseListener, MouseMo
 
         BiomeChunk getChunk(int x, int z)
         {
+            if (x < px || x >= px + sx)
+                return null;
+            if (z < pz || z >= pz + sz)
+                return null;
             return chunks[x - px][z - pz];
         }
 
@@ -286,6 +341,7 @@ public class BiomePreviewer extends JComponent implements MouseListener, MouseMo
 
         public BiomeChunk(Biome[][] biomes)
         {
+            this.biomes = biomes;
             img = new BufferedImage(CHUNK_SIZE, CHUNK_SIZE, BufferedImage.TYPE_INT_RGB);
             for (int x = 0; x < CHUNK_SIZE; x++)
                 for (int z = 0; z < CHUNK_SIZE; z++)

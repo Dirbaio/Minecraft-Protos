@@ -11,72 +11,52 @@ public class GenLayerHills extends BiomeFunction
     @Override
     public int[] getBiomeData(int px, int pz, int sx, int sz)
     {
-        int[] var5 = this.base.getBiomeData(px - 1, pz - 1, sx + 2, sz + 2);
-        int[] var6 = IntCache.getIntCache(sx * sz);
+        int[] data2 = this.base.getBiomeData(px - 1, pz - 1, sx + 2, sz + 2);
+        int[] data = ArrayCache.newInt(sx * sz);
 
-        for (int var7 = 0; var7 < sz; ++var7)
+        for (int z = 0; z < sz; ++z)
         {
-            for (int var8 = 0; var8 < sx; ++var8)
+            for (int x = 0; x < sx; ++x)
             {
-                int var9 = var5[var8 + 1 + (var7 + 1) * (sx + 2)];
+                int old = data2[x + 1 + (z + 1) * (sx + 2)];
 
-                if (this.randForPos(3, var8 + px, var7 + pz, 0) == 0)
+                if (this.randForPos(3, x + px, z + pz, 0) == 0)
                 {
-                    int var10 = var9;
+                    int curr = old;
 
-                    if (var9 == Biome.desert.biomeID)
-                    {
-                        var10 = Biome.desertHills.biomeID;
-                    }
-                    else if (var9 == Biome.forest.biomeID)
-                    {
-                        var10 = Biome.forestHills.biomeID;
-                    }
-                    else if (var9 == Biome.taiga.biomeID)
-                    {
-                        var10 = Biome.taigaHills.biomeID;
-                    }
-                    else if (var9 == Biome.plains.biomeID)
-                    {
-                        var10 = Biome.forest.biomeID;
-                    }
-                    else if (var9 == Biome.icePlains.biomeID)
-                    {
-                        var10 = Biome.iceMountains.biomeID;
-                    }
-                    else if (var9 == Biome.jungle.biomeID)
-                    {
-                        var10 = Biome.jungleHills.biomeID;
-                    }
+                    if (old == Biome.desert.biomeID)
+                        curr = Biome.desertHills.biomeID;
+                    else if (old == Biome.forest.biomeID)
+                        curr = Biome.forestHills.biomeID;
+                    else if (old == Biome.taiga.biomeID)
+                        curr = Biome.taigaHills.biomeID;
+                    else if (old == Biome.plains.biomeID)
+                        curr = Biome.forest.biomeID;
+                    else if (old == Biome.icePlains.biomeID)
+                        curr = Biome.iceMountains.biomeID;
+                    else if (old == Biome.jungle.biomeID)
+                        curr = Biome.jungleHills.biomeID;
 
-                    if (var10 == var9)
-                    {
-                        var6[var8 + var7 * sx] = var9;
-                    }
+                    if (curr == old)
+                        data[x + z * sx] = old;
                     else
                     {
-                        int var11 = var5[var8 + 1 + (var7 + 1 - 1) * (sx + 2)];
-                        int var12 = var5[var8 + 1 + 1 + (var7 + 1) * (sx + 2)];
-                        int var13 = var5[var8 + 1 - 1 + (var7 + 1) * (sx + 2)];
-                        int var14 = var5[var8 + 1 + (var7 + 1 + 1) * (sx + 2)];
+                        int top = data2[x + 1 + (z + 1 - 1) * (sx + 2)];
+                        int right = data2[x + 1 + 1 + (z + 1) * (sx + 2)];
+                        int left = data2[x + 1 - 1 + (z + 1) * (sx + 2)];
+                        int down = data2[x + 1 + (z + 1 + 1) * (sx + 2)];
 
-                        if (var11 == var9 && var12 == var9 && var13 == var9 && var14 == var9)
-                        {
-                            var6[var8 + var7 * sx] = var10;
-                        }
+                        if (top == old && right == old && left == old && down == old)
+                            data[x + z * sx] = curr;
                         else
-                        {
-                            var6[var8 + var7 * sx] = var9;
-                        }
+                            data[x + z * sx] = old;
                     }
                 }
                 else
-                {
-                    var6[var8 + var7 * sx] = var9;
-                }
+                    data[x + z * sx] = old;
             }
         }
 
-        return var6;
+        return data;
     }
 }

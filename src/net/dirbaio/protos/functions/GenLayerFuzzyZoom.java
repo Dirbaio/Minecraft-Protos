@@ -16,7 +16,7 @@ public class GenLayerFuzzyZoom extends BiomeFunction
         int sx2 = (sx >> 1) + 3;
         int sz2 = (sz >> 1) + 3;
         int[] data2 = this.base.getBiomeData(px2, pz2, sx2, sz2);
-        int[] data = IntCache.getIntCache(sx2 * 2 * sz2 * 2);
+        int[] data = ArrayCache.newInt(sx2 * 2 * sz2 * 2);
         int var11 = sx2 << 1;
 
         for (int z = 0; z < sz2 - 1; ++z)
@@ -38,7 +38,7 @@ public class GenLayerFuzzyZoom extends BiomeFunction
             }
         }
 
-        int[] var20 = IntCache.getIntCache(sx * sz);
+        int[] var20 = ArrayCache.newInt(sx * sz);
 
         for (int z = 0; z < sz; ++z)
         {

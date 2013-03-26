@@ -23,7 +23,7 @@ public class GenLayerVoronoiZoom extends BiomeFunction
         int[] var11 = this.base.getBiomeData(var7, var8, var9, var10);
         int var12 = var9 << var5;
         int var13 = var10 << var5;
-        int[] var14 = IntCache.getIntCache(var12 * var13);
+        int[] var14 = ArrayCache.newInt(var12 * var13);
         int var16;
 
         for (int var15 = 0; var15 < var10 - 1; ++var15)
@@ -80,7 +80,7 @@ public class GenLayerVoronoiZoom extends BiomeFunction
             }
         }
 
-        int[] var50 = IntCache.getIntCache(sx * sz);
+        int[] var50 = ArrayCache.newInt(sx * sz);
 
         for (var16 = 0; var16 < sz; ++var16)
         {

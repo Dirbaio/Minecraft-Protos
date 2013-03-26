@@ -3,83 +3,68 @@ package net.dirbaio.protos.functions;
 public class GenLayerShore extends BiomeFunction
 {
     public BiomeFunction base;
+    public int biome;
+    public int outline;
 
-    public GenLayerShore(BiomeFunction base)
+    public GenLayerShore()
     {
-        this.base = base;
     }
 
+    public GenLayerShore(BiomeFunction base, int biome, int outline)
+    {
+        this.base = base;
+        this.biome = biome;
+        this.outline = outline;
+    }
+    
     @Override
     public int[] getBiomeData(int px, int pz, int sx, int sz)
     {
-        int[] var5 = this.base.getBiomeData(px - 1, pz - 1, sx + 2, sz + 2);
-        int[] var6 = IntCache.getIntCache(sx * sz);
+        int[] data2 = base.getBiomeData(px - 1, pz - 1, sx + 2, sz + 2);
+        int[] data = ArrayCache.newInt(sx * sz);
 
-        for (int var7 = 0; var7 < sz; ++var7)
+        for (int z = 0; z < sz; ++z)
         {
-            for (int var8 = 0; var8 < sx; ++var8)
+            for (int x = 0; x < sx; ++x)
             {
-                int var9 = var5[var8 + 1 + (var7 + 1) * (sx + 2)];
-                int var10;
-                int var11;
-                int var12;
-                int var13;
+                int center = data2[x + 1 + (z + 1) * (sx + 2)];
+                int bottom = data2[x + 1 + (z + 1 - 1) * (sx + 2)];
+                int right = data2[x + 1 + 1 + (z + 1) * (sx + 2)];
+                int left = data2[x + 1 - 1 + (z + 1) * (sx + 2)];
+                int top = data2[x + 1 + (z + 1 + 1) * (sx + 2)];
 
-                if (var9 == Biome.mushroomIsland.biomeID)
+                if (center == biome && (bottom != biome || right != biome || left != biome || top != biome))
+                    data[x+z*sx] = outline;
+                else
+                    data[x+z*sx] = center;
+                /*
+                if (center == Biome.mushroomIsland.biomeID)
                 {
-                    var10 = var5[var8 + 1 + (var7 + 1 - 1) * (sx + 2)];
-                    var11 = var5[var8 + 1 + 1 + (var7 + 1) * (sx + 2)];
-                    var12 = var5[var8 + 1 - 1 + (var7 + 1) * (sx + 2)];
-                    var13 = var5[var8 + 1 + (var7 + 1 + 1) * (sx + 2)];
-
-                    if (var10 != Biome.ocean.biomeID && var11 != Biome.ocean.biomeID && var12 != Biome.ocean.biomeID && var13 != Biome.ocean.biomeID)
-                    {
-                        var6[var8 + var7 * sx] = var9;
-                    }
+                    if (bottom != Biome.ocean.biomeID && right != Biome.ocean.biomeID && left != Biome.ocean.biomeID && top != Biome.ocean.biomeID)
+                        data[x + z * sx] = center;
                     else
-                    {
-                        var6[var8 + var7 * sx] = Biome.mushroomIslandShore.biomeID;
-                    }
+                        data[x + z * sx] = Biome.mushroomIslandShore.biomeID;
                 }
-                else if (var9 != Biome.ocean.biomeID && var9 != Biome.river.biomeID && var9 != Biome.swampland.biomeID && var9 != Biome.extremeHills.biomeID)
+                else if (center != Biome.ocean.biomeID && center != Biome.river.biomeID && center != Biome.swampland.biomeID && center != Biome.extremeHills.biomeID)
                 {
-                    var10 = var5[var8 + 1 + (var7 + 1 - 1) * (sx + 2)];
-                    var11 = var5[var8 + 1 + 1 + (var7 + 1) * (sx + 2)];
-                    var12 = var5[var8 + 1 - 1 + (var7 + 1) * (sx + 2)];
-                    var13 = var5[var8 + 1 + (var7 + 1 + 1) * (sx + 2)];
-
-                    if (var10 != Biome.ocean.biomeID && var11 != Biome.ocean.biomeID && var12 != Biome.ocean.biomeID && var13 != Biome.ocean.biomeID)
-                    {
-                        var6[var8 + var7 * sx] = var9;
-                    }
+                    if (bottom != Biome.ocean.biomeID && right != Biome.ocean.biomeID && left != Biome.ocean.biomeID && top != Biome.ocean.biomeID)
+                        data[x + z * sx] = center;
                     else
-                    {
-                        var6[var8 + var7 * sx] = Biome.beach.biomeID;
-                    }
+                        data[x + z * sx] = Biome.beach.biomeID;
                 }
-                else if (var9 == Biome.extremeHills.biomeID)
+                else if (center == Biome.extremeHills.biomeID)
                 {
-                    var10 = var5[var8 + 1 + (var7 + 1 - 1) * (sx + 2)];
-                    var11 = var5[var8 + 1 + 1 + (var7 + 1) * (sx + 2)];
-                    var12 = var5[var8 + 1 - 1 + (var7 + 1) * (sx + 2)];
-                    var13 = var5[var8 + 1 + (var7 + 1 + 1) * (sx + 2)];
-
-                    if (var10 == Biome.extremeHills.biomeID && var11 == Biome.extremeHills.biomeID && var12 == Biome.extremeHills.biomeID && var13 == Biome.extremeHills.biomeID)
-                    {
-                        var6[var8 + var7 * sx] = var9;
-                    }
+                    if (bottom == Biome.extremeHills.biomeID && right == Biome.extremeHills.biomeID && left == Biome.extremeHills.biomeID && top == Biome.extremeHills.biomeID)
+                        data[x + z * sx] = center;
                     else
-                    {
-                        var6[var8 + var7 * sx] = Biome.extremeHillsEdge.biomeID;
-                    }
+                        data[x + z * sx] = Biome.extremeHillsEdge.biomeID;
                 }
                 else
-                {
-                    var6[var8 + var7 * sx] = var9;
-                }
+                    data[x + z * sx] = center;
+                    * */
             }
         }
 
-        return var6;
+        return data;
     }
 }

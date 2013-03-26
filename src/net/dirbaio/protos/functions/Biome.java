@@ -14,8 +14,6 @@ public class Biome
     public static final Biome taiga = (new Biome(5)).setColor(new Color(747097)).setBiomeName("Taiga");
     public static final Biome swampland = (new Biome(6)).setColor(new Color(522674)).setBiomeName("Swampland");
     public static final Biome river = (new Biome(7)).setColor(new Color(255)).setBiomeName("River");
-    public static final Biome hell = (new Biome(8)).setColor(new Color(16711680)).setBiomeName("Hell");
-    public static final Biome sky = (new Biome(9)).setColor(new Color(8421631)).setBiomeName("Sky");
     public static final Biome frozenOcean = (new Biome(10)).setColor(new Color(9474208)).setBiomeName("FrozenOcean");
     public static final Biome frozenRiver = (new Biome(11)).setColor(new Color(10526975)).setBiomeName("FrozenRiver");
     public static final Biome icePlains = (new Biome(12)).setColor(new Color(16777215)).setBiomeName("Ice Plains");
@@ -29,6 +27,11 @@ public class Biome
     public static final Biome extremeHillsEdge = (new Biome(20)).setColor(new Color(7501978)).setBiomeName("Extreme Hills Edge");
     public static final Biome jungle = (new Biome(21)).setColor(new Color(5470985)).setBiomeName("Jungle");
     public static final Biome jungleHills = (new Biome(22)).setColor(new Color(2900485)).setBiomeName("JungleHills");
+
+    public static final Biome hell = (new Biome(8)).setColor(new Color(16711680)).setBiomeName("Hell");
+    public static final Biome sky = (new Biome(9)).setColor(new Color(8421631)).setBiomeName("Sky");
+
+    public static final Biome undefined = (new Biome(255)).setColor(new Color(0)).setBiomeName("Undefined Biome");
 
     public String name;
     public Color color;

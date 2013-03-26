@@ -24,88 +24,25 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
+import net.dirbaio.protos.Main;
 import net.dirbaio.protos.functions.BiomeFunction;
-import net.dirbaio.protos.functions.GenLayerAddIsland;
-import net.dirbaio.protos.functions.GenLayerAddMushroomIsland;
-import net.dirbaio.protos.functions.GenLayerAddSnow;
-import net.dirbaio.protos.functions.GenLayerBiome;
-import net.dirbaio.protos.functions.GenLayerFuzzyZoom;
-import net.dirbaio.protos.functions.GenLayerHills;
-import net.dirbaio.protos.functions.GenLayerIsland;
-import net.dirbaio.protos.functions.GenLayerRiver;
-import net.dirbaio.protos.functions.GenLayerRiverInit;
-import net.dirbaio.protos.functions.GenLayerRiverMix;
-import net.dirbaio.protos.functions.GenLayerShore;
-import net.dirbaio.protos.functions.GenLayerSmooth;
-import net.dirbaio.protos.functions.GenLayerSwampRivers;
-import net.dirbaio.protos.functions.GenLayerVoronoiZoom;
-import net.dirbaio.protos.functions.GenLayerZoom;
 import net.dirbaio.protos.functions.Output;
 import net.dirbaio.protos.generator.ChunkOutput;
 import net.dirbaio.protos.generator.DaniChunkOutput;
 import net.dirbaio.protos.generator.DiskChunkOutput;
 import net.dirbaio.protos.generator.WorldGenerator;
+import net.dirbaio.protos.previewer.BiomePreviewerFrame;
 import net.dirbaio.protos.previewer.WorldPreviewer;
 
 public class MainWindow extends JFrame implements ActionListener
 {
 
     JButton previewButton;
+    JButton previewBiomesButton;
     JButton generateButton;
     JButton generateDaniButton;
     EditorWindow ed;
     Project p;
-
-    public static BiomeFunction getBiome()
-    {
-
-        GenLayerIsland var3 = new GenLayerIsland();
-        GenLayerFuzzyZoom var9 = new GenLayerFuzzyZoom(var3);
-        GenLayerAddIsland var10 = new GenLayerAddIsland(var9);
-        GenLayerZoom var11 = new GenLayerZoom(var10);
-        var10 = new GenLayerAddIsland(var11);
-        GenLayerAddSnow var12 = new GenLayerAddSnow(var10);
-        var11 = new GenLayerZoom(var12);
-        var10 = new GenLayerAddIsland(var11);
-        var11 = new GenLayerZoom(var10);
-        var10 = new GenLayerAddIsland(var11);
-        GenLayerAddMushroomIsland var16 = new GenLayerAddMushroomIsland(var10);
-
-        int zoomCt = 4; //6 = Large biomes
-        BiomeFunction var5 = GenLayerZoom.multiZoom(var16, 0);
-        GenLayerRiverInit var13 = new GenLayerRiverInit(var5);
-        var5 = GenLayerZoom.multiZoom(var13, zoomCt + 2);
-        GenLayerRiver var14 = new GenLayerRiver(var5);
-        GenLayerSmooth var15 = new GenLayerSmooth(var14);
-        BiomeFunction var6 = GenLayerZoom.multiZoom(var16, 0);
-        GenLayerBiome var17 = new GenLayerBiome(var6);
-        var6 = GenLayerZoom.multiZoom(var17, 2);
-        BiomeFunction var18 = new GenLayerHills(var6);
-
-        for (int var7 = 0; var7 < zoomCt; ++var7)
-        {
-            var18 = new GenLayerZoom(var18);
-
-            if (var7 == 0)
-                var18 = new GenLayerAddIsland(var18);
-
-            if (var7 == 1)
-                var18 = new GenLayerShore(var18);
-
-            if (var7 == 1)
-                var18 = new GenLayerSwampRivers(var18);
-        }
-
-        GenLayerSmooth var19 = new GenLayerSmooth(var18);
-        GenLayerRiverMix var20 = new GenLayerRiverMix(var19, var15);
-        GenLayerVoronoiZoom var8 = new GenLayerVoronoiZoom(var20);
-
-        BiomeFunction[] r =
-        {
-            var20, var8, var20
-        };
-        return var20;
-    }
 
     public MainWindow() throws HeadlessException
     {
@@ -114,7 +51,7 @@ public class MainWindow extends JFrame implements ActionListener
         add(tb, BorderLayout.NORTH);
 
         Output out = new Output();
-        out.biome = getBiome();
+        out.biome = Main.getBiome();
         p = new Project(out);
 
         ed = new EditorWindow(p);
@@ -122,6 +59,8 @@ public class MainWindow extends JFrame implements ActionListener
 
         tb.add(previewButton = new JButton("Preview"));
         previewButton.addActionListener(this);
+        tb.add(previewBiomesButton = new JButton("Preview biomes"));
+        previewBiomesButton.addActionListener(this);
         tb.add(generateButton = new JButton("Generate"));
         generateButton.addActionListener(this);
         tb.add(generateDaniButton = new JButton("Towerthousand Generation™"));
@@ -150,7 +89,12 @@ public class MainWindow extends JFrame implements ActionListener
             fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
             wg.runInThread();
-        } else if (s == generateButton)
+        } else if(s == previewBiomesButton)
+        {
+            BiomeFunction f = p.getOutput().biome;
+            new BiomePreviewerFrame(f).setVisible(true);
+        }
+        else if (s == generateButton)
         {
             WorldGenerator wg = new WorldGenerator(p.getOutput().output);
 

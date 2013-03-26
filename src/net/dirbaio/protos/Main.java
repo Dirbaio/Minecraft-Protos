@@ -20,10 +20,12 @@ package net.dirbaio.protos;
 import net.dirbaio.protos.previewer.ImageViewer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import net.dirbaio.protos.editor.MainWindow;
 import net.dirbaio.protos.functions.*;
 import net.dirbaio.protos.previewer.BiomePreviewer;
+import net.dirbaio.protos.previewer.BiomePreviewerFrame;
 import net.dirbaio.protos.previewer.StupidFrame;
 
 public class Main extends JFrame
@@ -155,16 +157,88 @@ public class Main extends JFrame
         new ImageViewer(f.render(0, 0, 512, 512, -1, 1)).setVisible(true);
     }
     
-    public static void mainb(String[] args) throws FileNotFoundException, IOException
+    public static void maine(String[] args) throws FileNotFoundException, IOException
     {
         Images.init();
      
-        new MainWindow().setVisible(true);
+        MainWindow mw = new MainWindow();
+        mw.setVisible(true);
+        mw.setExtendedState(mw.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
     
+    public static BiomeFunction getBiome()
+    {
+        BiomeFunction f;
+        
+        f = new ConstantBiome(Biome.ocean.biomeID);
+        f = new RandomReplaceBiome(f, -1, false, Biome.plains.biomeID, 10);
+        
+        f = new GenLayerFuzzyZoom(f);
+        f = new GenLayerAddIsland(f);
+        f = new GenLayerZoom(f);
+        f = new GenLayerAddIsland(f);
+        f = new GenLayerAddSnow(f);
+        f = new GenLayerZoom(f);
+        f = new GenLayerAddIsland(f);
+        f = new GenLayerZoom(f);
+        f = new GenLayerAddIsland(f);
+
+        f = new RandomReplaceBiome(f, Biome.ocean.biomeID, true, Biome.mushroomIsland.biomeID, 100);
+        //f = new GenLayerAddMushroomIsland(f);
+
+        int zoomCt = 4; //6 = Large biomes
+        BiomeFunction river = f;
+        river = GenLayerZoom.multiZoom(river, 0);
+        river = new GenLayerRiverInit(river);
+        river = GenLayerZoom.multiZoom(river, zoomCt + 2);
+        river = new GenLayerRiver(river);
+        river = new GenLayerSmooth(river);
+        
+        BiomeFunction land = f;
+        land = GenLayerZoom.multiZoom(land, 0);
+        land = new GenLayerBiome(land);
+        land = GenLayerZoom.multiZoom(land, 2);
+
+        //land = new GenLayerHills(land);
+        land = new RandomReplaceBiome(land, Biome.desert.biomeID, true, Biome.desertHills.biomeID, 3);
+        land = new RandomReplaceBiome(land, Biome.forest.biomeID, true, Biome.forestHills.biomeID, 3);
+        land = new RandomReplaceBiome(land, Biome.taiga.biomeID, true, Biome.taigaHills.biomeID, 3);
+        land = new RandomReplaceBiome(land, Biome.plains.biomeID, true, Biome.forest.biomeID, 3);
+        land = new RandomReplaceBiome(land, Biome.icePlains.biomeID, true, Biome.iceMountains.biomeID, 3);
+        land = new RandomReplaceBiome(land, Biome.jungle.biomeID, true, Biome.jungleHills.biomeID, 3);
+
+        for (int var7 = 0; var7 < zoomCt; ++var7)
+        {
+            land = new GenLayerZoom(land);
+
+            if (var7 == 0)
+                land = new GenLayerAddIsland(land);
+
+            if (var7 == 1)
+            {
+//                var18 = new GenLayerShore(var18);
+            }
+            if (var7 == 1)
+                land = new GenLayerSwampRivers(land);
+        }
+
+        land = new GenLayerSmooth(land);
+        
+        f = new GenLayerRiverMix(land, river);
+        BiomeFunction f2 = new GenLayerVoronoiZoom(f);
+
+        BiomeFunction[] r =
+        {
+            f, f2, f
+        };
+        return f;
+    }
+
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
-        BiomeFunction f = MainWindow.getBiome();
-        new StupidFrame(new BiomePreviewer(f)).setVisible(true);
+        BiomeFunction f = getBiome();
+        BiomePreviewerFrame bpf = new BiomePreviewerFrame(f);
+        bpf.setVisible(true);
+        bpf.setExtendedState(bpf.getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 }

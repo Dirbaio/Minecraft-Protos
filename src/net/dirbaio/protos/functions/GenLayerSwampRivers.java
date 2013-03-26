@@ -13,7 +13,7 @@ public class GenLayerSwampRivers extends BiomeFunction
     public int[] getBiomeData(int px, int pz, int sx, int sz)
     {
         int[] var5 = this.base.getBiomeData(px - 1, pz - 1, sx + 2, sz + 2);
-        int[] var6 = IntCache.getIntCache(sx * sz);
+        int[] var6 = ArrayCache.newInt(sx * sz);
 
         for (int var7 = 0; var7 < sz; ++var7)
         {

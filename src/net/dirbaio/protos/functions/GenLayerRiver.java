@@ -2,7 +2,7 @@ package net.dirbaio.protos.functions;
 
 public class GenLayerRiver extends BiomeFunction
 {
-    BiomeFunction base;
+    public BiomeFunction base;
 
     public GenLayerRiver(BiomeFunction base)
     {
@@ -17,7 +17,7 @@ public class GenLayerRiver extends BiomeFunction
         int var7 = sx + 2;
         int var8 = sz + 2;
         int[] var9 = this.base.getBiomeData(var5, var6, var7, var8);
-        int[] var10 = IntCache.getIntCache(sx * sz);
+        int[] var10 = ArrayCache.newInt(sx * sz);
 
         for (int var11 = 0; var11 < sz; ++var11)
         {
