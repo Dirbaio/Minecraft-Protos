@@ -1,9 +1,9 @@
 package net.dirbaio.protos.functions;
 
-public class GenLayerFuzzyZoom extends BiomeFunction
+public class BiomeZoomFuzzy extends BiomeFunction
 {
     public BiomeFunction base;
-    public GenLayerFuzzyZoom(BiomeFunction base)
+    public BiomeZoomFuzzy(BiomeFunction base)
     {
         this.base = base;
     }

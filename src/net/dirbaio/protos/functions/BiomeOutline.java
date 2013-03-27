@@ -1,20 +1,24 @@
 package net.dirbaio.protos.functions;
 
-public class GenLayerShore extends BiomeFunction
+public class BiomeOutline extends BiomeFunction
 {
     public BiomeFunction base;
-    public int biome;
+    public BiomeSet biomes;
     public int outline;
-
-    public GenLayerShore()
+    public boolean outer;
+    public BiomeSet nextTo;
+    
+    public BiomeOutline()
     {
     }
 
-    public GenLayerShore(BiomeFunction base, int biome, int outline)
+    public BiomeOutline(BiomeFunction base, BiomeSet biomes, int outline, boolean outer, BiomeSet nextTo)
     {
         this.base = base;
-        this.biome = biome;
+        this.biomes = biomes;
         this.outline = outline;
+        this.outer = outer;
+        this.nextTo = nextTo;
     }
     
     @Override
@@ -33,10 +37,25 @@ public class GenLayerShore extends BiomeFunction
                 int left = data2[x + 1 - 1 + (z + 1) * (sx + 2)];
                 int top = data2[x + 1 + (z + 1 + 1) * (sx + 2)];
 
-                if (center == biome && (bottom != biome || right != biome || left != biome || top != biome))
-                    data[x+z*sx] = outline;
+                if(outer)
+                {
+                    if (!biomes.contains(center) 
+                            && (biomes.contains(bottom) || biomes.contains(right) || biomes.contains(left) || biomes.contains(top))
+                            && nextTo.contains(bottom) && nextTo.contains(right) && nextTo.contains(left) && nextTo.contains(top))
+                        data[x+z*sx] = outline;
+                    else
+                        data[x+z*sx] = center;
+                }
                 else
-                    data[x+z*sx] = center;
+                {
+                    if (biomes.contains(center) 
+                            && (bottom != center || right != center || left != center || top != center)
+                            && nextTo.contains(bottom) && nextTo.contains(right) && nextTo.contains(left) && nextTo.contains(top))
+                        data[x+z*sx] = outline;
+                    else
+                        data[x+z*sx] = center;
+                }
+                
                 /*
                 if (center == Biome.mushroomIsland.biomeID)
                 {
@@ -61,7 +80,7 @@ public class GenLayerShore extends BiomeFunction
                 }
                 else
                     data[x + z * sx] = center;
-                    * */
+                */
             }
         }
 

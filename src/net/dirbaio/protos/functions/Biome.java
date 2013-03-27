@@ -14,7 +14,7 @@ public class Biome
     public static final Biome taiga = (new Biome(5)).setColor(new Color(747097)).setBiomeName("Taiga");
     public static final Biome swampland = (new Biome(6)).setColor(new Color(522674)).setBiomeName("Swampland");
     public static final Biome river = (new Biome(7)).setColor(new Color(255)).setBiomeName("River");
-    public static final Biome frozenOcean = (new Biome(10)).setColor(new Color(9474208)).setBiomeName("FrozenOcean");
+    public static final Biome frozenOcean = (new Biome(10)).setColor(new Color(0x8080FF)).setBiomeName("FrozenOcean");
     public static final Biome frozenRiver = (new Biome(11)).setColor(new Color(10526975)).setBiomeName("FrozenRiver");
     public static final Biome icePlains = (new Biome(12)).setColor(new Color(16777215)).setBiomeName("Ice Plains");
     public static final Biome iceMountains = (new Biome(13)).setColor(new Color(10526880)).setBiomeName("Ice Mountains");

@@ -1,10 +1,10 @@
 package net.dirbaio.protos.functions;
 
-public class GenLayerAddIsland extends BiomeFunction
+public class BiomeAddIsland extends BiomeFunction
 {
     public BiomeFunction base;
     
-    public GenLayerAddIsland(BiomeFunction parent)
+    public BiomeAddIsland(BiomeFunction parent)
     {
         this.base = parent;
     }
@@ -43,7 +43,7 @@ public class GenLayerAddIsland extends BiomeFunction
                     if (this.randForPos(3, x + px, z + pz, 4) == 0)
                         data[x + z * sx] = r;
                     else if (r == Biome.icePlains.biomeID)
-                        data[x + z * sx] = Biome.frozenOcean.biomeID;
+                        data[x + z * sx] = Biome.icePlains.biomeID;
                     else
                         data[x + z * sx] = 0;
                 }
@@ -52,7 +52,7 @@ public class GenLayerAddIsland extends BiomeFunction
                     if (this.randForPos(5, x + px, z + pz, 5) == 0)
                     {
                         if (center == Biome.icePlains.biomeID)
-                            data[x + z * sx] = Biome.frozenOcean.biomeID;
+                            data[x + z * sx] = Biome.icePlains.biomeID;
                         else
                             data[x + z * sx] = 0;
                     }

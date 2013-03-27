@@ -2,26 +2,26 @@ package net.dirbaio.protos.functions;
 
 import java.util.ArrayList;
 
-public class RandomReplaceBiome extends BiomeFunction
+public class BiomeRandomReplace extends BiomeFunction
 {
     public BiomeFunction base;
-    public int from; // -1 = any
+    public BiomeSet from;
     public boolean noEdges; 
     public ArrayList<BiomeProb> to;
 
-    public RandomReplaceBiome()
+    public BiomeRandomReplace()
     {
         to = new ArrayList<>();
     }
 
-    public RandomReplaceBiome(BiomeFunction base, int from, ArrayList<BiomeProb> to)
+    public BiomeRandomReplace(BiomeFunction base, BiomeSet from, ArrayList<BiomeProb> to)
     {
         this.base = base;
         this.from = from;
         this.to = to;
     }
 
-    public RandomReplaceBiome(BiomeFunction base, int from, boolean noEdges, ArrayList<BiomeProb> to)
+    public BiomeRandomReplace(BiomeFunction base, BiomeSet from, boolean noEdges, ArrayList<BiomeProb> to)
     {
         this.base = base;
         this.from = from;
@@ -29,7 +29,7 @@ public class RandomReplaceBiome extends BiomeFunction
         this.to = to;
     }
     
-    public RandomReplaceBiome(BiomeFunction base, int from, boolean noEdges, int to, int prob)
+    public BiomeRandomReplace(BiomeFunction base, BiomeSet from, boolean noEdges, int to, int prob)
     {
         this.base = base;
         this.from = from;
@@ -60,7 +60,7 @@ public class RandomReplaceBiome extends BiomeFunction
                 {
                     int old = data2[x + 1 + (z + 1) * (sx + 2)];
                     int val = old;
-                    if(from == -1 || from == val)
+                    if(from.contains(val))
                     {
                         int r = this.randForPos(s, px + x, pz + z, 0);
                         for(BiomeProb p : to)
@@ -100,7 +100,7 @@ public class RandomReplaceBiome extends BiomeFunction
 
             for (int z = 0; z < sz; ++z)
                 for (int x = 0; x < sx; ++x)
-                    if(from == -1 || from == res[x + z * sx])
+                    if(from.contains(res[x + z * sx]))
                     {
                         int r = this.randForPos(s, px + x, pz + z, 0);
                         for(BiomeProb p : to)

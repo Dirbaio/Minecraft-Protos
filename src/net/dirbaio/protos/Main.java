@@ -24,9 +24,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import net.dirbaio.protos.editor.MainWindow;
 import net.dirbaio.protos.functions.*;
-import net.dirbaio.protos.previewer.BiomePreviewer;
 import net.dirbaio.protos.previewer.BiomePreviewerFrame;
-import net.dirbaio.protos.previewer.StupidFrame;
 
 public class Main extends JFrame
 {
@@ -171,67 +169,113 @@ public class Main extends JFrame
         BiomeFunction f;
         
         f = new ConstantBiome(Biome.ocean.biomeID);
-        f = new RandomReplaceBiome(f, -1, false, Biome.plains.biomeID, 10);
+        f = new BiomeRandomReplace(f, new BiomeSet(true), false, Biome.plains.biomeID, 10);
         
-        f = new GenLayerFuzzyZoom(f);
-        f = new GenLayerAddIsland(f);
-        f = new GenLayerZoom(f);
-        f = new GenLayerAddIsland(f);
-        f = new GenLayerAddSnow(f);
-        f = new GenLayerZoom(f);
-        f = new GenLayerAddIsland(f);
-        f = new GenLayerZoom(f);
-        f = new GenLayerAddIsland(f);
+        f = new BiomeZoomFuzzy(f);
+        f = new BiomeAddIsland(f);
+        f = new BiomeZoom(f);
+        f = new BiomeAddIsland(f);
 
-        f = new RandomReplaceBiome(f, Biome.ocean.biomeID, true, Biome.mushroomIsland.biomeID, 100);
+        f = new BiomeRandomReplace(f, new BiomeSet(Biome.plains.biomeID), false, Biome.icePlains.biomeID, 5);
+        //f = new GenLayerAddSnow(f);
+        
+        f = new BiomeZoom(f);
+        f = new BiomeAddIsland(f);
+        f = new BiomeZoom(f);
+        f = new BiomeAddIsland(f);
+
+        f = new BiomeRandomReplace(f, new BiomeSet(Biome.ocean.biomeID), true, Biome.mushroomIsland.biomeID, 100);
         //f = new GenLayerAddMushroomIsland(f);
 
-        int zoomCt = 4; //6 = Large biomes
         BiomeFunction river = f;
-        river = GenLayerZoom.multiZoom(river, 0);
-        river = new GenLayerRiverInit(river);
-        river = GenLayerZoom.multiZoom(river, zoomCt + 2);
-        river = new GenLayerRiver(river);
-        river = new GenLayerSmooth(river);
         
+        ArrayList<BiomeRandomReplace.BiomeProb> riverRandom = new ArrayList<>();
+        riverRandom.add(new BiomeRandomReplace.BiomeProb(Biome.desert.biomeID, 1));
+        riverRandom.add(new BiomeRandomReplace.BiomeProb(Biome.forest.biomeID, 1));
+        river = new BiomeRandomReplace(river, new BiomeSet(Biome.ocean.biomeID, true), riverRandom);
+
+        river = new BiomeZoom(river);
+        river = new BiomeZoom(river);
+        river = new BiomeZoom(river);
+        river = new BiomeZoom(river);
+        river = new BiomeZoom(river);
+        river = new BiomeZoom(river);
+        river = new BiomeOutline(river, new BiomeSet(true), Biome.river.biomeID, false, new BiomeSet(true));
+        river = new BiomeReplace(river, new BiomeSet(Biome.ocean.biomeID), Biome.river.biomeID, false);
+//        river = new GenLayerRiver(river);
+        river = new BiomeSmooth(river);
+        
+        //Not-ice biomes
         BiomeFunction land = f;
-        land = GenLayerZoom.multiZoom(land, 0);
-        land = new GenLayerBiome(land);
-        land = GenLayerZoom.multiZoom(land, 2);
 
-        //land = new GenLayerHills(land);
-        land = new RandomReplaceBiome(land, Biome.desert.biomeID, true, Biome.desertHills.biomeID, 3);
-        land = new RandomReplaceBiome(land, Biome.forest.biomeID, true, Biome.forestHills.biomeID, 3);
-        land = new RandomReplaceBiome(land, Biome.taiga.biomeID, true, Biome.taigaHills.biomeID, 3);
-        land = new RandomReplaceBiome(land, Biome.plains.biomeID, true, Biome.forest.biomeID, 3);
-        land = new RandomReplaceBiome(land, Biome.icePlains.biomeID, true, Biome.iceMountains.biomeID, 3);
-        land = new RandomReplaceBiome(land, Biome.jungle.biomeID, true, Biome.jungleHills.biomeID, 3);
-
-        for (int var7 = 0; var7 < zoomCt; ++var7)
-        {
-            land = new GenLayerZoom(land);
-
-            if (var7 == 0)
-                land = new GenLayerAddIsland(land);
-
-            if (var7 == 1)
-            {
-//                var18 = new GenLayerShore(var18);
-            }
-            if (var7 == 1)
-                land = new GenLayerSwampRivers(land);
-        }
-
-        land = new GenLayerSmooth(land);
+        ArrayList<BiomeRandomReplace.BiomeProb> biomes = new ArrayList<>();
+        biomes.add(new BiomeRandomReplace.BiomeProb(Biome.desert.biomeID, 1));
+        biomes.add(new BiomeRandomReplace.BiomeProb(Biome.forest.biomeID, 1));
+        biomes.add(new BiomeRandomReplace.BiomeProb(Biome.extremeHills.biomeID, 1));
+        biomes.add(new BiomeRandomReplace.BiomeProb(Biome.swampland.biomeID, 1));
+        biomes.add(new BiomeRandomReplace.BiomeProb(Biome.plains.biomeID, 1));
+        biomes.add(new BiomeRandomReplace.BiomeProb(Biome.taiga.biomeID, 1));
+        biomes.add(new BiomeRandomReplace.BiomeProb(Biome.jungle.biomeID, 1));
+        land = new BiomeRandomReplace(land, new BiomeSet(Biome.plains.biomeID), biomes);
         
-        f = new GenLayerRiverMix(land, river);
-        BiomeFunction f2 = new GenLayerVoronoiZoom(f);
+        //Ice biomes
+        biomes = new ArrayList<>();
+        biomes.add(new BiomeRandomReplace.BiomeProb(Biome.taiga.biomeID, 1));
+        biomes.add(new BiomeRandomReplace.BiomeProb(-1, 3));
+        land = new BiomeRandomReplace(land, new BiomeSet(Biome.icePlains.biomeID), biomes);
+        
+        land = new BiomeZoom(land);
+        land = new BiomeZoom(land);
 
-        BiomeFunction[] r =
-        {
-            f, f2, f
-        };
-        return f;
+        //Hills
+        land = new BiomeRandomReplace(land, new BiomeSet(Biome.desert.biomeID), true, Biome.desertHills.biomeID, 3);
+        land = new BiomeRandomReplace(land, new BiomeSet(Biome.forest.biomeID), true, Biome.forestHills.biomeID, 3);
+        land = new BiomeRandomReplace(land, new BiomeSet(Biome.taiga.biomeID), true, Biome.taigaHills.biomeID, 3);
+        land = new BiomeRandomReplace(land, new BiomeSet(Biome.plains.biomeID), true, Biome.forest.biomeID, 3);
+        land = new BiomeRandomReplace(land, new BiomeSet(Biome.icePlains.biomeID), true, Biome.iceMountains.biomeID, 3);
+        land = new BiomeRandomReplace(land, new BiomeSet(Biome.jungle.biomeID), true, Biome.jungleHills.biomeID, 3);
+
+        land = new BiomeZoom(land);
+        land = new BiomeAddIsland(land);
+        land = new BiomeZoom(land);
+        
+//        land = new GenLayerShore(land);
+        BiomeSet biomesWithShore = new BiomeSet(true);
+        biomesWithShore.biomes.add(Biome.extremeHills.biomeID);
+        biomesWithShore.biomes.add(Biome.swampland.biomeID);
+        biomesWithShore.biomes.add(Biome.mushroomIsland.biomeID);
+        land = new BiomeOutline(land, new BiomeSet(Biome.ocean.biomeID), Biome.beach.biomeID, true, biomesWithShore);
+
+        /*
+        BiomeSet moarShore = new BiomeSet(false);
+        moarShore.biomes.add(Biome.beach.biomeID);
+        moarShore.biomes.add(Biome.ocean.biomeID);
+        land = new BiomeOutline(land, new BiomeSet(Biome.ocean.biomeID), Biome.beach.biomeID, false, moarShore);
+        */
+        land = new BiomeOutline(land, new BiomeSet(Biome.extremeHills.biomeID), Biome.extremeHillsEdge.biomeID, false, new BiomeSet(true));
+        land = new BiomeOutline(land, new BiomeSet(Biome.mushroomIsland.biomeID), Biome.mushroomIslandShore.biomeID, false, new BiomeSet(true));
+
+        //land = new GenLayerSwampRivers(land);
+        BiomeSet set = new BiomeSet();
+        set.biomes.add(Biome.jungle.biomeID);
+        set.biomes.add(Biome.jungleHills.biomeID);
+        land = new BiomeRandomReplace(land, set, false, Biome.river.biomeID, 8);
+        land = new BiomeRandomReplace(land, new BiomeSet(Biome.swampland.biomeID), false, Biome.river.biomeID, 6);
+        land = new BiomeZoom(land);
+        land = new BiomeZoom(land);
+
+        land = new BiomeSmooth(land);
+
+        
+        //Mix river and land
+        river = new BiomeCombine(river, land, new BiomeSet(true), new BiomeSet(Biome.ocean.biomeID), -1);
+        land = new BiomeCombine(land, river, new BiomeSet(Biome.icePlains.biomeID), new BiomeSet(Biome.river.biomeID), Biome.frozenRiver.biomeID);
+        land = new BiomeCombine(land, river, new BiomeSet(Biome.frozenRiver.biomeID, true), new BiomeSet(Biome.river.biomeID), Biome.river.biomeID);
+//        f = new GenLayerRiverMix(land, river);
+        
+        BiomeFunction land2 = new BiomeZoomVoronoi(land);
+
+        return land;
     }
 
     public static void main(String[] args) throws FileNotFoundException, IOException

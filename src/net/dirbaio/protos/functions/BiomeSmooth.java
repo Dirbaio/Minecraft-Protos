@@ -1,14 +1,14 @@
 package net.dirbaio.protos.functions;
 
-public class GenLayerRiver extends BiomeFunction
+public class BiomeSmooth extends BiomeFunction
 {
     public BiomeFunction base;
 
-    public GenLayerRiver(BiomeFunction base)
+    public BiomeSmooth(BiomeFunction base)
     {
         this.base = base;
     }
-    
+
     @Override
     public int[] getBiomeData(int px, int pz, int sx, int sz)
     {
@@ -29,14 +29,31 @@ public class GenLayerRiver extends BiomeFunction
                 int var16 = var9[var12 + 1 + (var11 + 2) * var7];
                 int var17 = var9[var12 + 1 + (var11 + 1) * var7];
 
-                if (var17 != 0 && var13 != 0 && var14 != 0 && var15 != 0 && var16 != 0 && var17 == var13 && var17 == var15 && var17 == var14 && var17 == var16)
+                if (var13 == var14 && var15 == var16)
                 {
-                    var10[var12 + var11 * sx] = -1;
+                    if (this.randForPos(2, var12 + px, var11 + pz, 0) == 0)
+                    {
+                        var17 = var13;
+                    }
+                    else
+                    {
+                        var17 = var15;
+                    }
                 }
                 else
                 {
-                    var10[var12 + var11 * sx] = Biome.river.biomeID;
+                    if (var13 == var14)
+                    {
+                        var17 = var13;
+                    }
+
+                    if (var15 == var16)
+                    {
+                        var17 = var15;
+                    }
                 }
+
+                var10[var12 + var11 * sx] = var17;
             }
         }
 

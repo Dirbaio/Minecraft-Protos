@@ -1,10 +1,10 @@
 package net.dirbaio.protos.functions;
 
-public class GenLayerVoronoiZoom extends BiomeFunction
+public class BiomeZoomVoronoi extends BiomeFunction
 {
     public BiomeFunction base;
 
-    public GenLayerVoronoiZoom(BiomeFunction base)
+    public BiomeZoomVoronoi(BiomeFunction base)
     {
         this.base = base;
     }

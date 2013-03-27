@@ -1,10 +1,10 @@
 package net.dirbaio.protos.functions;
 
-public class GenLayerZoom extends BiomeFunction
+public class BiomeZoom extends BiomeFunction
 {
     public BiomeFunction base;
 
-    public GenLayerZoom(BiomeFunction base)
+    public BiomeZoom(BiomeFunction base)
     {
         this.base = base;
     }
@@ -90,7 +90,7 @@ public class GenLayerZoom extends BiomeFunction
     public static BiomeFunction multiZoom(BiomeFunction f, int n)
     {
         for (int i = 0; i < n; ++i)
-            f = new GenLayerZoom(f);
+            f = new BiomeZoom(f);
 
         return f;
     }
