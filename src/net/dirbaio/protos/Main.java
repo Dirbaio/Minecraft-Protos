@@ -155,7 +155,7 @@ public class Main extends JFrame
         new ImageViewer(f.render(0, 0, 512, 512, -1, 1)).setVisible(true);
     }
     
-    public static void maine(String[] args) throws FileNotFoundException, IOException
+    public static void main(String[] args) throws FileNotFoundException, IOException
     {
         Images.init();
      
@@ -278,7 +278,7 @@ public class Main extends JFrame
         return land;
     }
 
-    public static void main(String[] args) throws FileNotFoundException, IOException
+    public static void mains(String[] args) throws FileNotFoundException, IOException
     {
         BiomeFunction f = getBiome();
         BiomePreviewerFrame bpf = new BiomePreviewerFrame(f);

@@ -18,26 +18,22 @@ package net.dirbaio.protos.editor;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import net.dirbaio.protos.Images;
+import net.dirbaio.protos.editor.properties.PropertyEditor;
 import net.dirbaio.protos.functions.*;
+import net.dirbaio.protos.previewer.BiomePreviewerFrame;
 
 public class FunctionEditor extends JPanel implements MouseListener, MouseMotionListener
 {
     Function f;
     private String functionName;
-    ProjectEditor pe;
-    List<Property> properties = new ArrayList<>();
+    public ProjectEditor pe;
     
     boolean canBeSelected;
     boolean hasChildEdited;
     boolean isProcessed;
+    PropertyEditor ed;
 
     public FunctionEditor(final Function f, final ProjectEditor pe)
     {
@@ -45,9 +41,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         this.pe = pe;
 
         functionName = f.getClass().getSimpleName();
-        loadProperties();
 
-        this.setLayout(new GridBagLayout());
         final Color col = getColorForClass(f.getClass());
         ImageIcon icon = getIconForClass(f.getClass());
         JLabel title = new JLabel(unCamelCase(functionName), icon, JLabel.LEADING);
@@ -66,12 +60,21 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
                 pe.deleteFunction(f);
             }
         });
-        JIconButton previewButton = new JIconButton(Images.preview);
+        
         if(f.getClass() != Output.class)
             buttonsPanel.add(deleteButton);
+
         
-        //Meh. Beta won't have per-function preview.
-//        buttonsPanel.add(previewButton);
+        JIconButton previewButton = new JIconButton(Images.preview);
+        previewButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                doPreview();
+            }
+        });
+        buttonsPanel.add(previewButton);
         
         JPanel titlePanel = new JPanel(new BorderLayout()){
 
@@ -85,46 +88,23 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
             }
             
         };
+        
         titlePanel.add(title, BorderLayout.CENTER);
         titlePanel.add(buttonsPanel, BorderLayout.EAST);
+        
+        setLayout(new GridBagLayout());
+        
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 0;
-        c.gridwidth = 2;
         c.ipadx = c.ipady = 10;
         add(titlePanel, c);
 
-        int y = 1;
-        for(Property p : properties)
-        {
-            JLabel label = new JLabel(p.name);
-            JComponent comp = p.component;
-            label.setLabelFor(comp);
-            if(comp instanceof JTextArea)
-            {
-                c = new GridBagConstraints();
-                c.fill = GridBagConstraints.HORIZONTAL;
-                c.insets = new Insets(3, 3, 3, 3);
-                c.gridx = 0;
-                c.gridy = y++;
-                c.gridwidth = 2;
-                c.weightx = 1;
-                add(comp, c);
-            }
-            else
-            {
-                c = new GridBagConstraints();
-                c.fill = GridBagConstraints.HORIZONTAL;
-                c.insets = new Insets(3, 3, 3, 3);
-                c.gridx = 0;
-                c.gridy = y++;
-                add(label, c);
-                c.gridx = 1;
-                c.weightx = 1;
-                add(comp, c);
-            }
-        }
+        ed = new PropertyEditor(f, this);
+        c.gridy = 1;
+        c.ipadx = c.ipady = 0;
+        add(ed, c);
 
         setLocation(f.xPos, f.yPos);
         setBorder(BorderFactory.createLineBorder(new Color(col.getRed()/2, col.getGreen()/2, col.getBlue()/2)));
@@ -139,163 +119,10 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     {
     }
 
-    
-    class Property
+    public void doPreview()
     {
-        FunctionEditor ed;
-        Field field;
-        String name;
-        JComponent component;
-        int index;
-
-        public Property(Field f, String name, int index, FunctionEditor ed)
-        {
-            this.ed = ed;
-            this.field = f;
-            this.name = name;
-            this.index = index;
-            this.component = createComponent();
-            if(!(component instanceof JTextArea))
-                component.setPreferredSize(new Dimension(100, component.getPreferredSize().height));
-        }
-
-        public Object getValue()
-        {
-            try
-            {
-                return field.get(f);
-            } catch(IllegalArgumentException | IllegalAccessException ex)
-            {
-                ex.printStackTrace();
-            }
-
-            return null;
-        }
-
-        public void setValue(Object val)
-        {
-            try
-            {
-                field.set(f, val);
-            } catch(IllegalArgumentException | IllegalAccessException ex)
-            {
-                ex.printStackTrace();
-            }
-        }
-
-        private JComponent createComponent()
-        {
-            Class type = field.getType();
-            if(Function.class.isAssignableFrom(type))
-            {
-                JButton res = new JButton(getIconForClass(type));
-                final Property self = this;
-                res.addActionListener(new ActionListener()
-                {
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        pe.editProperty(self);
-                    }
-                });
-                return res;
-            }
-            else
-            {
-                Object oval = getValue();
-                String val = oval == null ? "" : oval.toString();
-                DocumentListener dl = new DocumentListener()
-                {
-                    @Override
-                    public void changedUpdate(DocumentEvent e)
-                    {
-                        modified();
-                    }
-
-                    @Override
-                    public void removeUpdate(DocumentEvent e)
-                    {
-                        modified();
-                    }
-
-                    @Override
-                    public void insertUpdate(DocumentEvent e)
-                    {
-                        modified();
-                    }
-                };
-                if(field.getDeclaringClass() == Notes.class)
-                {
-                    JTextArea res = new JTextArea(val);
-                    res.getDocument().addDocumentListener(dl);
-                    return res;
-                }
-                else
-                {
-                    JTextField res = new JTextField(val);
-                    res.getDocument().addDocumentListener(dl);
-                    return res;
-                }
-            }
-        }
-
-        
-        Border savedBorder;
-        boolean hasSavedBorder;
-
-        private void modified()
-        {
-            String text;
-            if(component instanceof JTextArea)
-            {
-                text = ((JTextArea) component).getText();
-                component.setSize(component.getPreferredSize());
-//                ed.validate();
-                ed.setSize(ed.getPreferredSize());
-            }
-            else
-                text = ((JTextField) component).getText();
-    
-            
-            Object val = null;
-            try
-            {
-                val = fromString(text);
-            } catch(Exception ex)
-            {
-            }
-
-            if(val != null)
-            {
-                setValue(val);
-                if(hasSavedBorder)
-                    component.setBorder(savedBorder);
-            }
-            else
-            {
-                if(!hasSavedBorder)
-                {
-                    savedBorder = component.getBorder();
-                    hasSavedBorder = true;
-                }
-                component.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
-            }
-        }
-
-        private Object fromString(String val)
-        {
-            Class type = field.getType();
-            if(type == String.class)
-                return val;
-            if(type == int.class)
-                return Integer.parseInt(val);
-            if(type == short.class)
-                return Short.parseShort(val);
-            if(type == double.class)
-                return Double.parseDouble(val);
-
-            return null;
-        }
+        if(f instanceof BiomeFunction)
+            new BiomePreviewerFrame((BiomeFunction)f).setVisible(true);
     }
 
     public static String unCamelCase(String s)
@@ -322,17 +149,7 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
         }
         return res;
     }
-
-    private void loadProperties()
-    {
-        Class c = f.getClass();
-        Field[] fields = c.getFields();
-        int i = 0;
-        for(Field fi : fields)
-            if(fi.getDeclaringClass() != Function.class)
-                properties.add(new Property(fi, unCamelCase(fi.getName()), i++, this));
-    }
-
+    
     boolean down = false;
     int downX, downY;
     boolean moved;

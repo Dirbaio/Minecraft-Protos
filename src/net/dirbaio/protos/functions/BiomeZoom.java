@@ -86,12 +86,4 @@ public class BiomeZoom extends BiomeFunction
             return var5 == 0 ? par1 : (var5 == 1 ? par2 : (var5 == 2 ? par3 : par4));
         }
     }
-
-    public static BiomeFunction multiZoom(BiomeFunction f, int n)
-    {
-        for (int i = 0; i < n; ++i)
-            f = new BiomeZoom(f);
-
-        return f;
-    }
 }

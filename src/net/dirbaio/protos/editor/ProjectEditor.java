@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
+import net.dirbaio.protos.editor.properties.Property;
 import net.dirbaio.protos.functions.Function;
 import net.dirbaio.protos.functions.Output;
 
@@ -59,7 +60,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         doNormalize();
     }
     
-    void doNormalize()
+    final void doNormalize()
     {
         int xMin = Integer.MAX_VALUE;
         int yMin = Integer.MAX_VALUE;
@@ -102,7 +103,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     private FunctionEditor[] getChildren(FunctionEditor e)
     {
         ArrayList<FunctionEditor> l = new ArrayList<>();
-        for(FunctionEditor.Property pr : e.properties)
+        for(Property pr : e.ed.properties)
         {
             Object val = pr.getValue();
             if(val != null && val instanceof Function)
@@ -142,7 +143,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     }
 
     int mx, my;
-    FunctionEditor.Property editedProperty = null;
+    Property editedProperty = null;
     FunctionEditor hovered = null;
     
     @Override
@@ -174,14 +175,14 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
                 g2.fillRect(hovered.getX()-10, hovered.getY()-10, hovered.getWidth()+20, hovered.getHeight()+20);
             }
             
-            FunctionEditor e = editedProperty.ed;
+            FunctionEditor e = editedProperty.ed.fe;
             
             g2.setColor(Color.BLACK);
             g2.drawString("Click a function!", e.getX(), e.getY()+e.getHeight()+20);
         }
         
         for(FunctionEditor ed : editors)
-            for(FunctionEditor.Property pr : ed.properties)
+            for(Property pr : ed.ed.properties)
             {
                 if(Function.class.isAssignableFrom(pr.field.getType()))
                 {
@@ -283,13 +284,13 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         p.funcs.remove(f);
         
         for(FunctionEditor e : editors)
-            for(FunctionEditor.Property pr : e.properties)
+            for(Property pr : e.ed.properties)
                 if(pr.getValue() == f)
                     pr.setValue(null);
         repaint();
     }
 
-    void editProperty(FunctionEditor.Property p)
+    public void editProperty(Property p)
     {
         hovered = null;
         editedProperty = p;
@@ -320,7 +321,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         if(e.isProcessed) return;
         e.isProcessed = true;
         
-        if(editedProperty.ed == e)
+        if(editedProperty.ed.fe == e)
         {
             e.hasChildEdited = true;
         }

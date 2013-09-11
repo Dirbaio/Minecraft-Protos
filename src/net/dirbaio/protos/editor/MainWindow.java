@@ -40,7 +40,6 @@ public class MainWindow extends JFrame implements ActionListener
     JButton previewButton;
     JButton previewBiomesButton;
     JButton generateButton;
-    JButton generateDaniButton;
     EditorWindow ed;
     Project p;
 
@@ -63,8 +62,6 @@ public class MainWindow extends JFrame implements ActionListener
         previewBiomesButton.addActionListener(this);
         tb.add(generateButton = new JButton("Generate"));
         generateButton.addActionListener(this);
-        tb.add(generateDaniButton = new JButton("Towerthousand Generation™"));
-        generateDaniButton.addActionListener(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(getPreferredSize());
     }
@@ -89,7 +86,8 @@ public class MainWindow extends JFrame implements ActionListener
             fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
             wg.runInThread();
-        } else if(s == previewBiomesButton)
+        }
+        else if (s == previewBiomesButton)
         {
             BiomeFunction f = p.getOutput().biome;
             new BiomePreviewerFrame(f).setVisible(true);
@@ -99,18 +97,6 @@ public class MainWindow extends JFrame implements ActionListener
             WorldGenerator wg = new WorldGenerator(p.getOutput().output);
 
             DiskChunkOutput out = new DiskChunkOutput(new File("./generated-map/"));
-            wg.addChunkOutput(out);
-
-            ProgressFrame pf = new ProgressFrame();
-            pf.setVisible(true);
-            wg.addProgressListener(pf);
-
-            wg.runInThread();
-        } else if (s == generateDaniButton)
-        {
-            WorldGenerator wg = new WorldGenerator(p.getOutput().output);
-
-            ChunkOutput out = new DaniChunkOutput("out.bin");
             wg.addChunkOutput(out);
 
             ProgressFrame pf = new ProgressFrame();

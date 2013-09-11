@@ -2,9 +2,9 @@ package net.dirbaio.protos.functions;
 
 public class BiomeCombine extends BiomeFunction
 {
-    BiomeFunction a, b;
-    BiomeSet sa, sb;
-    int res;
+    public BiomeFunction a, b;
+    public BiomeSet sa, sb;
+    public int res;
 
     public BiomeCombine()
     {
