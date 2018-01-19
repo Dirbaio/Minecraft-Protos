@@ -25,7 +25,7 @@ import net.dirbaio.protos.functions.Output;
 
 public class Project
 {
-    public List<Function> funcs = new ArrayList<>();
+    public List<Function> functions = new ArrayList<>();
 
     public Project()
     {
@@ -40,10 +40,10 @@ public class Project
     
     public void addFunc(Function f)
     {
-        if(funcs.contains(f))
+        if(functions.contains(f))
             return;
         
-        funcs.add(f);
+        functions.add(f);
         Field[] fields = f.getClass().getFields();
         for(Field fi : fields)
         {
@@ -66,7 +66,7 @@ public class Project
     
     public Output getOutput()
     {
-        for(Function f : funcs)
+        for(Function f : functions)
             if(f instanceof Output)
                 return (Output) f;
 

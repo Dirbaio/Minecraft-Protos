@@ -42,6 +42,6 @@ public class FunctionProperty extends Property implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        ed.fe.pe.editProperty(this);
+        propertyEditor.fe.pe.editProperty(this);
     }
 }

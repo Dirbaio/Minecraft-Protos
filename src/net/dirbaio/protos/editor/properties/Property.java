@@ -25,7 +25,7 @@ import javax.swing.JTextArea;
 public abstract class Property
 {
 
-    public PropertyEditor ed;
+    public PropertyEditor propertyEditor;
     public Object obj;
     public Field field;
     public String name;
@@ -34,7 +34,7 @@ public abstract class Property
 
     public Property(Object obj, Field field, int index, PropertyEditor ed)
     {
-        this.ed = ed;
+        this.propertyEditor = ed;
         this.obj = obj;
         this.field = field;
         this.name = field.getName();

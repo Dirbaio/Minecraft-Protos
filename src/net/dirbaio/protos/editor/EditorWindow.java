@@ -23,16 +23,19 @@ import javax.swing.JScrollPane;
 
 public class EditorWindow extends JPanel
 {
-    Project p;
-    ProjectEditorTop pet;
+    Project project;
+    ProjectEditor projectEditor;
     FunctionChooser fc;
     
     public EditorWindow(Project p)
     {
         super(new BorderLayout());
-        this.p = p;
-        add(new JScrollPane(pet = new ProjectEditorTop(p)), BorderLayout.CENTER);
-        add(new JScrollPane(fc = new FunctionChooser(pet.e)), BorderLayout.WEST);
+        this.project = p;
+		projectEditor = new ProjectEditor(p);
+		fc = new FunctionChooser(projectEditor);
+
+        add(projectEditor, BorderLayout.CENTER);
+        add(new JScrollPane(fc), BorderLayout.WEST);
     }
 
 }

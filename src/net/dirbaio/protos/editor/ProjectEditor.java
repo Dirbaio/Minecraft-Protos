@@ -33,20 +33,18 @@ import net.dirbaio.protos.functions.Output;
 
 public class ProjectEditor extends JPanel implements MouseMotionListener, MouseListener
 {
-    Project p;
+    Project project;
     List<FunctionEditor> editors = new ArrayList<>();
     Map<Function, FunctionEditor> editorsByFunction = new HashMap<>();
-    ProjectEditorTop pet;
-    
-    public ProjectEditor(Project p, ProjectEditorTop pet)
+
+    public ProjectEditor(Project p)
     {
-        this.p = p;
-        this.pet = pet;
-        
+        this.project = p;
+
         setLayout(null);
         setBackground(Color.WHITE);
         
-        for(Function f : p.funcs)
+        for(Function f : p.functions)
         {
             FunctionEditor fe = new FunctionEditor(f, this);
             editors.add(fe);
@@ -57,39 +55,8 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         addMouseListener(this);
         addMouseMotionListener(this);
         doAutoLayout();
-        doNormalize();
     }
-    
-    final void doNormalize()
-    {
-        int xMin = Integer.MAX_VALUE;
-        int yMin = Integer.MAX_VALUE;
-        int xMax = Integer.MIN_VALUE;
-        int yMax = Integer.MIN_VALUE;
 
-        for(FunctionEditor e : editors)
-        {
-            if(e.getX() < xMin)
-                xMin = e.getX();
-            if(e.getY() < yMin)
-                yMin = e.getY();
-
-            if(e.getX()+e.getWidth() > xMax)
-                xMax = e.getX() + e.getWidth();
-            if(e.getY()+e.getHeight() > yMax)
-                yMax = e.getY() + e.getHeight();
-        }
-        
-        int margin = 50;
-        
-        for(FunctionEditor e : editors)
-            e.setPos(e.getX()-xMin+margin, e.getY()-yMin+margin);
-        
-        Dimension size = new Dimension(xMax-xMin+2*margin, yMax-yMin+2*margin);
-        setMinimumSize(size);
-        setPreferredSize(size);
-    }
-    
     private void doAutoLayout()
     {
         FunctionEditor first = null;
@@ -175,7 +142,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
                 g2.fillRect(hovered.getX()-10, hovered.getY()-10, hovered.getWidth()+20, hovered.getHeight()+20);
             }
             
-            FunctionEditor e = editedProperty.ed.fe;
+            FunctionEditor e = editedProperty.propertyEditor.fe;
             
             g2.setColor(Color.BLACK);
             g2.drawString("Click a function!", e.getX(), e.getY()+e.getHeight()+20);
@@ -281,7 +248,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         remove(ed);
         editors.remove(ed);
         editProperty(null);
-        p.funcs.remove(f);
+        project.functions.remove(f);
         
         for(FunctionEditor e : editors)
             for(Property pr : e.ed.properties)
@@ -296,7 +263,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         editedProperty = p;
         repaint();
         
-        pet.h.setVisible(p != null);
+        pet.overlay.setVisible(p != null);
         
         if(p != null)
         {
@@ -321,7 +288,7 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
         if(e.isProcessed) return;
         e.isProcessed = true;
         
-        if(editedProperty.ed.fe == e)
+        if(editedProperty.propertyEditor.fe == e)
         {
             e.hasChildEdited = true;
         }
@@ -352,23 +319,23 @@ public class ProjectEditor extends JPanel implements MouseMotionListener, MouseL
     {
         try
         {
-            Function f = (Function)c.getConstructor().newInstance();
-            f.xPos = getWidth()/2;
-            f.yPos = getHeight()/2;
-            System.out.println(f);
-            p.funcs.add(f);
-            FunctionEditor e = new FunctionEditor(f, this);
-            add(e);
-            e.validate();
-            editors.add(e);
-            editorsByFunction.put(f, e);
+            Function function = (Function)c.getConstructor().newInstance();
+            function.xPos = getWidth()/2;
+            function.yPos = getHeight()/2;
+            System.out.println(function);
+            project.functions.add(function);
+            FunctionEditor editor = new FunctionEditor(function, this);
+            add(editor);
+            editor.validate();
+            editors.add(editor);
+            editorsByFunction.put(function, editor);
             
             if(editedProperty != null)
             {
-                e.setPos(editedProperty.ed.getX()-e.getWidth()-30, editedProperty.ed.getY());
-                selectFunction(e);
+                editor.setPos(editedProperty.propertyEditor.getX() - editor.getWidth() - 30, editedProperty.propertyEditor.getY());
+                selectFunction(editor);
             }
-            doNormalize();
+
             repaint();
         }
         catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)

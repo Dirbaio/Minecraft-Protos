@@ -25,23 +25,25 @@ import javax.swing.JPanel;
 
 public class ProjectEditorTop extends JPanel
 {
-    final ProjectEditor e;
-    final Project p;
-    final OverlayPanel h;
+    final ProjectEditor editor;
+    final Project project;
+    final OverlayPanel overlay;
     
     public ProjectEditorTop(Project p)
     {
-        setLayout(new OverlayLayout(e = new ProjectEditor(p, this)));
-        this.p = p;
-        GridBagConstraints ct = new GridBagConstraints();
-        ct.fill = GridBagConstraints.BOTH;
-        ct.weightx = 1;
-        ct.weighty = 1;
-        add(e, new GridBagConstraints());
-        add(h = new OverlayPanel(), ct);
-        setComponentZOrder(h, 0);
-        setComponentZOrder(e, 1);
-        h.setVisible(false);
+
+		editor = new ProjectEditor(p, this);
+		overlay = new OverlayPanel();
+
+		setLayout(new OverlayLayout());
+
+        this.project = p;
+
+		add(overlay);
+		add(editor);
+		setComponentZOrder(overlay, 0);
+		setComponentZOrder(editor, 1);
+        overlay.setVisible(false);
     }
 
     @Override
@@ -63,7 +65,7 @@ public class ProjectEditorTop extends JPanel
         protected void paintComponent(Graphics g)
         {
             g.setColor(new Color(255, 255, 255, 128));
-            for(FunctionEditor ed : e.editors)
+            for(FunctionEditor ed : editor.editors)
                 if(!ed.canBeSelected)
                     g.fillRect(ed.getX(), ed.getY(), ed.getWidth(), ed.getHeight());
         }
@@ -79,10 +81,10 @@ public class ProjectEditorTop extends JPanel
             int x = ev.getX();
             int y = ev.getY();
             
-            if(e.hovered != null)
-                e.selectFunction(e.hovered);
+            if(editor.hovered != null)
+                editor.selectFunction(editor.hovered);
             else
-                e.endEditProperty();
+                editor.endEditProperty();
         }
 
         @Override
@@ -108,31 +110,24 @@ public class ProjectEditorTop extends JPanel
         @Override
         public void mouseMoved(MouseEvent ev)
         {
-            FunctionEditor old = e.hovered;
-            e.hovered = null;
+            FunctionEditor old = editor.hovered;
+            editor.hovered = null;
             int x = ev.getX();
             int y = ev.getY();
-            e.mx = x;
-            e.my = y;
+            editor.mx = x;
+            editor.my = y;
  
-            for(FunctionEditor ed : e.editors)
+            for(FunctionEditor ed : editor.editors)
                 if(ed.canBeSelected && ed.getBounds().contains(x, y))
-                    e.hovered = ed;
+                    editor.hovered = ed;
  
-            e.repaint();
+            editor.repaint();
         }
     }
     
     private class OverlayLayout implements LayoutManager
     {
-        JComponent a;
 
-        public OverlayLayout(JComponent a)
-        {
-            this.a = a;
-        }
-        
-        
         @Override
         public void addLayoutComponent(String name, Component comp)
         {
@@ -146,13 +141,13 @@ public class ProjectEditorTop extends JPanel
         @Override
         public Dimension preferredLayoutSize(Container parent)
         {
-            return a.getPreferredSize();
+            return new Dimension(100, 100);
         }
 
         @Override
         public Dimension minimumLayoutSize(Container parent)
         {
-            return a.getMinimumSize();
+			return new Dimension(100, 100);
         }
 
         @Override

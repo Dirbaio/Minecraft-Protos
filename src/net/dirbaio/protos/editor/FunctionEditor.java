@@ -166,8 +166,6 @@ public class FunctionEditor extends JPanel implements MouseListener, MouseMotion
     public void mouseReleased(MouseEvent e)
     {
         down = false;
-        if(moved)
-            pe.doNormalize();
     }
 
     @Override
